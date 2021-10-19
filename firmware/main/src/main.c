@@ -37,7 +37,7 @@ void app_main(void)
 
     
     /* Init LVGL, allocating buffer and create tasks for tick and handler */
-    ESP_ERROR_CHECK(lvgl_init(DISP_BUF_SIZE, MALLOC_CAP_DMA));   //MALLOC_CAP_DMA
+    ESP_ERROR_CHECK(lvgl_init(DISP_BUF_SIZE, MALLOC_CAP_DMA));
 
     /* Init LVGL file system API */
     lv_port_fs_init();

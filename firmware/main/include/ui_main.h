@@ -4,14 +4,13 @@
 
 #include "lv_symbol_extra_def.h"
 
-#define _UI_SCALE_X_ (x) { 6*x/10 }
-#define _UI_SCALE_Y_ (x) { 6*x/10 }
+#define _UI_SCALE_X_(x) ( (int) (6*x/10) )
+#define _UI_SCALE_Y_(y) ( (int) (2*y/3) )
 
-#define COLOR_BAR   lv_color_make(86, 94, 102)
-#define COLOR_THEME lv_color_make(252, 199, 0)
+#define COLOR_THEME LV_COLOR_BLACK
 #define COLOR_DEEP  lv_color_make(246, 174, 61)
-#define COLOR_TEXT  lv_color_make(56, 56, 56)
-#define COLOR_BG    lv_color_make(238, 241, 245)
+#define COLOR_TEXT  LV_COLOR_WHITE
+#define COLOR_BG    LV_COLOR_BLACK
 
 #define _UI_FUNC_DEF_(ui_name)                  \
     extern ui_func_desc_t ui_##ui_name##_func;  \
@@ -52,6 +51,17 @@ typedef enum {
     ui_clock_item_aqi_level,
 } ui_clock_item_t;
 
+typedef enum {
+    ui_preprations_item_coffee_short = 0,
+    ui_preprations_item_coffee_medium,
+    ui_preprations_item_coffee_long,
+    ui_preprations_item_coffee_free,
+    ui_preprations_item_cappuccino_short,
+    ui_preprations_item_cappuccino_medium,
+    ui_preprations_item_cappuccino_double,
+    ui_preprations_item_milk_hot,
+} ui_preprations_item_t;
+
 typedef struct {
     char *path;             /* File path */
     void **data;            /* Pointer of data to store in RAM */
@@ -63,6 +73,27 @@ typedef struct {
     void (*show)(void *);   /* show function pointer */
     void (*hide)(void *);   /* hide function pointer */
 } ui_func_desc_t;
+
+typedef enum
+{
+    NONE = 0,
+    COFFEE_SHORT,
+    COFFEE_MEDIUM,
+    COFFEE_LONG,
+    COFFEE_FREE,
+    CAPPUCCINO_SHORT,
+    CAPPUCCINO_MEDIUM,
+    CAPPUCCINO_DOUBLE,
+    HOT_MILK
+} prep_t;
+
+// typedef struct {
+//     prep_t desired_prep = NONE;
+//     prep_t running_prep = NONE;
+//     bool tempBoost = false;
+//     bool foamBoost = false;
+//     bool isError = false;
+// } ui_preparation_t;
 
 /**
  * @brief Initialize main UI, including resources loading.
@@ -91,17 +122,10 @@ void ui_show(ui_func_desc_t *ui, ui_show_mode_t mode);
 _UI_FUNC_DEF_(page);
 
 _UI_FUNC_DEF_(about);
-// _UI_FUNC_DEF_(air);
-// _UI_FUNC_DEF_(air_conditioner)
-// _UI_FUNC_DEF_(app)
-// _UI_FUNC_DEF_(clock);
-// _UI_FUNC_DEF_(humidity);
-// _UI_FUNC_DEF_(led);
-// _UI_FUNC_DEF_(music);
+_UI_FUNC_DEF_(app);
 _UI_FUNC_DEF_(setting);
-// _UI_FUNC_DEF_(switch);
-// _UI_FUNC_DEF_(uv);
-// _UI_FUNC_DEF_(weather);
+_UI_FUNC_DEF_(preparations);
+
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.
@@ -140,22 +164,12 @@ lv_obj_t *ui_page_get_obj(void);
 void ui_clock_set_item_val(ui_clock_item_t item, const char *text);
 
 /**
- * @brief Update LED UI, can be called when network data received.
+ * @brief Set preparations page item text.
  * 
+ * @param item Item to set. See `ui_preprations_item_t`.
+ * @param text Text to show or parse.
  */
-void ui_led_update(void);
-
-/**
- * @brief Update widgets capton of weather page. Call it when weather data is updated.
- * 
- */
-void weather_update_widget_caption(void);
-
-/**
- * @brief Update air information of AQI page. Call it when air data is updated.
- * 
- */
-void ui_air_update_value(void);
+void ui_preparations_set_item_val(ui_preprations_item_t item, const char *text);
 
 /**
  * @brief Update weather information of clock page. Call it when weather data is updated.
@@ -164,36 +178,29 @@ void ui_air_update_value(void);
 void ui_clock_update(void);
 
 /**
- * @brief Update date text. Call it when time is successfully updated via NTP.
+ * @brief Update current preparation information of preparations page. Call it when preparation data is updated.
  * 
  */
-void ui_clock_update_date(void);
+void ui_preparations_update(void);
 
 /**
- * @brief Update length of music file in music page.
+ * @brief Update cappuccino preparation information.
  * 
- * @param data_size Size of audio file. Length will automiclly calculated by `SAMPLE_RATE` in `app_music.h`.
  */
-void ui_music_update_length(size_t data_size);
+void ui_preparations_enable_cappuccino(bool enable);
 
 /**
- * @brief Update current play time of music file in music page.
+ * @brief Update machine power status.
  * 
- * @param data_index Current file index.
  */
-void ui_music_update_update_time(size_t data_index);
+void ui_preparations_set_power(bool on);
 
 /**
- * @brief Update play/pause button accroding to audio state.
+ * @brief Update machine warning (descaling, pod full and water empty).
  * 
  */
-void ui_music_update_btn(void);
+void ui_preparations_set_warning(bool descaling, bool pod_full, bool water_empty);
 
-/**
- * @brief Reset lyric time count.
- * 
- */
-void lyric_reset_count(void);
 
 #ifdef __cplusplus
 }

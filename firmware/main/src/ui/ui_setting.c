@@ -1,25 +1,5 @@
-/**
- * @file ui_setting.c
- * @brief Setting page UI src.
- * @version 0.1
- * @date 2021-01-11
- * 
- * @copyright Copyright 2021 Espressif Systems (Shanghai) Co. Ltd.
- *
- *      Licensed under the Apache License, Version 2.0 (the "License");
- *      you may not use this file except in compliance with the License.
- *      You may obtain a copy of the License at
- *
- *               http://www.apache.org/licenses/LICENSE-2.0
- *
- *      Unless required by applicable law or agreed to in writing, software
- *      distributed under the License is distributed on an "AS IS" BASIS,
- *      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *      See the License for the specific language governing permissions and
- *      limitations under the License.
- */
-
 #include "ui_main.h"
+#include "lvgl_port.h"
 
 /* UI function declaration */
 ui_func_desc_t ui_setting_func = {
@@ -42,6 +22,9 @@ extern void *data_icon_about;
 /* Static function forward declaration */
 static void btn_app_cb(lv_obj_t *obj, lv_event_t event);
 static void btn_about_cb(lv_obj_t *obj, lv_event_t event);
+
+
+bool isSettingsPageActive = false;
 
 void ui_setting_init(void *data)
 {
@@ -72,17 +55,17 @@ void ui_setting_init(void *data)
     lv_obj_align(img_about, obj_page_about, LV_ALIGN_CENTER, 0, -30);
 
     lv_obj_set_style_local_value_str(obj_page_about,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "About");
-    lv_obj_set_style_local_value_font(obj_page_about, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_28);
+    lv_obj_set_style_local_value_font(obj_page_about, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_28);
     lv_obj_set_style_local_value_align(obj_page_about,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
     lv_obj_set_style_local_value_ofs_y(obj_page_about,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 50);
-    lv_obj_set_style_local_value_color(obj_page_about,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, COLOR_BAR);
+    lv_obj_set_style_local_value_color(obj_page_about,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_about,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 
     lv_obj_set_style_local_value_str(obj_page_app,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "APP Connect");
-    lv_obj_set_style_local_value_font(obj_page_app, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_28);
+    lv_obj_set_style_local_value_font(obj_page_app, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_28);
     lv_obj_set_style_local_value_align(obj_page_app,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
     lv_obj_set_style_local_value_ofs_y(obj_page_app,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 50);
-    lv_obj_set_style_local_value_color(obj_page_app,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, COLOR_BAR);
+    lv_obj_set_style_local_value_color(obj_page_app,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_app,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     
     lv_obj_set_event_cb(obj_page_app, btn_app_cb);
@@ -91,38 +74,46 @@ void ui_setting_init(void *data)
 
 void ui_setting_show(void *data)
 {
-    if (NULL == obj_page_about) {
+    if(NULL == obj_page_about)
+    {
         ui_setting_init(data);
         ui_status_bar_time_show(true);
-    } else {
+    }
+    else
+    {
         lv_obj_set_hidden(obj_page_about, false);
         lv_obj_set_hidden(obj_page_app, false);
         ui_status_bar_time_show(true);
     }
+    isSettingsPageActive = true;
 }
 
 void ui_setting_hide(void *data)
 {
     (void)data;
 
-    if (NULL != obj_page_about) {
+    if(NULL != obj_page_about)
+    {
         lv_obj_set_hidden(obj_page_app, true);
         lv_obj_set_hidden(obj_page_about, true);
     }
 
+    isSettingsPageActive = false;
 }
 
 /* ******************************** Event Handler(s) ******************************** */
 static void btn_app_cb(lv_obj_t *obj, lv_event_t event)
 {
-    if (LV_EVENT_CLICKED == event) {
-        // ui_show(&ui_app_func, UI_SHOW_PEDDING);
+    if (LV_EVENT_CLICKED == event)
+    {
+        ui_show(&ui_app_func, UI_SHOW_OVERRIDE);
     }
 }
 
 static void btn_about_cb(lv_obj_t *obj, lv_event_t event)
 {
-    if (LV_EVENT_CLICKED == event) {
-        ui_show(&ui_about_func, UI_SHOW_PEDDING);
+    if (LV_EVENT_CLICKED == event)
+    {
+        ui_show(&ui_about_func, UI_SHOW_OVERRIDE);
     }
 }

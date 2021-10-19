@@ -1,27 +1,7 @@
-/**
- * @file ui_about.c
- * @brief About page UI code.
- * @version 0.1
- * @date 2021-01-11
- * 
- * @copyright Copyright 2021 Espressif Systems (Shanghai) Co. Ltd.
- *
- *      Licensed under the Apache License, Version 2.0 (the "License");
- *      you may not use this file except in compliance with the License.
- *      You may obtain a copy of the License at
- *
- *               http://www.apache.org/licenses/LICENSE-2.0
- *
- *      Unless required by applicable law or agreed to in writing, software
- *      distributed under the License is distributed on an "AS IS" BASIS,
- *      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *      See the License for the specific language governing permissions and
- *      limitations under the License.
- */
-
 #include "ui_main.h"
 #include "esp_ota_ops.h"
 #include "esp_system.h"
+#include "lvgl_port.h"
 
 /* UI function declaration */
 ui_func_desc_t ui_about_func = {
@@ -50,7 +30,7 @@ void ui_about_init(void *data)
     /* Create a mask to hide top and bottom line */
     tabel_mask = lv_objmask_create(obj_page_about, NULL);
     lv_obj_set_click(tabel_mask, false);
-    lv_obj_set_size(tabel_mask, 350, 270);
+    lv_obj_set_size(tabel_mask, _UI_SCALE_X_(700), _UI_SCALE_Y_(270));
     lv_obj_align(tabel_mask, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -20);
 
     /* Create tabel t show info about dev board and software version */
@@ -70,8 +50,8 @@ void ui_about_init(void *data)
     /* Set tabel rol / col count and size */
     lv_table_set_col_cnt(tabel_about, 2);
     lv_table_set_row_cnt(tabel_about, 5);
-    lv_table_set_col_width(tabel_about, 0, 150);
-    lv_table_set_col_width(tabel_about, 1, 250);
+    lv_table_set_col_width(tabel_about, 0, _UI_SCALE_X_(250));
+    lv_table_set_col_width(tabel_about, 1, _UI_SCALE_Y_(400));
 
     /* Set tittle text */
     lv_table_set_cell_value(tabel_about, 0, 0, "App version");
