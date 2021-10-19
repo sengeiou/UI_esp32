@@ -9,4 +9,4 @@ idf_component_register(
 
 component_compile_definitions(ADVANCED_DEBUG)
 
-spiffs_create_partition_image(storage ../spiffs FLASH_IN_PROJECT)
+#spiffs_create_partition_image(storage ../spiffs FLASH_IN_PROJECT)

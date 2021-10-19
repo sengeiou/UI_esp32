@@ -86,7 +86,7 @@ static char f_path[256];
 /**********************
  *      MACROS
  **********************/
-#define LV_FS_PATH_PREFIX   "/spiffs"
+#define LV_FS_PATH_PREFIX   "/storage"
 
 /**********************
  *   GLOBAL FUNCTIONS
@@ -117,6 +117,7 @@ esp_err_t lv_port_fs_init(void)
 
     size_t total = 0, used = 0;
     ret = esp_spiffs_info(NULL, &total, &used);
+
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
         return ret;
@@ -125,7 +126,6 @@ esp_err_t lv_port_fs_init(void)
     }
 
     fs_init();
-
     return ESP_OK;
 }
 

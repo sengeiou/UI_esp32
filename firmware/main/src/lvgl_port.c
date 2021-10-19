@@ -72,27 +72,11 @@ void lv_handler_task(void *pvparam)
 
 static IRAM_ATTR void lvgl_flush_cb(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p)
 {
-    lv_disp_flush_ready(disp_drv);
-
     disp_driver_flush(disp_drv, area, color_p);
 }
 
 static IRAM_ATTR bool lvgl_read_cb(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 {
-    // static uint8_t tp_num = 0;
-    // static uint16_t x = 0, y = 0;
-
-    //ft5x06_read_pos(&tp_num, &x, &y);
-
-    // if (0 == tp_num) {
-    //     data->state = LV_INDEV_STATE_REL;
-    // } else {
-    //     /* Swap xy order and invert y direction */
-    //     data->point.x = y;
-    //     data->point.y = LV_VER_RES_MAX - x - 1;
-    //     data->state = LV_INDEV_STATE_PR;
-    // }
-
     touch_driver_read(indev_drv, data);
     return false;
 }
@@ -123,8 +107,7 @@ esp_err_t lvgl_init(size_t buffer_pix_size, uint32_t buffer_caps)
     lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.buffer = &disp_buf;
-    // disp_drv.flush_cb = lvgl_flush_cb;
-    disp_drv.flush_cb = disp_driver_flush;
+    disp_drv.flush_cb = lvgl_flush_cb;
     lv_disp_drv_register(&disp_drv);
 
     /*!< Register input devcie and callback */
@@ -132,8 +115,7 @@ esp_err_t lvgl_init(size_t buffer_pix_size, uint32_t buffer_caps)
     lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_POINTER;
-    // indev_drv.read_cb = lvgl_read_cb;
-    indev_drv.read_cb = touch_driver_read;
+    indev_drv.read_cb = lvgl_read_cb;
     lv_indev_drv_register(&indev_drv);
     #endif
     

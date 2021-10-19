@@ -1,24 +1,3 @@
-/**
- * @file lvgl_port.h
- * @brief 
- * @version 0.1
- * @date 2021-02-24
- * 
- * @copyright Copyright 2021 Espressif Systems (Shanghai) Co. Ltd.
- *
- *      Licensed under the Apache License, Version 2.0 (the "License");
- *      you may not use this file except in compliance with the License.
- *      You may obtain a copy of the License at
- *
- *               http://www.apache.org/licenses/LICENSE-2.0
- *
- *      Unless required by applicable law or agreed to in writing, software
- *      distributed under the License is distributed on an "AS IS" BASIS,
- *      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *      See the License for the specific language governing permissions and
- *      limitations under the License.
- */
-
 #pragma once
 
 #include <stdio.h>
@@ -46,6 +25,7 @@ extern lv_font_t font_en_32;
 extern lv_font_t font_en_36;
 extern lv_font_t font_en_40;
 extern lv_font_t font_en_48;
+extern lv_font_t font_en_bold_16;
 extern lv_font_t font_en_bold_20;
 extern lv_font_t font_en_bold_24;
 extern lv_font_t font_en_bold_28;
@@ -54,11 +34,11 @@ extern lv_font_t font_en_bold_36;
 extern lv_font_t font_en_bold_48;
 extern lv_font_t font_en_bold_60;
 extern lv_font_t font_en_bold_72;
-extern lv_font_t font_kb_24;
 extern lv_font_t font_en_bold_24;
 extern lv_font_t font_en_bold_28;
 extern lv_font_t font_en_bold_48;
 extern lv_font_t font_en_20_compress;
+extern lv_font_t font_kb_24;
 extern lv_font_t font_symbol_28;
 extern lv_font_t font_en_thin_20;
 extern lv_font_t font_bar_symbol;
