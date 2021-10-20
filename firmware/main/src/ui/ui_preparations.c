@@ -8,10 +8,10 @@
 #define WARN_SIZE       40
 
 #define RAD_X_CENTER    125
-#define RAD_Y_CENTER    20
+#define RAD_Y_CENTER    0
 #define ROUNDER         15
 
-// static ui_preparation_t    preparation;
+ui_preparation_t    preparation;
 
 /* UI function declaration */
 ui_func_desc_t ui_preparations_func = {
@@ -84,9 +84,16 @@ extern void* data_temp_boost;
 static void btn_cb(lv_obj_t* obj, lv_event_t event);
 static void btn_warning_cb(lv_obj_t *obj, lv_event_t event);
 static void btn_boost_cb(lv_obj_t *obj, lv_event_t event);
+static void descaling_cb(lv_obj_t *obj, lv_event_t event);
+
 
 void ui_preparations_init(void *data)
 {
+    preparation.desired_prep = NONE;
+    preparation.tempBoost = false;
+    preparation.foamBoost = false;
+    preparation.isError = false;
+
     (void)data;
 
     /* Preparation page */
@@ -96,7 +103,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_on_off, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_on_off, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_on_off, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_on_off, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER -110);
+    lv_obj_align(obj_on_off, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER -130);
 
     img_on_off = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_on_off, data_on_off);
@@ -152,7 +159,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_temp_boost, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_temp_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_temp_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_temp_boost, NULL, LV_ALIGN_CENTER, 0 -50, RAD_Y_CENTER +110);
+    lv_obj_align(obj_temp_boost, NULL, LV_ALIGN_CENTER, 0 -50, RAD_Y_CENTER +130);
 
     img_temp_boost = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_temp_boost, data_temp_boost);
@@ -166,7 +173,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_foam_boost, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_foam_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_foam_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_foam_boost, NULL, LV_ALIGN_CENTER, 0 +50, RAD_Y_CENTER +110);
+    lv_obj_align(obj_foam_boost, NULL, LV_ALIGN_CENTER, 0 +50, RAD_Y_CENTER +130);
 
     img_foam_boost = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_foam_boost, data_foam_boost);
@@ -408,100 +415,28 @@ void ui_preparations_set_item_val(ui_preprations_item_t item, const char *text)
    
 }
 
+static void descaling_cb(lv_obj_t *obj, lv_event_t event)
+{
+    if(LV_EVENT_VALUE_CHANGED == event)
+    {
+        if(0 == lv_msgbox_get_active_btn(obj))
+        {
+            printf("Descaling abort\n");
+            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+            lv_obj_del(obj);
+        }
+
+        if(1 == lv_msgbox_get_active_btn(obj))
+        {
+            printf("Descaling start\n");
+            ui_show(&ui_descaling_func, UI_SHOW_OVERRIDE);
+            lv_obj_del(obj);
+        }
+    }
+}
+
 static void btn_cb(lv_obj_t *obj, lv_event_t event)
 {
-    if(LV_EVENT_PRESSED == event)
-    {
-        if(obj_coffee_short == obj)
-        {
-            printf("COFFEE SHORT PRESS\n");
-        }
-
-        if(obj_coffee_medium == obj)
-        {
-            printf("COFFEE MEDIUM PRESS\n");
-        }
-
-        if(obj_coffee_long == obj)
-        {
-            printf("COFFEE LONG PRESS\n");
-        }
-
-        if(obj_coffee_free == obj)
-        {
-            printf("COFFEE FREE PRESS\n");
-        }
-
-        if(true == isCappuccinoEnable)
-        {
-            if(obj_cappuccino_short == obj)
-            {
-                printf("CAPPUCCINO SHORT PRESS\n");
-            }
-
-            if(obj_cappuccino_medium == obj)
-            {
-                printf("CAPPUCCINO MEDIUM PRESS\n");
-            }
-
-            if(obj_cappuccino_double == obj)
-            {
-                printf("CAPPUCCINO DOUBLE PRESS\n");
-            }
-
-            if(obj_milk_hot == obj)
-            {
-                printf("MILK HOT PRESS\n");
-            }
-        }
-    }
-
-    if(LV_EVENT_PRESS_LOST == event)
-    {
-        if(obj_coffee_short == obj)
-        {
-            printf("COFFEE SHORT PRESS LOST\n");
-        }
-
-        if(obj_coffee_medium == obj)
-        {
-            printf("COFFEE MEDIUM PRESS LOST\n");
-        }
-
-        if(obj_coffee_long == obj)
-        {
-            printf("COFFEE LONG PRESS LOST\n");
-        }
-
-        if(obj_coffee_free == obj)
-        {
-            printf("COFFEE FREE PRESS LOST\n");
-        }
-
-        if(true == isCappuccinoEnable)
-        {
-            if(obj_cappuccino_short == obj)
-            {
-                printf("CAPPUCCINO SHORT PRESS LOST\n");
-            }
-
-            if(obj_cappuccino_medium == obj)
-            {
-                printf("CAPPUCCINO MEDIUM PRESS LOST\n");
-            }
-
-            if(obj_cappuccino_double == obj)
-            {
-                printf("CAPPUCCINO DOUBLE PRESS LOST\n");
-            }
-
-            if(obj_milk_hot == obj)
-            {
-                printf("MILK HOT PRESS LOST\n");
-            }
-        }
-    }
-
     if(LV_EVENT_CLICKED == event)
     {
         if(obj_on_off == obj)
@@ -514,21 +449,41 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         if(obj_coffee_short == obj)
         {
             printf("COFFEE SHORT CLICK\n");
+            preparation.desired_prep = COFFEE_SHORT;
+            preparation.tempBoost = isBoostTemp;
+            preparation.foamBoost = isBoostFoam;
+            preparation.isError = false;
+            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj_coffee_medium == obj)
         {
             printf("COFFEE MEDIUM CLICK\n");
+            preparation.desired_prep = COFFEE_MEDIUM;
+            preparation.tempBoost = isBoostTemp;
+            preparation.foamBoost = isBoostFoam;
+            preparation.isError = false;
+            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj_coffee_long == obj)
         {
             printf("COFFEE LONG CLICK\n");
+            preparation.desired_prep = COFFEE_LONG;
+            preparation.tempBoost = isBoostTemp;
+            preparation.foamBoost = isBoostFoam;
+            preparation.isError = false;
+            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj_coffee_free == obj)
         {
             printf("COFFEE FREE CLICK\n");
+            preparation.desired_prep = COFFEE_FREE;
+            preparation.tempBoost = isBoostTemp;
+            preparation.foamBoost = isBoostFoam;
+            preparation.isError = false;
+            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
         if(true == isCappuccinoEnable)
@@ -536,21 +491,41 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
             if(obj_cappuccino_short == obj)
             {
                 printf("CAPPUCCINO SHORT CLICK\n");
+                preparation.desired_prep = CAPPUCCINO_SHORT;
+                preparation.tempBoost = isBoostTemp;
+                preparation.foamBoost = isBoostFoam;
+                preparation.isError = false;
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
 
             if(obj_cappuccino_medium == obj)
             {
                 printf("CAPPUCCINO MEDIUM CLICK\n");
+                preparation.desired_prep = CAPPUCCINO_MEDIUM;
+                preparation.tempBoost = isBoostTemp;
+                preparation.foamBoost = isBoostFoam;
+                preparation.isError = false;
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
 
             if(obj_cappuccino_double == obj)
             {
                 printf("CAPPUCCINO DOUBLE CLICK\n");
+                preparation.desired_prep = CAPPUCCINO_DOUBLE;
+                preparation.tempBoost = isBoostTemp;
+                preparation.foamBoost = isBoostFoam;
+                preparation.isError = false;
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
 
             if(obj_milk_hot == obj)
             {
                 printf("MILK HOT CLICK\n");
+                preparation.desired_prep = HOT_MILK;
+                preparation.tempBoost = isBoostTemp;
+                preparation.foamBoost = isBoostFoam;
+                preparation.isError = false;
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
         }
     }
@@ -562,18 +537,19 @@ static void btn_warning_cb(lv_obj_t *obj, lv_event_t event)
     {
         if(obj_descaling_warn == obj)
         {
-            static const char *btns[] = { "OK", "START", "" };
-            lv_obj_t *msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+            static const char* btns[] = { "OK", "START", "" };
+            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
             lv_msgbox_set_text(msgbox, "DESCALING NEEDED");
             lv_msgbox_add_btns(msgbox, btns);
             lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+            lv_obj_set_event_cb(msgbox, descaling_cb);
         }
 
         if(obj_water_warn == obj)
         {
-            static const char *btns[] = { "OK", "" };
-            lv_obj_t *msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+            static const char* btns[] = { "OK", "" };
+            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
             lv_msgbox_set_text(msgbox, "WATER EMPTY DETECTED");
             lv_msgbox_add_btns(msgbox, btns);
@@ -582,8 +558,8 @@ static void btn_warning_cb(lv_obj_t *obj, lv_event_t event)
 
         if(obj_pod_warn == obj)
         {
-            static const char *btns[] = { "OK", "" };
-            lv_obj_t *msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+            static const char* btns[] = { "OK", "" };
+            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
             lv_msgbox_set_text(msgbox, "POD CONTAINER FULL");
             lv_msgbox_add_btns(msgbox, btns);
@@ -705,6 +681,8 @@ void ui_preparations_enable_cappuccino(bool enable)
 void ui_preparations_set_power(bool on)
 {
     isMachinePowerOn = on;
+    isBoostTemp = false;
+    isBoostFoam = false;
     ui_preparations_update();
 }
 

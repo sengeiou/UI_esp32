@@ -42,10 +42,6 @@ static ui_data_fetch_t img_fetch_list[] = {
     { "S:/coffee/water.bin", &data_water_warning },
     { "S:/coffee/foam_boost.bin", &data_foam_boost },
     { "S:/coffee/temp_boost.bin", &data_temp_boost },
-
-    /* Setting Page */
-    { "S:/UI/app.bin", &data_icon_app },
-    { "S:/UI/about.bin", &data_icon_about },
 };
 
 static void ui_init_internal(void);

@@ -87,13 +87,12 @@ typedef enum
     HOT_MILK
 } prep_t;
 
-// typedef struct {
-//     prep_t desired_prep = NONE;
-//     prep_t running_prep = NONE;
-//     bool tempBoost = false;
-//     bool foamBoost = false;
-//     bool isError = false;
-// } ui_preparation_t;
+typedef struct {
+    prep_t desired_prep;
+    bool tempBoost;
+    bool foamBoost;
+    bool isError;
+} ui_preparation_t;
 
 /**
  * @brief Initialize main UI, including resources loading.
@@ -120,12 +119,13 @@ void ui_show(ui_func_desc_t *ui, ui_show_mode_t mode);
 
 /* UI function defination */
 _UI_FUNC_DEF_(page);
-
-_UI_FUNC_DEF_(about);
-_UI_FUNC_DEF_(app);
-_UI_FUNC_DEF_(setting);
+_UI_FUNC_DEF_(preferences);
 _UI_FUNC_DEF_(preparations);
-
+_UI_FUNC_DEF_(setting);
+_UI_FUNC_DEF_(statistics);
+_UI_FUNC_DEF_(erogation);
+_UI_FUNC_DEF_(descaling);
+// _UI_FUNC_DEF_(wifi);
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.

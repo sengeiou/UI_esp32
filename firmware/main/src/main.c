@@ -16,6 +16,7 @@
 #include "lvgl_port.h"
 #include "lv_port_fs.h"
 
+#define LCD_SIZE_BUFF (LV_HOR_RES_MAX * LV_VER_RES_MAX)
 
 #define LV_TICK_PERIOD_MS 1
 static void lv_tick_task(void *arg)
@@ -38,6 +39,8 @@ void app_main(void)
     
     /* Init LVGL, allocating buffer and create tasks for tick and handler */
     ESP_ERROR_CHECK(lvgl_init(DISP_BUF_SIZE, MALLOC_CAP_DMA));
+    // ESP_ERROR_CHECK(lvgl_init(LCD_SIZE_BUFF/8, MALLOC_CAP_DMA));
+
 
     /* Init LVGL file system API */
     lv_port_fs_init();

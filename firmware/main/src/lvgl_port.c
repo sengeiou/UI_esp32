@@ -66,7 +66,7 @@ void lv_handler_task(void *pvparam)
         lv_task_handler();
         lv_port_sem_give();
 
-        vTaskDelayUntil(&tick, pdMS_TO_TICKS(20));
+        vTaskDelayUntil(&tick, pdMS_TO_TICKS(10));
     }
 }
 
