@@ -7,6 +7,8 @@
 
 #define X_CENTER        110
 #define Y_CENTER        65
+#define Y_OFFSET        20
+
 
 /* UI function declaration */
 ui_func_desc_t ui_preferences_func = {
@@ -37,7 +39,7 @@ void ui_preferences_init(void *data)
     lv_obj_set_style_local_bg_color(obj_page_settings, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
     lv_obj_set_style_local_radius(obj_page_settings, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
     lv_obj_set_style_local_border_width(obj_page_settings, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_page_settings, NULL, LV_ALIGN_CENTER, -X_CENTER, -Y_CENTER);
+    lv_obj_align(obj_page_settings, NULL, LV_ALIGN_CENTER, -X_CENTER, -Y_CENTER +Y_OFFSET);
 
     obj_page_statistics = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_size(obj_page_statistics, BUTTON_X_SIZE, BUTTON_Y_SIZE);
@@ -45,7 +47,7 @@ void ui_preferences_init(void *data)
     lv_obj_set_style_local_bg_color(obj_page_statistics, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
     lv_obj_set_style_local_radius(obj_page_statistics, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
     lv_obj_set_style_local_border_width(obj_page_statistics, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_page_statistics, NULL, LV_ALIGN_CENTER, X_CENTER, -Y_CENTER);
+    lv_obj_align(obj_page_statistics, NULL, LV_ALIGN_CENTER, X_CENTER, -Y_CENTER +Y_OFFSET);
 
     obj_page_factory_reset = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_size(obj_page_factory_reset, BUTTON_X_SIZE, BUTTON_Y_SIZE);
@@ -53,7 +55,7 @@ void ui_preferences_init(void *data)
     lv_obj_set_style_local_bg_color(obj_page_factory_reset, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
     lv_obj_set_style_local_radius(obj_page_factory_reset, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
     lv_obj_set_style_local_border_width(obj_page_factory_reset, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_page_factory_reset, NULL, LV_ALIGN_CENTER, -X_CENTER, Y_CENTER);
+    lv_obj_align(obj_page_factory_reset, NULL, LV_ALIGN_CENTER, -X_CENTER, Y_CENTER +Y_OFFSET);
 
     obj_page_wifi_reset = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_size(obj_page_wifi_reset, BUTTON_X_SIZE, BUTTON_Y_SIZE);
@@ -61,33 +63,29 @@ void ui_preferences_init(void *data)
     lv_obj_set_style_local_bg_color(obj_page_wifi_reset, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
     lv_obj_set_style_local_radius(obj_page_wifi_reset, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
     lv_obj_set_style_local_border_width(obj_page_wifi_reset, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_page_wifi_reset, NULL, LV_ALIGN_CENTER, X_CENTER, Y_CENTER);
+    lv_obj_align(obj_page_wifi_reset, NULL, LV_ALIGN_CENTER, X_CENTER, Y_CENTER +Y_OFFSET);
 
     lv_obj_set_style_local_value_str(obj_page_settings,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "Settings");
     lv_obj_set_style_local_value_font(obj_page_settings, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
     lv_obj_set_style_local_value_align(obj_page_settings,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
-    // lv_obj_set_style_local_value_ofs_y(obj_page_settings,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 30);
     lv_obj_set_style_local_value_color(obj_page_settings,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_settings,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     
     lv_obj_set_style_local_value_str(obj_page_statistics,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "Statistics");
     lv_obj_set_style_local_value_font(obj_page_statistics, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
     lv_obj_set_style_local_value_align(obj_page_statistics,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
-    // lv_obj_set_style_local_value_ofs_y(obj_page_statistics,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 30);
     lv_obj_set_style_local_value_color(obj_page_statistics,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_statistics,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 
     lv_obj_set_style_local_value_str(obj_page_factory_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "Factory\n Reset");
     lv_obj_set_style_local_value_font(obj_page_factory_reset, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
     lv_obj_set_style_local_value_align(obj_page_factory_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
-    // lv_obj_set_style_local_value_ofs_y(obj_page_factory_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 30);
     lv_obj_set_style_local_value_color(obj_page_factory_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_factory_reset,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 
     lv_obj_set_style_local_value_str(obj_page_wifi_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, " Wifi\nReset");
     lv_obj_set_style_local_value_font(obj_page_wifi_reset, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
     lv_obj_set_style_local_value_align(obj_page_wifi_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
-    // lv_obj_set_style_local_value_ofs_y(obj_page_wifi_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 30);
     lv_obj_set_style_local_value_color(obj_page_wifi_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_wifi_reset,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 

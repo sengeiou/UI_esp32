@@ -13,11 +13,13 @@ ui_func_desc_t ui_erogation_func = {
 static lv_obj_t* obj_graph = NULL;
 static lv_obj_t* obj_label = NULL;
 static lv_obj_t* obj_bar = NULL;
+static lv_obj_t* btn_stop = NULL;
+
 static lv_chart_series_t* obj_temp_series = NULL;
 static lv_chart_series_t* obj_pressure_series = NULL;
 
 static int progress = 0;
-
+static bool stop = false;
 static void set_preparation_parameters(void);
 
 
@@ -32,6 +34,7 @@ static void reogation_done_cb(lv_obj_t *obj, lv_event_t event)
         if(0 == lv_msgbox_get_active_btn(obj))
         {
             progress = 0;
+            stop = false;
             lv_chart_clear_serie(obj_graph, obj_temp_series);
             lv_chart_clear_serie(obj_graph, obj_pressure_series);
             lv_chart_set_series_axis(obj_graph, obj_temp_series, LV_CHART_AXIS_PRIMARY_Y);
@@ -39,6 +42,14 @@ static void reogation_done_cb(lv_obj_t *obj, lv_event_t event)
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
             lv_obj_del(obj);
         }
+    }
+}
+
+static void btn_stop_cb(lv_obj_t *obj, lv_event_t event)
+{
+    if(LV_EVENT_CLICKED == event)
+    {
+        stop = true;
     }
 }
 
@@ -50,7 +61,7 @@ void simulator_erogation_task(void* data)
 
     int temperature = 100;
     float pressure = 5.5;
-    while(progress <= dose)
+    while(progress <= dose && false == stop)
     {
         temperature += (rand()%4 -2);
         pressure -= 0.01*(rand()%3);
@@ -162,6 +173,18 @@ void ui_erogation_init(void *data)
     lv_bar_set_range(obj_bar, 0, 100);
     lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
     lv_obj_align(obj_bar, obj_graph, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+
+    btn_stop = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_width(btn_stop, 58);
+    lv_obj_set_style_local_radius(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);
+    lv_obj_set_style_local_bg_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_width(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_value_font(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
+    lv_obj_set_style_local_value_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    lv_obj_set_style_local_value_str(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_STOP);
+    lv_obj_align(btn_stop, NULL, LV_ALIGN_IN_TOP_RIGHT, 2, 2);
+    lv_obj_set_event_cb(btn_stop, btn_stop_cb);
 }
 
 void ui_erogation_show(void *data)
@@ -175,8 +198,9 @@ void ui_erogation_show(void *data)
         lv_obj_set_hidden(obj_label, false);
         lv_obj_set_hidden(obj_graph, false);
         lv_obj_set_hidden(obj_bar, false);
+        lv_obj_set_hidden(btn_stop, false);
     }
-
+    ui_status_bar_show(false);
     isErogationPageActive = true;
     xTaskCreate(simulator_erogation_task, "Erogation Simulator Task", 4*1024, NULL, 5, NULL);
 }
@@ -185,8 +209,14 @@ void ui_erogation_hide(void *data)
 {
     (void)data;
 
-    lv_obj_set_hidden(obj_label, true);
-    lv_obj_set_hidden(obj_graph, true);
-    lv_obj_set_hidden(obj_bar, true);
+    if(NULL != obj_label)
+    {
+        lv_obj_set_hidden(obj_label, true);
+        lv_obj_set_hidden(obj_graph, true);
+        lv_obj_set_hidden(obj_bar, true);
+        lv_obj_set_hidden(btn_stop, true);
+    }
+
+    ui_status_bar_show(true);
     isErogationPageActive = false;
 }

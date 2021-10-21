@@ -19,34 +19,34 @@ void ui_status_bar_init(void)
 {
     status_bar = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_hidden(status_bar, true);
-    lv_obj_set_size(status_bar, 480, 40);
+    lv_obj_set_size(status_bar, 480, 60);
     lv_obj_set_style_local_bg_color(status_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_radius(status_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_set_style_local_border_width(status_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_align(status_bar, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
 
-    btn_setting = lv_btn_create(status_bar, NULL);
+    btn_setting = lv_obj_create(status_bar, NULL);
     lv_obj_set_style_local_radius(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);
-    lv_obj_set_width(btn_setting, 38);
+    lv_obj_set_width(btn_setting, 58);
     lv_obj_set_style_local_bg_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_set_style_local_value_font(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &font_bar_symbol);
+    lv_obj_set_style_local_value_font(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
     lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_SETTINGS);
-    lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_EXTRA_SETTING_SOLID);
+    lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_SETTINGS);
     lv_obj_align(btn_setting, status_bar, LV_ALIGN_IN_RIGHT_MID, -15, 0);
     lv_obj_set_event_cb(btn_setting, btn_cb);
 
-    btn_wifi = lv_btn_create(status_bar, NULL);
-    lv_obj_set_width(btn_wifi, 38);
-    // lv_obj_set_click(btn_wifi, false);
+    btn_wifi = lv_obj_create(status_bar, NULL);
+    lv_obj_set_width(btn_wifi, 58);
     lv_obj_set_style_local_radius(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);
     lv_obj_set_style_local_bg_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_value_font(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &font_bar_symbol);
-    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_value_str(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_EXTRA_WIFI_SLASH);
+    lv_obj_set_style_local_border_width(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_value_font(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
+    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_value_str(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_WIFI);
     lv_obj_align(btn_wifi, status_bar, LV_ALIGN_IN_LEFT_MID, 15, 0);
     lv_obj_set_event_cb(btn_wifi, btn_cb);
 
@@ -94,6 +94,12 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
                 static bool state = false;
 
                 state = !state;
+
+                if(state)
+                    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+                else
+                    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+
                 ui_preparations_enable_cappuccino(state);
             }
             return;
