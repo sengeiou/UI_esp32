@@ -3,9 +3,8 @@
 #include "lvgl_port.h"
 #include "esp_log.h"
 
-static const char *TAG = "ui_main";
+#define LOG_TAG "UI_MAIN"
 
-#define LOG_TRACE(...)  ESP_LOGD(TAG, ##__VA_ARGS__)
 
 void* data_on_off = NULL;
 void* data_short_coffee = NULL;
@@ -152,7 +151,7 @@ void ui_laod_resource(const char *path, void **dst)
     /* Try to open file */
     if (LV_FS_RES_OK != lv_fs_open(&file_img, path, LV_FS_MODE_RD))
     {
-        ESP_LOGE(TAG, "Can't open file : %s", path);
+        ESP_LOGE(LOG_TAG, "Can't open file : %s", path);
         return;
     }
 
@@ -210,11 +209,11 @@ static esp_err_t ui_call_stack_push(ui_func_desc_t *func)
     {
         memcpy(&call_stack[call_stack_index], func, sizeof(call_stack_type_t));
         call_stack_index++;
-        LOG_TRACE("Send : %s", func->name);
+        ESP_LOGD(LOG_TAG, "Send : %s", func->name);
     }
     else
     {
-        ESP_LOGE(TAG, "Call stack full");
+        ESP_LOGE(LOG_TAG, "Call stack full");
         return ESP_ERR_NO_MEM;
     }
 
@@ -233,11 +232,11 @@ static esp_err_t ui_call_stack_pop(ui_func_desc_t *func)
     {
         call_stack_index--;
         memcpy(func, &call_stack[call_stack_index], sizeof(call_stack_type_t));
-        LOG_TRACE("Recieve : %s", func->name);
+        ESP_LOGD(LOG_TAG, "Recieve : %s", func->name);
     }
     else
     {
-        ESP_LOGE(TAG, "Call queue empty");
+        ESP_LOGE(LOG_TAG, "Call queue empty");
         return ESP_FAIL;
     }
     
@@ -255,11 +254,11 @@ static esp_err_t ui_call_stack_peek(ui_func_desc_t *func)
     if(0 != call_stack_index)
     {
         memcpy(func, &call_stack[call_stack_index - 1], sizeof(call_stack_type_t));
-        LOG_TRACE("Peek : %s", func->name);
+        ESP_LOGD(LOG_TAG, "Peek : %s", func->name);
     }
     else
     {
-        ESP_LOGE(TAG, "Call queue empty");
+        ESP_LOGE(LOG_TAG, "Call queue empty");
         return ESP_FAIL;
     }
 
@@ -279,7 +278,7 @@ static esp_err_t ui_call_stack_clear(void)
     {
         call_stack_index--;
         memcpy(&func, &call_stack[call_stack_index], sizeof(call_stack_type_t));
-        LOG_TRACE("Clear : %s", func.name);
+        ESP_LOGD(LOG_TAG, "Clear : %s", func.name);
     }
 
     call_stack_index = 0;

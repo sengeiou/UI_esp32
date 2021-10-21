@@ -1,6 +1,8 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 
+#define LOG_TAG "UI_DESC"
+
 /* UI function declaration */
 ui_func_desc_t ui_descaling_func = {
     .name = "ui_descaling",

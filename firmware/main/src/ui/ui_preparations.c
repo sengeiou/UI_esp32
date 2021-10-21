@@ -13,6 +13,8 @@
 
 ui_preparation_t    preparation;
 
+#define LOG_TAG "UI_PREP"
+
 /* UI function declaration */
 ui_func_desc_t ui_preparations_func = {
     .name = "ui_preparations",
@@ -420,14 +422,14 @@ static void descaling_cb(lv_obj_t *obj, lv_event_t event)
     {
         if(0 == lv_msgbox_get_active_btn(obj))
         {
-            printf("Descaling abort\n");
+            ESP_LOGI(LOG_TAG, "Descaling abort");
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
             lv_obj_del(obj);
         }
 
         if(1 == lv_msgbox_get_active_btn(obj))
         {
-            printf("Descaling start\n");
+            ESP_LOGI(LOG_TAG, "Descaling start");
             ui_show(&ui_descaling_func, UI_SHOW_OVERRIDE);
             lv_obj_del(obj);
         }
@@ -440,14 +442,14 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
     {
         if(obj_on_off == obj)
         {
-            printf("MachinePowerOn\n");
+            ESP_LOGI(LOG_TAG, "MachinePowerOn");
             isMachinePowerOn = !isMachinePowerOn;
             ui_preparations_set_power(isMachinePowerOn);
         }
 
         if(obj_coffee_short == obj)
         {
-            printf("COFFEE SHORT CLICK\n");
+            ESP_LOGI(LOG_TAG, "COFFEE SHORT CLICK");
             preparation.desired_prep = COFFEE_SHORT;
             preparation.tempBoost = isBoostTemp;
             preparation.foamBoost = isBoostFoam;
@@ -457,7 +459,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 
         if(obj_coffee_medium == obj)
         {
-            printf("COFFEE MEDIUM CLICK\n");
+            ESP_LOGI(LOG_TAG, "COFFEE MEDIUM CLICK");
             preparation.desired_prep = COFFEE_MEDIUM;
             preparation.tempBoost = isBoostTemp;
             preparation.foamBoost = isBoostFoam;
@@ -467,7 +469,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 
         if(obj_coffee_long == obj)
         {
-            printf("COFFEE LONG CLICK\n");
+            ESP_LOGI(LOG_TAG, "COFFEE LONG CLICK");
             preparation.desired_prep = COFFEE_LONG;
             preparation.tempBoost = isBoostTemp;
             preparation.foamBoost = isBoostFoam;
@@ -477,7 +479,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 
         if(obj_coffee_free == obj)
         {
-            printf("COFFEE FREE CLICK\n");
+            ESP_LOGI(LOG_TAG, "COFFEE FREE CLICK");
             preparation.desired_prep = COFFEE_FREE;
             preparation.tempBoost = isBoostTemp;
             preparation.foamBoost = isBoostFoam;
@@ -489,7 +491,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             if(obj_cappuccino_short == obj)
             {
-                printf("CAPPUCCINO SHORT CLICK\n");
+                ESP_LOGI(LOG_TAG, "CAPPUCCINO SHORT CLICK");
                 preparation.desired_prep = CAPPUCCINO_SHORT;
                 preparation.tempBoost = isBoostTemp;
                 preparation.foamBoost = isBoostFoam;
@@ -499,7 +501,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 
             if(obj_cappuccino_medium == obj)
             {
-                printf("CAPPUCCINO MEDIUM CLICK\n");
+                ESP_LOGI(LOG_TAG, "CAPPUCCINO MEDIUM CLICK");
                 preparation.desired_prep = CAPPUCCINO_MEDIUM;
                 preparation.tempBoost = isBoostTemp;
                 preparation.foamBoost = isBoostFoam;
@@ -509,7 +511,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 
             if(obj_cappuccino_double == obj)
             {
-                printf("CAPPUCCINO DOUBLE CLICK\n");
+                ESP_LOGI(LOG_TAG, "CAPPUCCINO DOUBLE CLICK");
                 preparation.desired_prep = CAPPUCCINO_DOUBLE;
                 preparation.tempBoost = isBoostTemp;
                 preparation.foamBoost = isBoostFoam;
@@ -519,7 +521,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 
             if(obj_milk_hot == obj)
             {
-                printf("MILK HOT CLICK\n");
+                ESP_LOGI(LOG_TAG, "MILK HOT CLICK");
                 preparation.desired_prep = HOT_MILK;
                 preparation.tempBoost = isBoostTemp;
                 preparation.foamBoost = isBoostFoam;
@@ -574,14 +576,14 @@ static void btn_boost_cb(lv_obj_t *obj, lv_event_t event)
         if(obj_temp_boost == obj)
         {
             isBoostTemp = !isBoostTemp;
-            printf("TEMPERATURE BOOST %d\n", isBoostTemp);
+            ESP_LOGI(LOG_TAG, "TEMPERATURE BOOST %s", isBoostTemp ? "ACTIVE" : "DISABLED");
             lv_obj_set_style_local_image_recolor(img_temp_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, (isBoostTemp) ? LV_COLOR_WHITE : LV_COLOR_GRAY);
         }
 
         if(obj_foam_boost == obj)
         {
             isBoostFoam = !isBoostFoam;
-            printf("FOAM BOOST %d\n", isBoostFoam);
+            ESP_LOGI(LOG_TAG, "FOAM BOOST %s", isBoostFoam ? "ACTIVE" : "DISABLED");
             lv_obj_set_style_local_image_recolor(img_foam_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, (isBoostFoam) ? LV_COLOR_WHITE : LV_COLOR_GRAY);
         }
     }
@@ -688,7 +690,7 @@ void ui_preparations_set_power(bool on)
 
 void ui_preparations_set_warning(bool descaling, bool pod_full, bool water_empty)
 {
-    printf("Warning UPDATE\n");
+    ESP_LOGI(LOG_TAG, "Warning UPDATE");
     bool isToUpdate = false;
     if(isWarningDescaling != descaling)
     {
@@ -708,7 +710,7 @@ void ui_preparations_set_warning(bool descaling, bool pod_full, bool water_empty
 
     if(true == isToUpdate)
     {
-        printf("Warning UPDATE\n");
+        ESP_LOGI(LOG_TAG, "Warning UPDATE");
         lv_obj_set_click(obj_descaling_warn, isWarningDescaling);
         lv_obj_set_click(obj_water_warn, isWarningWater);
         lv_obj_set_click(obj_pod_warn, isWarningPod);

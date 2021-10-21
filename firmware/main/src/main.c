@@ -39,7 +39,6 @@ void app_main(void)
     
     /* Init LVGL, allocating buffer and create tasks for tick and handler */
     ESP_ERROR_CHECK(lvgl_init(DISP_BUF_SIZE, MALLOC_CAP_DMA));
-    // ESP_ERROR_CHECK(lvgl_init(LCD_SIZE_BUFF/8, MALLOC_CAP_DMA));
 
 
     /* Init LVGL file system API */
@@ -50,7 +49,8 @@ void app_main(void)
 
     #if LOG_MEM_INFO
     static char buffer[128];    /* Make sure buffer is enough for `sprintf` */
-    while (1) {
+    while (1)
+    {
         sprintf(buffer, "   Biggest /     Free /    Total\n"
             "\t DRAM : [%8d / %8d / %8d]\n"
             "\tPSRAM : [%8d / %8d / %8d]",

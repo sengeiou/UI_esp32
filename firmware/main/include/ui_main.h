@@ -1,8 +1,8 @@
 #pragma once
 
 #include "lvgl.h"
-
-#include "lv_symbol_extra_def.h"
+#include "esp_log.h"
+// #include "lv_symbol_extra_def.h"
 
 #define _UI_SCALE_X_(x) ( (int) (6*x/10) )
 #define _UI_SCALE_Y_(y) ( (int) (2*y/3) )

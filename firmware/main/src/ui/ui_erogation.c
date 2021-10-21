@@ -1,6 +1,8 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 
+#define LOG_TAG "UI_EROG"
+
 /* UI function declaration */
 ui_func_desc_t ui_erogation_func = {
     .name = "ui_erogation",

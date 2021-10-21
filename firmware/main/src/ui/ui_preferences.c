@@ -9,6 +9,7 @@
 #define Y_CENTER        65
 #define Y_OFFSET        20
 
+#define LOG_TAG "UI_PREF"
 
 /* UI function declaration */
 ui_func_desc_t ui_preferences_func = {
@@ -143,7 +144,7 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
 
         if(obj == obj_page_factory_reset)
         {
-            printf("FACTORY RESET\n");
+            ESP_LOGI(LOG_TAG, "FACTORY RESET");
             static const char* btns[] = { "CANCEL", "CONFIRM", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
@@ -154,7 +155,7 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
 
         if(obj == obj_page_wifi_reset)
         {
-            printf("WIFI RESET\n");
+            ESP_LOGI(LOG_TAG, "WIFI RESET");
             static const char* btns[] = { "CANCEL", "CONFIRM", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);

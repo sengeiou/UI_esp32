@@ -1,6 +1,8 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 
+#define LOG_TAG "UI_SETT"
+
 /* UI function declaration */
 ui_func_desc_t ui_setting_func = {
     .name = "ui_setting",
@@ -154,48 +156,53 @@ void ui_setting_hide(void *data)
 // /* ******************************** Event Handler(s) ******************************** */
 static void slider_cb(lv_obj_t* obj, lv_event_t event)
 {
-    if(event == LV_EVENT_VALUE_CHANGED)
+    if(event == LV_EVENT_VALUE_CHANGED || event == LV_EVENT_RELEASED)
     {
         char buf[64];
 
         if(obj == obj_slider_dose_coffee_short)
         {
             int dose = lv_slider_get_value(obj_slider_dose_coffee_short);
-            printf("DOSE COFFEE SHORT Value: %d\n", dose);
             sprintf(buf, "Short Coffee dose [pulses]: %d", dose);
             lv_label_set_text(obj_label_dose_coffee_short, buf);
+            if(event == LV_EVENT_RELEASED)
+                ESP_LOGI(LOG_TAG, "DOSE COFFEE SHORT Value: %d", dose);
         }
 
         if(obj == obj_slider_dose_coffee_medium)
         {
             int dose = lv_slider_get_value(obj_slider_dose_coffee_medium);
-            printf("DOSE COFFEE MEDIUM Value: %d\n", dose);
             sprintf(buf, "Medium Coffee dose [pulses]: %d", dose);
             lv_label_set_text(obj_label_dose_coffee_medium, buf);
+            if(event == LV_EVENT_RELEASED)
+                ESP_LOGI(LOG_TAG, "DOSE COFFEE MEDIUM Value: %d", dose);
         }
 
         if(obj == obj_slider_dose_coffee_long)
         {
             int dose = lv_slider_get_value(obj_slider_dose_coffee_long);
-            printf("DOSE COFFEE LONG Value: %d\n", dose);
             sprintf(buf, "Long Coffee dose [pulses]: %d", dose);
             lv_label_set_text(obj_label_dose_coffee_long, buf);
+            if(event == LV_EVENT_RELEASED)
+                ESP_LOGI(LOG_TAG, "DOSE COFFEE LONG Value: %d", dose);
         }
         
         if(obj == obj_slider_dose_cappuccino)
         {
             int dose = lv_slider_get_value(obj_slider_dose_cappuccino);
-            printf("DOSE CAPPUCCINO Value: %d\n", dose);
             sprintf(buf, "Cappuccino dose [pulses]: %d", dose);
             lv_label_set_text(obj_label_dose_cappuccino, buf);
+            if(event == LV_EVENT_RELEASED)
+                ESP_LOGI(LOG_TAG, "DOSE CAPPUCCINO Value: %d", dose);
         }
 
         if(obj == obj_slider_standby_time)
         {
             int time = lv_slider_get_value(obj_slider_standby_time);
-            printf("STANDBY TIME Value: %d\n", time);
             sprintf(buf, "Standby time [min]: %d", time);
             lv_label_set_text(obj_label_standby_time, buf);
+            if(event == LV_EVENT_RELEASED)
+                ESP_LOGI(LOG_TAG, "STANDBY TIME Value: %d", time);
         }
     }
 }
