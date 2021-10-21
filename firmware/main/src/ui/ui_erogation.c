@@ -37,7 +37,7 @@ void simulator_erogation_task(void* data)
     while(progress <= dose)
     {
         temperature += (rand()%4 -2);
-        pressure -= 0.02*(rand()%2);
+        pressure -= 0.01*(rand()%3);
         lv_bar_set_value(obj_bar, 100*progress/dose, LV_ANIM_ON);
         obj_temp_series->points[progress] = temperature;
         obj_pressure_series->points[progress] = pressure;
@@ -99,6 +99,9 @@ static void set_preparation_parameters(void)
             break;
     }
     lv_obj_align(obj_label, obj_graph, LV_ALIGN_OUT_TOP_MID, 0, -20);
+    lv_chart_set_point_count(obj_graph, dose+1);
+    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_PRIMARY_Y, 0,  130);
+    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_SECONDARY_Y, 2,  8);
 }
 
 void ui_erogation_init(void *data)
@@ -114,17 +117,16 @@ void ui_erogation_init(void *data)
     lv_obj_align(obj_graph, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_chart_set_type(obj_graph, LV_CHART_TYPE_LINE);
     lv_chart_set_point_count(obj_graph, 500);
-    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_PRIMARY_Y, 0,  130);
-    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_SECONDARY_Y, 0,  10);
-
-    obj_temp_series = lv_chart_add_series(obj_graph, LV_COLOR_RED);
-    obj_pressure_series = lv_chart_add_series(obj_graph, LV_COLOR_BLUE);
+    lv_chart_set_update_mode(obj_graph, LV_CHART_UPDATE_MODE_SHIFT);
 
     /*Add a faded are effect*/
     lv_obj_set_style_local_bg_opa(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, LV_OPA_50); /*Max. opa.*/
     lv_obj_set_style_local_bg_grad_dir(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, LV_GRAD_DIR_VER);
     lv_obj_set_style_local_bg_main_stop(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, 255);    /*Max opa on the top*/
     lv_obj_set_style_local_bg_grad_stop(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, 0);      /*Transparent on the bottom*/
+
+    obj_temp_series = lv_chart_add_series(obj_graph, LV_COLOR_RED);
+    obj_pressure_series = lv_chart_add_series(obj_graph, LV_COLOR_BLUE);
 
     obj_label = lv_label_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);

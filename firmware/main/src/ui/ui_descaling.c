@@ -66,9 +66,11 @@ void ui_descaling_init(void *data)
     lv_obj_set_style_local_bg_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_label, 400, 100);
-    lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_40);
+    lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_bold_48);
     lv_label_set_text(obj_label, "Descaling in progress...");
+    lv_label_set_align(obj_label, LV_LABEL_ALIGN_CENTER);
     lv_obj_align(obj_label, NULL, LV_ALIGN_CENTER, 0, -80);
+    lv_obj_set_auto_realign(obj_label, true);
 
     obj_bar = lv_bar_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(obj_bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);

@@ -103,7 +103,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_on_off, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_on_off, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_on_off, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_on_off, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER -130);
+    lv_obj_align(obj_on_off, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER -120);
 
     img_on_off = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_on_off, data_on_off);
