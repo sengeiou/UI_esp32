@@ -10,10 +10,23 @@ extern bool isPreferencesPageActive;
 extern bool isSettingsPageActive;
 extern bool isStatisticsPageActive;
 extern bool isErogationPageActive;
-// extern bool isWifiPageActive;
+extern bool isWifiPageActive;
+
+static bool isWifiEnabled = false;
 
 /* Static function forward declaration */
 static void btn_cb(lv_obj_t *obj, lv_event_t event);
+
+
+void ui_status_bar_update_wifi_status(bool active)
+{
+    isWifiEnabled = active;
+
+    if(isWifiEnabled)
+        lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+    else
+        lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+}
 
 void ui_status_bar_init(void)
 {
@@ -32,7 +45,7 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_border_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_set_style_local_value_font(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
-    lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_SETTINGS);
     lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_SETTINGS);
     lv_obj_align(btn_setting, status_bar, LV_ALIGN_IN_RIGHT_MID, -15, 0);
@@ -71,15 +84,24 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         if(btn_setting == obj)
         {
             if(true == isPreferencesPageActive)
+            {
+                lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
                 ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+            }
             else if(true == isSettingsPageActive || true == isStatisticsPageActive)
+            {
+                lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
                 ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
+            }
             else if(true == isErogationPageActive)
             {
-                //Do nothing;
+                lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
             }
             else
+            {
+                lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
                 ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
+            }
 
             return;
         }
@@ -91,16 +113,23 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
                 false == isStatisticsPageActive &&
                 false == isErogationPageActive)
             {
-                static bool state = false;
+                {   //HACK to be removed
+                    static bool state = false;
+                    state = !state;
 
-                state = !state;
+                    ui_preparations_enable_cappuccino(state);
+                }
 
-                if(state)
-                    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+                if(true == isWifiPageActive)
+                {
+                    ui_status_bar_update_wifi_status(isWifiEnabled);   
+                    ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+                }
                 else
-                    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-
-                ui_preparations_enable_cappuccino(state);
+                {
+                    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+                    ui_show(&ui_wifi_func, UI_SHOW_OVERRIDE);
+                }
             }
             return;
         }

@@ -19,7 +19,7 @@ void ui_page_init(void *data)
 
     /* Set object's attributes */
     lv_obj_set_click(page, false);
-    lv_obj_set_size(page, _UI_SCALE_X_(750), _UI_SCALE_Y_(380));
+    lv_obj_set_size(page, 480, 320);
 
     /* Set object's style */
     lv_obj_set_style_local_radius(page, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 20);
@@ -44,7 +44,7 @@ void ui_page_init(void *data)
     lv_obj_align(btn_back, NULL, LV_ALIGN_IN_TOP_LEFT, 10, 5);
 
     lv_obj_t* bar_div = lv_bar_create(page, NULL);
-    lv_obj_set_size(bar_div, _UI_SCALE_X_(750), 2);
+    lv_obj_set_size(bar_div, 480, 2);
     lv_obj_set_style_local_bg_color(bar_div, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_THEME);
     lv_obj_align(bar_div, NULL, LV_ALIGN_IN_TOP_MID, 0 , 60);
 

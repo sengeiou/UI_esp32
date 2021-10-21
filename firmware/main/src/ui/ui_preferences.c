@@ -31,6 +31,20 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event);
 
 bool isPreferencesPageActive = false;
 
+static void wifi_reset_cb(lv_obj_t *obj, lv_event_t event)
+{
+    if(LV_EVENT_VALUE_CHANGED == event)
+    {
+        if(1 == lv_msgbox_get_active_btn(obj))
+        {
+            ui_status_bar_update_wifi_status(false);
+        }
+
+        ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
+        lv_obj_del(obj);
+    }
+}
+
 void ui_preferences_init(void *data)
 {
     (void)data;
@@ -161,6 +175,7 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
             lv_msgbox_set_text(msgbox, "Wifi reset?");
             lv_msgbox_add_btns(msgbox, btns);
+            lv_obj_set_event_cb(msgbox, wifi_reset_cb);
             lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
         }
     }

@@ -2,10 +2,7 @@
 
 #include "lvgl.h"
 #include "esp_log.h"
-// #include "lv_symbol_extra_def.h"
 
-#define _UI_SCALE_X_(x) ( (int) (6*x/10) )
-#define _UI_SCALE_Y_(y) ( (int) (2*y/3) )
 
 #define COLOR_THEME LV_COLOR_BLACK
 #define COLOR_DEEP  lv_color_make(246, 174, 61)
@@ -31,7 +28,6 @@ typedef enum {
 typedef enum {
     status_bar_item_wifi = 0,
     status_bar_item_settings,
-    status_bar_item_little_time,
     status_bar_item_max,
 } status_bar_item_t;
 
@@ -40,16 +36,6 @@ typedef enum {
     UI_SHOW_PEDDING,        /* Show UI and add it behind call queue's tail */
     UI_SHOW_BACKPORT,       /* Show UI in previous call queue */
 } ui_show_mode_t;
-
-typedef enum {
-    ui_clock_item_temp = 0,
-    ui_clock_item_humid,
-    ui_clock_item_weather,
-    ui_clock_item_weather_code,
-    ui_clock_item_uv,
-    ui_clock_item_aqi,
-    ui_clock_item_aqi_level,
-} ui_clock_item_t;
 
 typedef enum {
     ui_preprations_item_coffee_short = 0,
@@ -125,7 +111,7 @@ _UI_FUNC_DEF_(setting);
 _UI_FUNC_DEF_(statistics);
 _UI_FUNC_DEF_(erogation);
 _UI_FUNC_DEF_(descaling);
-// _UI_FUNC_DEF_(wifi);
+_UI_FUNC_DEF_(wifi);
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.
@@ -148,26 +134,12 @@ void ui_status_bar_show(bool show);
 lv_obj_t *ui_page_get_obj(void);
 
 /**
- * @brief Set clock page item text.
- * 
- * @param item Item to set. See `ui_clock_item_t`.
- * @param text Text to show or parse.
- */
-void ui_clock_set_item_val(ui_clock_item_t item, const char *text);
-
-/**
  * @brief Set preparations page item text.
  * 
  * @param item Item to set. See `ui_preprations_item_t`.
  * @param text Text to show or parse.
  */
 void ui_preparations_set_item_val(ui_preprations_item_t item, const char *text);
-
-/**
- * @brief Update weather information of clock page. Call it when weather data is updated.
- * 
- */
-void ui_clock_update(void);
 
 /**
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.
@@ -193,6 +165,12 @@ void ui_preparations_set_power(bool on);
  */
 void ui_preparations_set_warning(bool descaling, bool pod_full, bool water_empty);
 
+
+/**
+ * @brief Update the wifi status.
+ * 
+ */
+void ui_status_bar_update_wifi_status(bool active);
 
 #ifdef __cplusplus
 }

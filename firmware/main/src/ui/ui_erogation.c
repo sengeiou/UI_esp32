@@ -29,7 +29,7 @@ extern ui_preparation_t preparation;
 static int dose;
 bool isErogationPageActive = false;
 
-static void reogation_done_cb(lv_obj_t *obj, lv_event_t event)
+static void erogation_done_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_VALUE_CHANGED == event)
     {
@@ -83,7 +83,7 @@ void simulator_erogation_task(void* data)
     lv_msgbox_set_text(msgbox, "Your drink\nis ready!");
     lv_msgbox_add_btns(msgbox, btns);
     lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_event_cb(msgbox, reogation_done_cb);
+    lv_obj_set_event_cb(msgbox, erogation_done_cb);
 
     vTaskDelete(NULL);
 }
