@@ -117,7 +117,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_descaling_warn, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER -45);
+    lv_obj_align(obj_descaling_warn, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER -50 +10);
 
     img_descaling_warn = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_descaling_warn, data_descaling_warning);
@@ -131,7 +131,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_water_warn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_water_warn, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER);
+    lv_obj_align(obj_water_warn, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER +10);
 
     img_water_warn = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_water_warn, data_water_warning);
@@ -145,7 +145,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_pod_warn, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER +45);
+    lv_obj_align(obj_pod_warn, NULL, LV_ALIGN_CENTER, 0, RAD_Y_CENTER +50 +10);
 
     img_pod_warn = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_pod_warn, data_pod_warning);
@@ -159,7 +159,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_temp_boost, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_temp_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_temp_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_temp_boost, NULL, LV_ALIGN_CENTER, 0 -50, RAD_Y_CENTER +130);
+    lv_obj_align(obj_temp_boost, NULL, LV_ALIGN_CENTER, 0 -50, RAD_Y_CENTER +120);
 
     img_temp_boost = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_temp_boost, data_temp_boost);
@@ -173,7 +173,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_foam_boost, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_foam_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
     lv_obj_set_style_local_border_width(obj_foam_boost, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_foam_boost, NULL, LV_ALIGN_CENTER, 0 +50, RAD_Y_CENTER +130);
+    lv_obj_align(obj_foam_boost, NULL, LV_ALIGN_CENTER, 0 +50, RAD_Y_CENTER +120);
 
     img_foam_boost = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(img_foam_boost, data_foam_boost);
@@ -308,6 +308,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_event_cb(obj_temp_boost, btn_boost_cb);
     lv_obj_set_event_cb(obj_foam_boost, btn_boost_cb);
 
+    ui_status_bar_show(isMachinePowerOn);
     ui_preparations_update();
 
     ui_preparations_state = ui_state_show;
@@ -368,8 +369,6 @@ void ui_preparations_show(void *data)
         
         ui_preparations_state = ui_state_show;
     }
-
-    //ui_status_bar_time_show(true);
 }
 
 void ui_preparations_hide(void *data)
@@ -683,6 +682,7 @@ void ui_preparations_set_power(bool on)
     isMachinePowerOn = on;
     isBoostTemp = false;
     isBoostFoam = false;
+    ui_status_bar_show(on);
     ui_preparations_update();
 }
 

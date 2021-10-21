@@ -2,11 +2,11 @@
 #include "lvgl_port.h"
 
 
-#define BUTTON_X_SIZE     160
+#define BUTTON_X_SIZE     200
 #define BUTTON_Y_SIZE     110
 
-#define X_CENTER        90
-#define Y_CENTER        60
+#define X_CENTER        110
+#define Y_CENTER        65
 
 /* UI function declaration */
 ui_func_desc_t ui_preferences_func = {
@@ -110,8 +110,6 @@ void ui_preferences_show(void *data)
         lv_obj_set_hidden(obj_page_factory_reset, false);
         lv_obj_set_hidden(obj_page_wifi_reset, false);
     }
-
-    ui_status_bar_time_show(false);
     isPreferencesPageActive = true;
 }
 
