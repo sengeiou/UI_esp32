@@ -134,19 +134,11 @@ _UI_FUNC_DEF_(descaling);
 void ui_status_bar_init(void);
 
 /**
- * @brief Show or hide time on status bar.
+ * @brief Show or hide status bar.
  * 
  * @param show True if show.
  */
-void ui_status_bar_time_show(bool show);
-
-/**
- * @brief Set text of status bar.
- * 
- * @param item Type of item. See defination at `status_bar_item_t`.
- * @param text Text of item.
- */
-void ui_status_bar_set_item_text(status_bar_item_t item, const char *text);
+void ui_status_bar_show(bool show);
 
 /**
  * @brief Get page object used as container.
