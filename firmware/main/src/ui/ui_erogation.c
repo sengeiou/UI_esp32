@@ -25,6 +25,22 @@ extern ui_preparation_t preparation;
 static int dose;
 bool isErogationPageActive = false;
 
+static void reogation_done_cb(lv_obj_t *obj, lv_event_t event)
+{
+    if(LV_EVENT_VALUE_CHANGED == event)
+    {
+        if(0 == lv_msgbox_get_active_btn(obj))
+        {
+            progress = 0;
+            lv_chart_clear_serie(obj_graph, obj_temp_series);
+            lv_chart_clear_serie(obj_graph, obj_pressure_series);
+            lv_chart_set_series_axis(obj_graph, obj_temp_series, LV_CHART_AXIS_PRIMARY_Y);
+            lv_chart_set_series_axis(obj_graph, obj_pressure_series, LV_CHART_AXIS_SECONDARY_Y);
+            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+            lv_obj_del(obj);
+        }
+    }
+}
 
 void simulator_erogation_task(void* data)
 {
@@ -46,15 +62,16 @@ void simulator_erogation_task(void* data)
         vTaskDelay(10);
     }
 
-    vTaskDelay(300);
+    vTaskDelay(20);
 
-    progress = 0;
-    lv_chart_clear_serie(obj_graph, obj_temp_series);
-    lv_chart_clear_serie(obj_graph, obj_pressure_series);
-    lv_chart_set_series_axis(obj_graph, obj_temp_series, LV_CHART_AXIS_PRIMARY_Y);
-    lv_chart_set_series_axis(obj_graph, obj_pressure_series, LV_CHART_AXIS_SECONDARY_Y);
+    static const char* btns[] = { "OK", "" };
+    lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+    lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+    lv_msgbox_set_text(msgbox, "Your drink\nis ready!");
+    lv_msgbox_add_btns(msgbox, btns);
+    lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_event_cb(msgbox, reogation_done_cb);
 
-    ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
     vTaskDelete(NULL);
 }
 
@@ -100,8 +117,6 @@ static void set_preparation_parameters(void)
     }
     lv_obj_align(obj_label, obj_graph, LV_ALIGN_OUT_TOP_MID, 0, -20);
     lv_chart_set_point_count(obj_graph, dose+1);
-    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_PRIMARY_Y, 0,  130);
-    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_SECONDARY_Y, 2,  8);
 }
 
 void ui_erogation_init(void *data)
@@ -116,17 +131,20 @@ void ui_erogation_init(void *data)
     lv_obj_set_style_local_border_width(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_align(obj_graph, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_chart_set_type(obj_graph, LV_CHART_TYPE_LINE);
-    lv_chart_set_point_count(obj_graph, 500);
+    lv_chart_set_point_count(obj_graph, 400);
     lv_chart_set_update_mode(obj_graph, LV_CHART_UPDATE_MODE_SHIFT);
 
     /*Add a faded are effect*/
     lv_obj_set_style_local_bg_opa(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, LV_OPA_50); /*Max. opa.*/
     lv_obj_set_style_local_bg_grad_dir(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, LV_GRAD_DIR_VER);
     lv_obj_set_style_local_bg_main_stop(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, 255);    /*Max opa on the top*/
-    lv_obj_set_style_local_bg_grad_stop(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, 0);      /*Transparent on the bottom*/
+    lv_obj_set_style_local_bg_grad_stop(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, 0);      /*Transparent on the bottom*/   
 
     obj_temp_series = lv_chart_add_series(obj_graph, LV_COLOR_RED);
     obj_pressure_series = lv_chart_add_series(obj_graph, LV_COLOR_BLUE);
+
+    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_PRIMARY_Y, 0,  130);
+    lv_chart_set_y_range(obj_graph, LV_CHART_AXIS_SECONDARY_Y, 2,  8);
 
     obj_label = lv_label_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);
