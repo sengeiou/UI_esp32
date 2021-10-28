@@ -6,9 +6,10 @@ idf_component_register(
         "lv_fonts"
         "lv_lib_qrcode"
     INCLUDE_DIRS
-        "include"
+        "inc"
+        "inc/gui"
         "lv_lib_qrcode")
 
 component_compile_definitions(ADVANCED_DEBUG)
 
-#spiffs_create_partition_image(storage ../spiffs FLASH_IN_PROJECT)
+spiffs_create_partition_image(storage ../spiffs FLASH_IN_PROJECT)
