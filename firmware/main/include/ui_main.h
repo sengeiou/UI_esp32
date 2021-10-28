@@ -159,7 +159,7 @@ void ui_preparations_set_power(bool on);
  * @brief Update machine warning (descaling, pod full and water empty).
  * 
  */
-void ui_preparations_set_warning(bool descaling, bool pod_full, bool water_empty);
+void ui_status_bar_set_warning(bool descaling, bool pod_full, bool water_empty);
 
 
 /**

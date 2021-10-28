@@ -138,7 +138,7 @@ void ui_main(void)
     ui_call_stack_push(&ui_standby_func);
     lv_port_sem_give();
 
-    ui_preparations_set_warning(true, true, true);
+    ui_status_bar_set_warning(true, true, true);
 }
 
 void ui_laod_resource(const char *path, void **dst)

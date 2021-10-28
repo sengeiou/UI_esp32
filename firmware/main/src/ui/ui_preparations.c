@@ -400,8 +400,3 @@ void ui_preparations_set_power(bool on)
     if(false == isMachinePowerOn)
         ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
 }
-
-void ui_preparations_set_warning(bool descaling, bool pod_full, bool water_empty)
-{
-    ESP_LOGI(LOG_TAG, "Warning UPDATE");
-}
