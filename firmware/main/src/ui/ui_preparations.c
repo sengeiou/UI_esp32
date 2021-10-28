@@ -53,17 +53,7 @@ static bool isCappuccinoEnable = false;
 static bool isMachinePowerOn = false;
 static uint8_t lastTabActive = 0;
 
-/* Standby simulator */
-static esp_timer_handle_t poweron_timer;
-static void poweron_timer_task(void *arg)
-{
-    (void) arg;
-
-    ESP_LOGI(LOG_TAG, "Timer elapsed. Go to standby...");
-    ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
-}
-
-// /* Extern image variable(s) */
+/* Extern image variable(s) */
 extern void* data_short_coffee;
 extern void* data_medium_coffee;
 extern void* data_long_coffee;
@@ -222,12 +212,6 @@ void ui_preparations_init(void *data)
     ui_status_bar_show(true);
     lv_obj_set_event_cb(obj_tabview, tabview_cb);
 
-    const esp_timer_create_args_t poweron_timer_args = {
-        .callback = &poweron_timer_task,
-        .name = "periodic_timer_poweron"
-    };
-    ESP_ERROR_CHECK(esp_timer_create(&poweron_timer_args, &poweron_timer));
-
     ui_preparations_state = ui_state_show;
 }
 
@@ -258,14 +242,11 @@ void ui_preparations_show(void *data)
     lv_obj_set_style_local_image_recolor(img_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_tabview_set_tab_act(obj_tabview, lastTabActive, LV_ANIM_OFF);
-
-    ESP_ERROR_CHECK(esp_timer_start_periodic(poweron_timer, 60*1000*1000)); //1 minute
 }
 
 void ui_preparations_hide(void *data)
 {
     lastTabActive = lv_tabview_get_tab_act(obj_tabview);
-    ESP_ERROR_CHECK(esp_timer_stop(poweron_timer));
     if(ui_state_show == ui_preparations_state)
     {
         if(NULL != obj_tabview)
@@ -319,11 +300,6 @@ static void btn_coffee_cb(lv_obj_t *obj, lv_event_t event)
 
         if(obj_coffee_free == obj)
             lv_obj_set_style_local_image_recolor(img_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    }
-
-    if(LV_EVENT_LONG_PRESSED == event)
-    {
-        printf("LONG PRESS\n");
     }
 
     if(LV_EVENT_CLICKED == event)
