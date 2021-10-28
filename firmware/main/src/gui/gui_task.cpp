@@ -25,8 +25,17 @@ static void lv_tick_task(void *arg)
     lv_tick_inc(LV_TICK_PERIOD_MS);
 }
 
-static void ui_main_task(void* data)
+void gui_task(void* data)
 {
+    /* Create and start a periodic timer interrupt to call lv_tick_inc */
+    const esp_timer_create_args_t periodic_timer_args = {
+        .callback = &lv_tick_task,
+        .name = "periodic_gui"
+    };
+    esp_timer_handle_t periodic_timer;
+    ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
+    ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, LV_TICK_PERIOD_MS * 1000));
+
     /* Init LVGL, allocating buffer and create tasks for tick and handler */
     ESP_ERROR_CHECK(lvgl_init(DISP_BUF_SIZE, MALLOC_CAP_DMA));
 
@@ -57,19 +66,4 @@ static void ui_main_task(void* data)
     #endif
     
     vTaskDelete(NULL);
-}
-
-
-void app_main(void)
-{
-    /* Create and start a periodic timer interrupt to call lv_tick_inc */
-    const esp_timer_create_args_t periodic_timer_args = {
-        .callback = &lv_tick_task,
-        .name = "periodic_gui"
-    };
-    esp_timer_handle_t periodic_timer;
-    ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
-    ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, LV_TICK_PERIOD_MS * 1000));
-
-    xTaskCreate(ui_main_task, "UI MAIN TASK", 16*1024, NULL, 5, NULL);
 }
