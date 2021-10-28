@@ -124,6 +124,10 @@ static void set_preparation_parameters(void)
             lv_label_set_text(obj_label, "HOT MILK");
             dose = 150;
             break;
+        case COLD_MILK:
+            lv_label_set_text(obj_label, "COLD MILK");
+            dose = 150;
+            break;
         case NONE:
         default:
             break;

@@ -51,6 +51,17 @@ static lv_obj_t* obj_tabCappuccino = NULL;
 
 static bool isCappuccinoEnable = false;
 static bool isMachinePowerOn = false;
+static uint8_t lastTabActive = 0;
+
+/* Standby simulator */
+static esp_timer_handle_t poweron_timer;
+static void poweron_timer_task(void *arg)
+{
+    (void) arg;
+
+    ESP_LOGI(LOG_TAG, "Timer elapsed. Go to standby...");
+    ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
+}
 
 // /* Extern image variable(s) */
 extern void* data_short_coffee;
@@ -67,10 +78,33 @@ static void btn_coffee_cb(lv_obj_t* obj, lv_event_t event);
 static void btn_cappuccino_cb(lv_obj_t* obj, lv_event_t event);
 static void tabview_cb(lv_obj_t* obj, lv_event_t event);
 
+
+void configure_button_style(lv_obj_t* obj)
+{
+    lv_obj_set_size(obj, 180, 100);
+    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
+    lv_obj_set_style_local_radius(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
+    lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
+    lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, 4);
+    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+}
+
+void configure_image_style(lv_obj_t* obj, const void* src)
+{
+    lv_img_set_src(obj, src);
+    lv_img_set_zoom(obj, 170);
+    lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_PRESSED, LV_OPA_100);
+    lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+}
+
 void ui_preparations_init(void *data)
 {
     (void)data;
-    isCappuccinoEnable = false;
+    isCappuccinoEnable = true;
 
     /* Preparation page */
     obj_tabview = lv_tabview_create(lv_scr_act(), NULL);
@@ -111,124 +145,68 @@ void ui_preparations_init(void *data)
     lv_page_set_scroll_propagation(obj_tabCappuccino, false);
 
     obj_coffee_short = lv_obj_create(obj_tabCoffee, NULL);
-    lv_obj_set_size(obj_coffee_short, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_coffee_short);
     lv_obj_align(obj_coffee_short, NULL, LV_ALIGN_IN_TOP_LEFT, 20, 20);
 
     img_coffee_short = lv_img_create(obj_coffee_short, NULL);
-    lv_img_set_src(img_coffee_short, data_short_coffee);
-    lv_img_set_zoom(img_coffee_short, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_coffee_short, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_coffee_short, data_short_coffee);
     lv_obj_align(img_coffee_short, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_coffee_long = lv_obj_create(obj_tabCoffee, NULL);
-    lv_obj_set_size(obj_coffee_long, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_coffee_long);
     lv_obj_align(obj_coffee_long, NULL, LV_ALIGN_IN_TOP_RIGHT, -20, 20);
 
     img_coffee_long = lv_img_create(obj_coffee_long, NULL);
-    lv_img_set_src(img_coffee_long, data_long_coffee);
-    lv_img_set_zoom(img_coffee_long, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_coffee_long, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_coffee_long, data_long_coffee);
     lv_obj_align(img_coffee_long, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_coffee_medium = lv_obj_create(obj_tabCoffee, NULL);
-    lv_obj_set_size(obj_coffee_medium, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_coffee_medium);
     lv_obj_align(obj_coffee_medium, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 20, -20);
 
     img_coffee_medium = lv_img_create(obj_coffee_medium, NULL);
-    lv_img_set_src(img_coffee_medium, data_medium_coffee);
-    lv_img_set_zoom(img_coffee_medium, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_coffee_medium, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_coffee_medium, data_medium_coffee);
     lv_obj_align(img_coffee_medium, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_coffee_free = lv_obj_create(obj_tabCoffee, NULL);
-    lv_obj_set_size(obj_coffee_free, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_coffee_free);
     lv_obj_align(obj_coffee_free, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -20, -20);
 
     img_coffee_free = lv_img_create(obj_coffee_free, NULL);
-    lv_img_set_src(img_coffee_free, data_free_coffee);
-    lv_img_set_zoom(img_coffee_free, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_coffee_free, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_coffee_free, data_free_coffee);
     lv_obj_align(img_coffee_free, NULL, LV_ALIGN_CENTER, 0, 0);
 
 
     obj_cappuccino_short = lv_obj_create(obj_tabCappuccino, NULL);
-    lv_obj_set_size(obj_cappuccino_short, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_cappuccino_short);
     lv_obj_align(obj_cappuccino_short, NULL, LV_ALIGN_IN_TOP_LEFT, 20, 20);
 
     img_cappuccino_short = lv_img_create(obj_cappuccino_short, NULL);
-    lv_img_set_src(img_cappuccino_short, data_short_cappuccino);
-    lv_img_set_zoom(img_cappuccino_short, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_cappuccino_short, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_cappuccino_short, data_short_cappuccino);
     lv_obj_align(img_cappuccino_short, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_cappuccino_double = lv_obj_create(obj_tabCappuccino, NULL);
-    lv_obj_set_size(obj_cappuccino_double, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_cappuccino_double);
     lv_obj_align(obj_cappuccino_double, NULL, LV_ALIGN_IN_TOP_RIGHT, -20, 20);
 
     img_cappuccino_double = lv_img_create(obj_cappuccino_double, NULL);
-    lv_img_set_src(img_cappuccino_double, data_double_cappuccino);
-    lv_img_set_zoom(img_cappuccino_double, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_cappuccino_double, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_cappuccino_double, data_double_cappuccino);
     lv_obj_align(img_cappuccino_double, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_cappuccino_medium = lv_obj_create(obj_tabCappuccino, NULL);
-    lv_obj_set_size(obj_cappuccino_medium, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_cappuccino_medium);
     lv_obj_align(obj_cappuccino_medium, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 20, -20);
 
     img_cappuccino_medium = lv_img_create(obj_cappuccino_medium, NULL);
-    lv_img_set_src(img_cappuccino_medium, data_medium_cappuccino);
-    lv_img_set_zoom(img_cappuccino_medium, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_cappuccino_medium, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_cappuccino_medium, data_medium_cappuccino);
     lv_obj_align(img_cappuccino_medium, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_milk_hot = lv_obj_create(obj_tabCappuccino, NULL);
-    lv_obj_set_size(obj_milk_hot, 180, 100);
-    lv_obj_set_style_local_bg_color(obj_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, ROUNDER);
-    lv_obj_set_style_local_border_width(obj_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 2);
-    lv_obj_set_style_local_border_color(obj_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    configure_button_style(obj_milk_hot);
     lv_obj_align(obj_milk_hot, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -20, -20);
 
     img_milk_hot = lv_img_create(obj_milk_hot, NULL);
-    lv_img_set_src(img_milk_hot, data_hot_milk);
-    lv_img_set_zoom(img_milk_hot, 170);
-    lv_obj_set_style_local_image_recolor_opa(img_milk_hot, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    configure_image_style(img_milk_hot, data_hot_milk);
     lv_obj_align(img_milk_hot, NULL, LV_ALIGN_CENTER, 0, 0);
 
     lv_obj_set_event_cb(obj_coffee_short, btn_coffee_cb);
@@ -244,7 +222,11 @@ void ui_preparations_init(void *data)
     ui_status_bar_show(true);
     lv_obj_set_event_cb(obj_tabview, tabview_cb);
 
-    lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
+    const esp_timer_create_args_t poweron_timer_args = {
+        .callback = &poweron_timer_task,
+        .name = "periodic_timer_poweron"
+    };
+    ESP_ERROR_CHECK(esp_timer_create(&poweron_timer_args, &poweron_timer));
 
     ui_preparations_state = ui_state_show;
 }
@@ -266,10 +248,24 @@ void ui_preparations_show(void *data)
 
         ui_preparations_state = ui_state_show;
     }
+
+    lv_obj_set_style_local_image_recolor(img_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor(img_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor(img_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor(img_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor(img_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor(img_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor(img_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_tabview_set_tab_act(obj_tabview, lastTabActive, LV_ANIM_OFF);
+
+    ESP_ERROR_CHECK(esp_timer_start_periodic(poweron_timer, 60*1000*1000)); //1 minute
 }
 
 void ui_preparations_hide(void *data)
 {
+    lastTabActive = lv_tabview_get_tab_act(obj_tabview);
+    ESP_ERROR_CHECK(esp_timer_stop(poweron_timer));
     if(ui_state_show == ui_preparations_state)
     {
         if(NULL != obj_tabview)
@@ -310,6 +306,26 @@ static void tabview_cb(lv_obj_t* obj, lv_event_t event)
 
 static void btn_coffee_cb(lv_obj_t *obj, lv_event_t event)
 {
+    if(LV_EVENT_FOCUSED == event)
+    {
+        if(obj_coffee_short == obj)
+            lv_obj_set_style_local_image_recolor(img_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+
+        if(obj_coffee_medium == obj)
+            lv_obj_set_style_local_image_recolor(img_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+
+        if(obj_coffee_long == obj)
+            lv_obj_set_style_local_image_recolor(img_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+
+        if(obj_coffee_free == obj)
+            lv_obj_set_style_local_image_recolor(img_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    }
+
+    if(LV_EVENT_LONG_PRESSED == event)
+    {
+        printf("LONG PRESS\n");
+    }
+
     if(LV_EVENT_CLICKED == event)
     {
         if(obj_coffee_short == obj)
@@ -348,8 +364,34 @@ static void btn_coffee_cb(lv_obj_t *obj, lv_event_t event)
 
 static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
 {
+    static bool milkCold = false;
     if(true == isCappuccinoEnable)
     {
+        if(LV_EVENT_FOCUSED == event)
+        {
+            if(obj_cappuccino_short == obj)
+                lv_obj_set_style_local_image_recolor(img_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+
+            if(obj_cappuccino_medium == obj)
+                lv_obj_set_style_local_image_recolor(img_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+
+            if(obj_cappuccino_double == obj)
+                lv_obj_set_style_local_image_recolor(img_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+
+            if(obj_milk_hot == obj)
+                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+        }
+
+        if(LV_EVENT_LONG_PRESSED == event)
+        {
+            if(obj_milk_hot == obj)
+            {
+                lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLUE);
+                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+                milkCold = true;
+            }
+        }
+
         if(LV_EVENT_CLICKED == event)
         {
             if(obj_cappuccino_short == obj)
@@ -378,8 +420,18 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
 
             if(obj_milk_hot == obj)
             {
-                ESP_LOGI(LOG_TAG, "MILK HOT CLICK");
-                preparation.desired_prep = HOT_MILK;
+                lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+                if(false == milkCold)
+                {
+                    ESP_LOGI(LOG_TAG, "MILK HOT CLICK");
+                    preparation.desired_prep = HOT_MILK;
+                }
+                else
+                {
+                    ESP_LOGI(LOG_TAG, "MILK COLD CLICK");
+                    preparation.desired_prep = COLD_MILK;
+                }
+                milkCold = false;
                 preparation.isError = false;
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }

@@ -70,7 +70,8 @@ typedef enum
     CAPPUCCINO_SHORT,
     CAPPUCCINO_MEDIUM,
     CAPPUCCINO_DOUBLE,
-    HOT_MILK
+    HOT_MILK,
+    COLD_MILK
 } prep_t;
 
 typedef struct {
