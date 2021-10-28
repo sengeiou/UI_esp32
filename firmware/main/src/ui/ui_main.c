@@ -27,7 +27,6 @@ void* data_icon_about = NULL;
 /* Resources loading list */
 static ui_data_fetch_t img_fetch_list[] = {
     /* Preparation Page */
-    { "S:/coffee/on_off.bin", &data_on_off },
     { "S:/coffee/short_coffee.bin", &data_short_coffee },
     { "S:/coffee/medium_coffee.bin", &data_medium_coffee },
     { "S:/coffee/long_coffee.bin", &data_long_coffee },
@@ -39,8 +38,6 @@ static ui_data_fetch_t img_fetch_list[] = {
     { "S:/coffee/descaling.bin", &data_descaling_warning },
     { "S:/coffee/pod.bin", &data_pod_warning },
     { "S:/coffee/water.bin", &data_water_warning },
-    { "S:/coffee/foam_boost.bin", &data_foam_boost },
-    { "S:/coffee/temp_boost.bin", &data_temp_boost },
 };
 
 static void ui_init_internal(void);
