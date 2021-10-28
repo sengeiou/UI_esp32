@@ -265,7 +265,6 @@ static void tabview_cb(lv_obj_t* obj, lv_event_t event)
     if(LV_EVENT_VALUE_CHANGED == event)
     {
         uint16_t id = lv_tabview_get_tab_act(obj_tabview);
-        printf("TAB CHANGED: active %d\n", id);
         switch(id)
         {
             case 0:
