@@ -93,7 +93,7 @@ static char f_path[256];
  **********************/
 esp_err_t lv_port_fs_init(void)
 {
-    ESP_LOGI(TAG, "Initializing SPIFFS as demo assets storage.");
+    ESP_LOGI(TAG, "Initializing SPIFFS as assets storage");
 
     esp_vfs_spiffs_conf_t conf = {
       .base_path = LV_FS_PATH_PREFIX,
