@@ -112,6 +112,8 @@ _UI_FUNC_DEF_(statistics);
 _UI_FUNC_DEF_(erogation);
 _UI_FUNC_DEF_(descaling);
 _UI_FUNC_DEF_(wifi);
+_UI_FUNC_DEF_(full_cleaning);
+_UI_FUNC_DEF_(fast_cleaning);
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.
