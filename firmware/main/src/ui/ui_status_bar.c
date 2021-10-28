@@ -29,7 +29,7 @@ static bool isWifiEnabled = false;
 static bool isWarningDescaling = false;
 static bool isWarningPod = false;
 static bool isWarningWater = false;
-
+static bool isPopupOpened = false;
 
 /* Extern image variable(s) */
 extern void* data_descaling_warning;
@@ -39,7 +39,8 @@ extern void* data_pod_warning;
 /* Static function forward declaration */
 static void btn_cb(lv_obj_t *obj, lv_event_t event);
 static void btn_warning_cb(lv_obj_t *obj, lv_event_t event);
-static void descaling_cb(lv_obj_t *obj, lv_event_t event);
+static void descaling_popup_cb(lv_obj_t *obj, lv_event_t event);
+static void basic_popup_cb(lv_obj_t* obj, lv_event_t event);
 
 void ui_status_bar_set_warning(bool descaling, bool pod_full, bool water_empty)
 {
@@ -238,40 +239,48 @@ static void btn_warning_cb(lv_obj_t* obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
-        if(btn_descaling == obj)
+        if(false == isPopupOpened)
         {
-            static const char* btns[] = { "OK", "START", "" };
-            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
-            lv_msgbox_set_text(msgbox, "DESCALING NEEDED");
-            lv_msgbox_add_btns(msgbox, btns);
-            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
-            lv_obj_set_event_cb(msgbox, descaling_cb);
-        }
+            if(btn_descaling == obj)
+            {
+                static const char* btns[] = { "OK", "START", "" };
+                lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_msgbox_set_text(msgbox, "A desclaing cycle is needed");
+                lv_msgbox_add_btns(msgbox, btns);
+                lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+                lv_obj_set_event_cb(msgbox, descaling_popup_cb);
+                isPopupOpened = true;
+            }
 
-        if(btn_water == obj)
-        {
-            static const char* btns[] = { "OK", "" };
-            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
-            lv_msgbox_set_text(msgbox, "WATER EMPTY DETECTED");
-            lv_msgbox_add_btns(msgbox, btns);
-            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
-        }
+            if(btn_water == obj)
+            {
+                static const char* btns[] = { "OK", "" };
+                lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_msgbox_set_text(msgbox, "Water is empty");
+                lv_msgbox_add_btns(msgbox, btns);
+                lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+                lv_obj_set_event_cb(msgbox, basic_popup_cb);
+                isPopupOpened = true;
+            }
 
-        if(btn_pod == obj)
-        {
-            static const char* btns[] = { "OK", "" };
-            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
-            lv_msgbox_set_text(msgbox, "POD CONTAINER FULL");
-            lv_msgbox_add_btns(msgbox, btns);
-            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+            if(btn_pod == obj)
+            {
+                static const char* btns[] = { "OK", "" };
+                lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_msgbox_set_text(msgbox, "Pod container is full");
+                lv_msgbox_add_btns(msgbox, btns);
+                lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+                lv_obj_set_event_cb(msgbox, basic_popup_cb);
+                isPopupOpened = true;
+            }
         }
     }
 }
 
-static void descaling_cb(lv_obj_t* obj, lv_event_t event)
+static void descaling_popup_cb(lv_obj_t* obj, lv_event_t event)
 {
     if(LV_EVENT_VALUE_CHANGED == event)
     {
@@ -280,6 +289,7 @@ static void descaling_cb(lv_obj_t* obj, lv_event_t event)
             ESP_LOGI(LOG_TAG, "Descaling abort");
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
             lv_obj_del(obj);
+            isPopupOpened = false;
         }
 
         if(1 == lv_msgbox_get_active_btn(obj))
@@ -287,6 +297,20 @@ static void descaling_cb(lv_obj_t* obj, lv_event_t event)
             ESP_LOGI(LOG_TAG, "Descaling start");
             ui_show(&ui_descaling_func, UI_SHOW_OVERRIDE);
             lv_obj_del(obj);
+            isPopupOpened = false;
+        }
+    }
+}
+
+static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
+{
+    if(LV_EVENT_VALUE_CHANGED == event)
+    {
+        if(0 == lv_msgbox_get_active_btn(obj))
+        {
+            ESP_LOGI(LOG_TAG, "Popup closed");
+            lv_obj_del(obj);
+            isPopupOpened = false;
         }
     }
 }
