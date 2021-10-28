@@ -131,7 +131,7 @@ void ui_preparations_init(void *data)
 
     obj_tabCoffee = lv_tabview_add_tab(obj_tabview, "C\nO\nF\nF\nE\nE");
     lv_page_set_scroll_propagation(obj_tabCoffee, false);
-    obj_tabCappuccino = lv_tabview_add_tab(obj_tabview, "C\nA\nP\nP\nS");
+    obj_tabCappuccino = lv_tabview_add_tab(obj_tabview, "M\nI\nL\nK");
     lv_page_set_scroll_propagation(obj_tabCappuccino, false);
 
     obj_coffee_short = lv_obj_create(obj_tabCoffee, NULL);
