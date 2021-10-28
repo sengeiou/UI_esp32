@@ -2,7 +2,7 @@
 
 #include "lvgl.h"
 #include "esp_log.h"
-
+#include "types.h"
 
 #define COLOR_THEME LV_COLOR_BLACK
 #define COLOR_DEEP  lv_color_make(246, 174, 61)
@@ -60,24 +60,9 @@ typedef struct {
     void (*hide)(void *);   /* hide function pointer */
 } ui_func_desc_t;
 
-typedef enum
-{
-    NONE = 0,
-    COFFEE_SHORT,
-    COFFEE_MEDIUM,
-    COFFEE_LONG,
-    COFFEE_FREE,
-    CAPPUCCINO_SHORT,
-    CAPPUCCINO_MEDIUM,
-    CAPPUCCINO_DOUBLE,
-    HOT_MILK,
-    COLD_MILK
-} prep_t;
 
 typedef struct {
-    prep_t desired_prep;
-    bool tempBoost;
-    bool foamBoost;
+    coffee_type_t desired_prep;
     bool isError;
 } ui_preparation_t;
 

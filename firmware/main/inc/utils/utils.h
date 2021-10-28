@@ -15,6 +15,9 @@
 #include "esp_flash_encrypt.h"
 #include "esp_efuse_table.h"
 
+#include <sys/time.h>
+
+
 void get_time_from_sntp(bool& sync);
 
 namespace utils::time

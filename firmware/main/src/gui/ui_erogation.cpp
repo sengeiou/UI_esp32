@@ -128,7 +128,7 @@ static void set_preparation_parameters(void)
             lv_label_set_text(obj_label, "COLD MILK");
             dose = 150;
             break;
-        case NONE:
+        case COFFEE_NONE:
         default:
             break;
     }

@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ui_main.h"
 #include "sys_check.h"
 #include "lvgl_port.h"
@@ -191,7 +195,7 @@ static volatile size_t call_stack_index = 0;
 static void ui_init_internal(void)
 {
     assert(call_stack_size);
-    call_stack = heap_caps_malloc(call_stack_size * sizeof(ui_func_desc_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+    call_stack = (ui_func_desc_t*)heap_caps_malloc(call_stack_size * sizeof(ui_func_desc_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
 }
 
 /**
@@ -315,3 +319,7 @@ void ui_show(ui_func_desc_t *ui, ui_show_mode_t mode)
         }
     }
 }
+
+#ifdef __cplusplus
+} // closing brace for extern "C"
+#endif

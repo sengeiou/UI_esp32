@@ -203,6 +203,7 @@ void main_task(void* p)
 extern "C" void app_main(void)
 {   
     init_firmware();
+
     start_tasks();
 
     utils::system::start_thread_core(&main_task, &xHandleMainTask, "main_task", 1024*6, 5, 0);

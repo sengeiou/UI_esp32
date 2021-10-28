@@ -1,5 +1,8 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
+#include "variables.h"
+
+
 
 /* UI function declaration */
 ui_func_desc_t ui_wifi_func = {
@@ -58,6 +61,11 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
     {
         if(obj_btn_save == obj)
         {
+            strcpy(machineConnectivity.ssid, lv_textarea_get_text(obj_ssid_area));
+            strcpy(machineConnectivity.password, lv_textarea_get_text(obj_password_area));
+            machineConnectivity.wifiEnabled = true;
+            machineConnectivity.status = WIFI_CONFIGURED;
+            
             ui_status_bar_update_wifi_status(true);
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
             return;
@@ -97,7 +105,6 @@ void ui_wifi_init(void *data)
     lv_obj_align(obj_btn_save, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -50);
     lv_obj_set_event_cb(obj_btn_save, btn_cb);
 
-
     lv_obj_set_event_cb(obj_ssid_area, ta_event_cb);
     lv_obj_set_event_cb(obj_password_area, ta_event_cb);
     lv_obj_set_event_cb(obj_btn_save, btn_cb);
@@ -114,6 +121,17 @@ void ui_wifi_show(void *data)
         lv_obj_set_hidden(obj_ssid_area, false);
         lv_obj_set_hidden(obj_password_area, false);
         lv_obj_set_hidden(obj_btn_save, false);
+    }
+
+    if(machineConnectivity.status >= WIFI_CONFIGURED)
+    {
+        lv_textarea_set_text(obj_ssid_area, machineConnectivity.ssid);
+        lv_textarea_set_text(obj_password_area, machineConnectivity.password);
+    }
+    else
+    {
+        lv_textarea_set_text(obj_ssid_area, "ssid");
+        lv_textarea_set_text(obj_password_area, "password");
     }
     isWifiPageActive = true;
 }

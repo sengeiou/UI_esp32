@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string>
 #include "esp_err.h"
 #include "driver/gpio.h"
 #include "version.h"
@@ -58,9 +57,17 @@ static const char* cloud_command_string[] = {
 };
 
 #define FOREACH_COFFEE_TYPE(COFFEE_TYPE) \
-        COFFEE_TYPE(COFFEE_NONE)   \
-		COFFEE_TYPE(COFFEE_SHORT)   \
-        COFFEE_TYPE(COFFEE_LONG)  
+        COFFEE_TYPE(COFFEE_NONE)        \
+		COFFEE_TYPE(COFFEE_SHORT)       \
+        COFFEE_TYPE(COFFEE_MEDIUM)      \
+        COFFEE_TYPE(COFFEE_LONG)        \
+        COFFEE_TYPE(COFFEE_FREE)        \
+        COFFEE_TYPE(CAPPUCCINO_SHORT)   \
+        COFFEE_TYPE(CAPPUCCINO_MEDIUM)  \
+        COFFEE_TYPE(CAPPUCCINO_DOUBLE)  \
+        COFFEE_TYPE(HOT_MILK)           \
+        COFFEE_TYPE(COLD_MILK)
+
 
 enum coffee_type_t {
     FOREACH_COFFEE_TYPE(GENERATE_ENUM)

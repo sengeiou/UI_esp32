@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ui_main.h"
 #include "lvgl_port.h"
 
@@ -85,3 +89,7 @@ static void btn_back_cb(lv_obj_t *obj, lv_event_t event)
         ui_show(NULL, UI_SHOW_BACKPORT);
     }
 }
+
+#ifdef __cplusplus
+} // closing brace for extern "C"
+#endif
