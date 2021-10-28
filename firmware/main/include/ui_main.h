@@ -114,6 +114,8 @@ _UI_FUNC_DEF_(descaling);
 _UI_FUNC_DEF_(wifi);
 _UI_FUNC_DEF_(full_cleaning);
 _UI_FUNC_DEF_(fast_cleaning);
+_UI_FUNC_DEF_(standby);
+
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.
@@ -134,14 +136,6 @@ void ui_status_bar_show(bool show);
  * @return lv_obj_t* object pointer of page. NULL if not initialized.
  */
 lv_obj_t *ui_page_get_obj(void);
-
-/**
- * @brief Set preparations page item text.
- * 
- * @param item Item to set. See `ui_preprations_item_t`.
- * @param text Text to show or parse.
- */
-void ui_preparations_set_item_val(ui_preprations_item_t item, const char *text);
 
 /**
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.

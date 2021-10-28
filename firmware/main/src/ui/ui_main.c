@@ -134,8 +134,8 @@ void ui_main(void)
     /* Entering main UI */
     lv_port_sem_take();
     ui_status_bar_init();
-    ui_preparations_show(NULL);
-    ui_call_stack_push(&ui_preparations_func);
+    ui_standby_show(NULL);
+    ui_call_stack_push(&ui_standby_func);
     lv_port_sem_give();
 
     ui_preparations_set_warning(true, true, true);

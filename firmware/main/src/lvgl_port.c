@@ -135,7 +135,7 @@ esp_err_t lvgl_init(size_t buffer_pix_size, uint32_t buffer_caps)
         if (pdPASS != xTaskCreate(
             (TaskFunction_t)        lv_handler_task,
             (const char * const)    "LVGL Handler Task",
-            (const uint32_t)        4 * 1024,
+            (const uint32_t)        16 * 1024,
             (void * const)          NULL,
             (UBaseType_t)           configMAX_PRIORITIES - 3,
             (TaskHandle_t * const)  NULL)) {

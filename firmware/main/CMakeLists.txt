@@ -4,8 +4,10 @@ idf_component_register(
         "icon"
         "src/ui"
         "lv_fonts"
+        "lv_lib_qrcode"
     INCLUDE_DIRS
-        "include")
+        "include"
+        "lv_lib_qrcode")
 
 component_compile_definitions(ADVANCED_DEBUG)
 

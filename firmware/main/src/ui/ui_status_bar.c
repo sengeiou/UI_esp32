@@ -11,6 +11,8 @@ extern bool isSettingsPageActive;
 extern bool isStatisticsPageActive;
 extern bool isErogationPageActive;
 extern bool isWifiPageActive;
+extern bool isDescalingPageActive;
+extern bool isCleaningPageActive;
 
 static bool isWifiEnabled = false;
 
@@ -93,7 +95,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
                 lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
                 ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
             }
-            else if(true == isErogationPageActive)
+            else if(true == isErogationPageActive || true == isDescalingPageActive || true == isCleaningPageActive)
             {
                 lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
             }

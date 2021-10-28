@@ -411,11 +411,6 @@ void ui_preparations_hide(void *data)
     }
 }
 
-void ui_preparations_set_item_val(ui_preprations_item_t item, const char *text)
-{
-   
-}
-
 static void descaling_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_VALUE_CHANGED == event)
@@ -685,7 +680,9 @@ void ui_preparations_set_power(bool on)
     isBoostTemp = false;
     isBoostFoam = false;
     ui_status_bar_show(on);
-    ui_preparations_update();
+
+    if(false == isMachinePowerOn)
+        ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
 }
 
 void ui_preparations_set_warning(bool descaling, bool pod_full, bool water_empty)
