@@ -3,8 +3,8 @@
 cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+set(EXTRA_COMPONENT_DIRS "../esp-azure/port" "../components")
 
-set(EXTRA_COMPONENT_DIRS ../components)
 
 set(VERSION_MAJOR_REGEX "[\t]*#define[ \t]+VERSION_MAJOR[ \t]+[\"]?([0-9]+)[\"]?")
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/main/inc/version.h" VERSION_MAJOR REGEX ${VERSION_MAJOR_REGEX})

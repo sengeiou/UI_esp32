@@ -1,0 +1,162 @@
+menu "UI Firmware"
+    menu "Debug UART Configuration"
+        choice DBG_UART_INTERFACE
+            prompt "DBG UART Interface"
+            default DBG_UART_INTERFACE_2
+            help
+                Choose the UART interface between 0, 1 and 2 (not available for sleep mode) to communicate with the Module.
+    
+            config DBG_UART_INTERFACE_0
+                bool "UART 0"
+            config DBG_UART_INTERFACE_1
+                bool "UART 1"
+            config DBG_UART_INTERFACE_2
+                bool "UART 2"
+        endchoice
+
+        config DBG_UART_INTERFACE_NUMBER
+            int
+            default 0 if DBG_UART_INTERFACE_0
+            default 1 if DBG_UART_INTERFACE_1
+            default 2 if DBG_UART_INTERFACE_2
+
+        config DBG_UART_BAUDRATE
+                int "Debug UART Baudrate"
+                default 38400
+                help
+                    This defines the Debug UART baudrate, generally is 38600.
+
+        choice DBG_UART_PARITY
+            prompt "Debug UART parity flag"
+            default DBG_PARITY_NONE
+            help
+                This defines the Debug UART parity flag.
+            config DBG_PARITY_NONE
+                bool "None"
+            config DBG_PARITY_EVEN
+                bool "Even"
+            config DBG_PARITY_ODD
+                bool "Odd"
+        endchoice
+
+        config DBG_UART_PARITY_FLAG
+            int
+            default 0 if DBG_PARITY_NONE
+            default 2 if DBG_PARITY_EVEN
+            default 3 if DBG_PARITY_ODD
+
+        config DBG_UART_TXD
+            int "Debug UART TXD Pin"
+            default 12
+            help
+                The corresponding PIN for Debug UART TX.
+
+        config DBG_UART_RXD
+            int "Debug UART RXD Pin"
+            default 14
+            help
+                The corresponding PIN for Debug UART RX.
+    endmenu
+
+    menu "Azure Configuration"
+        menu "WiFi AP Configuration"
+            config WIFI_AP_SSID_ROOT
+                string "NewRangeOCS_UI"
+                default "Wifi AP Hotspot SSID"
+                help
+                    Root of the SSID (network name) of the machine AP (e.g.: Root-XXXXXX).
+
+            config WIFI_AP_PASSWORD
+                string "WiFi Password"
+                default "Turin1895"
+                help
+                    WiFi AP password (WPA or WPA2) to use.
+                    Can be left blank if the network has no security set.
+        endmenu
+
+        menu "Connection Configuration"
+            choice AZURE_ENVIRONMENT
+                prompt "Azure environment"
+                default AZURE_ENVIRONMENT_TEST
+                help
+                    Different Azure environments
+        
+                config AZURE_ENVIRONMENT_TEST
+                    bool "Test"
+                config AZURE_ENVIRONMENT_PROD
+                        bool "Prod"
+                config AZURE_ENVIRONMENT_PRE_PROD
+                    bool "Pre-Prod"
+                config AZURE_ENVIRONMENT_CUSTOM
+                    bool "Custom"
+            endchoice
+
+            config AZURE_ENVIRONMENT_FLAG
+                int
+                default 0 if AZURE_ENVIRONMENT_CUSTOM
+                default 1 if AZURE_ENVIRONMENT_TEST
+                default 2 if AZURE_ENVIRONMENT_PRE_PROD
+                default 3 if AZURE_ENVIRONMENT_PROD
+
+            choice AZURE_AUTHENTICATION_METHOD
+                prompt "Azure authentication method"
+                default AZURE_AUTHENTICATION_METHOD_X509
+                help
+                    Different Azure authentication methods
+        
+                config AZURE_AUTHENTICATION_METHOD_CONNECTION_STRING
+                    bool "Connection String"
+                config AZURE_AUTHENTICATION_METHOD_X509
+                    bool "Certificates x509"
+                config AZURE_AUTHENTICATION_METHOD_SHARED_ACCESS_KEY
+                    bool "Shared Access Key"
+            endchoice
+
+            config DEVICE_COMMON_NAME
+                string
+                default "deviceCN"
+
+            config DPS_ID_SCOPE
+                string "Azure Device Provisioning Service id scope"
+                depends on (AZURE_ENVIRONMENT_FLAG < 1 && AZURE_AUTHENTICATION_METHOD != AZURE_AUTHENTICATION_METHOD_CONNECTION_STRING)
+                default "dpsScopeId"
+                help
+                    This is the unique ID scope of Device Provisioning Service (DPS), and can be found under "Overview"
+                    section of your DPS on azure IoT portal
+            
+            config AZURE_CONNECTION_STRING
+                string "Azure IotHub Connection String"
+                depends on AZURE_AUTHENTICATION_METHOD_CONNECTION_STRING
+                default "Connection String"
+                help
+                    This is the Connection String used for IotHub authentication
+
+            config AZURE_SHARED_ACCESS_KEY
+                string "Azure DPS Shared Access Key"
+                depends on AZURE_AUTHENTICATION_METHOD_SHARED_ACCESS_KEY
+                default "Shared Access Key"
+                help
+                    This is the Shared Access Key used for DPS authentication
+
+            config AZURE_ENABLE_LOW_LEVEL_DEBUG
+                bool "Advanced Azure debug"
+                default false
+                help
+                    Enable Azure IoT SDK debug
+
+            config AZURE_TIMEOUT_KEEP_ALIVE
+                int "Timeout for KeepAlive in seconds"
+                default 960
+                help
+                    This value set the timeout for IoT HUB keepalive, increase this value to reduce data consumption
+        endmenu
+
+        menu "Over-The-Air updates"
+            config MAX_NUMBER_OF_OTA_RETRY
+                int "Max number of OTA retry"
+                default 5
+                help
+                    The max number of tentative to perform an OTA update.
+        endmenu
+    endmenu 
+endmenu
