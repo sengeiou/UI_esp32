@@ -197,4 +197,20 @@ typedef struct
     azure_queue_payload_t 	payload;
 } azure_queue_message_t;
 
+typedef enum
+{
+    DBG_NONE = 0x00,
+    DBG_ON_OFF = 0x04,
+    DBG_SHORT_COFFEE = 0x05,
+    DBG_MEDIUM_COFFEE = 0x06,
+    DBG_LONG_COFFEE = 0x07,
+    DBG_FREE_COFFEE = 0x08,
+    DBG_SHORT_CAPPUCCINO = 0x11,
+    DBG_MEDIUM_CAPPUCCINO = 0x12,
+    DBG_DOUBLE_CAPPUCCINO = 0x13,
+    DBG_HOT_MILK = 0x14,
+    DBG_COLD_MILK = 0x15
+} dbg_special_func_code_t;
+
+
 #endif // TYPES_H_

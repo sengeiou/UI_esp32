@@ -1,6 +1,7 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 #include "lv_qrcode.h"
+#include "dbg_task.h"
 
 #define LOG_TAG "UI_STANDBY"
 

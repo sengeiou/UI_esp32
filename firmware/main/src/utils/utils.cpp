@@ -22,7 +22,7 @@
 #include <thread>
 #include <chrono>
 
-// #include "dbg_protocol.h"
+#include "dbg_protocol.h"
 #include "sdkconfig.h"
 
 #ifdef ADVANCED_DEBUG
@@ -123,4 +123,5 @@ void firmware_restart(uint8_t delay_sec)
 void init_queue(void)
 {
     xQueueAzureTx = xQueueCreate(5, sizeof(azure_queue_message_t));
+    xQueueDbgUartTx = xQueueCreate(5, DBG_MESSAGE_LENGTH*sizeof(uint8_t));
 }

@@ -1,11 +1,8 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "ui_main.h"
 #include "sys_check.h"
 #include "lvgl_port.h"
 #include "esp_log.h"
+#include "dbg_task.h"
 
 #define LOG_TAG "UI_MAIN"
 
@@ -139,7 +136,9 @@ void ui_main(void)
     ui_call_stack_push(&ui_standby_func);
     lv_port_sem_give();
 
-    ui_status_bar_set_warning(true, true, true);
+    ui_status_bar_set_warning(false, false, false);
+
+    enable_livedata();
 }
 
 void ui_laod_resource(const char *path, void **dst)
@@ -319,7 +318,3 @@ void ui_show(ui_func_desc_t *ui, ui_show_mode_t mode)
         }
     }
 }
-
-#ifdef __cplusplus
-} // closing brace for extern "C"
-#endif

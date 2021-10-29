@@ -1,5 +1,6 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
+#include "dbg_task.h"
 
 #define LOG_TAG "UI_EROG"
 
@@ -24,6 +25,7 @@ static int progress = 0;
 static bool stop = false;
 static void set_preparation_parameters(void);
 
+static dbg_special_func_code_t funcCode;
 
 extern ui_preparation_t preparation;
 static int dose;
@@ -52,14 +54,13 @@ static void btn_stop_cb(lv_obj_t *obj, lv_event_t event)
     if(LV_EVENT_CLICKED == event)
     {
         stop = true;
+        special_function(funcCode);
     }
 }
 
 void simulator_erogation_task(void* data)
 {
     (void)data;
-
-    set_preparation_parameters();
 
     int temperature = 100;
     float pressure = 5.5;
@@ -94,44 +95,54 @@ static void set_preparation_parameters(void)
     {
         case COFFEE_SHORT:
             lv_label_set_text(obj_label, "COFFEE SHORT");
+            funcCode = DBG_SHORT_COFFEE;
             dose = 115;
             break;
         case COFFEE_MEDIUM:
             lv_label_set_text(obj_label, "COFFEE MEDIUM");
+            funcCode = DBG_MEDIUM_COFFEE;
             dose = 150;
             break;
         case COFFEE_LONG:
             lv_label_set_text(obj_label, "COFFEE LONG");
+            funcCode = DBG_LONG_COFFEE;
             dose = 190;
             break;
         case COFFEE_FREE:
             lv_label_set_text(obj_label, "COFFEE FREE");
+            funcCode = DBG_FREE_COFFEE;
             dose = 300;
             break;
         case CAPPUCCINO_SHORT:
             lv_label_set_text(obj_label, "CAPPUCCINO SHORT");
+            funcCode = DBG_SHORT_CAPPUCCINO;
             dose = 115;
             break;
         case CAPPUCCINO_MEDIUM:
             lv_label_set_text(obj_label, "CAPPUCCINO MEDIUM");
+            funcCode = DBG_MEDIUM_CAPPUCCINO;
             dose = 200;
             break;
         case CAPPUCCINO_DOUBLE:
             lv_label_set_text(obj_label, "CAPPUCCINO DOUBLE");
+            funcCode = DBG_DOUBLE_CAPPUCCINO;
             dose = 250;
             break;
         case HOT_MILK:
             lv_label_set_text(obj_label, "HOT MILK");
+            funcCode = DBG_HOT_MILK;
             dose = 150;
             break;
         case COLD_MILK:
             lv_label_set_text(obj_label, "COLD MILK");
+            funcCode = DBG_COLD_MILK;
             dose = 150;
             break;
         case COFFEE_NONE:
         default:
             break;
     }
+    special_function(funcCode);
     lv_obj_align(obj_label, obj_graph, LV_ALIGN_OUT_TOP_MID, 0, -20);
     lv_chart_set_point_count(obj_graph, dose+1);
 }
@@ -208,6 +219,9 @@ void ui_erogation_show(void *data)
     }
     ui_status_bar_show(false);
     isErogationPageActive = true;
+    funcCode = DBG_NONE;
+    set_preparation_parameters();
+
     xTaskCreate(simulator_erogation_task, "Erogation Simulator Task", 4*1024, NULL, 5, NULL);
 }
 

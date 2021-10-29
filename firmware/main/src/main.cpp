@@ -20,7 +20,7 @@
 #include "spiffs_utils.h"
 #include "esp_task_wdt.h"
 #include "gui_task.h"
-// #include "dbg_task.h"
+#include "dbg_task.h"
 
 
 #include "wifi_task.h"
@@ -176,7 +176,7 @@ void start_tasks()
 {
     // utils::system::start_thread(&memory_check_task, nullptr, "memory_task", 1024*4, 4);
 
-    // utils::system::start_thread_core(&dbg_task, &xHandleDbg, "dbg_task", 1024*4, 4, 0);
+    utils::system::start_thread_core(&dbg_task, &xHandleDbg, "dbg_task", 1024*4, 4, 0);
     utils::system::start_thread_core(&gui_task, &xHandleGui, "gui_task", 1024*32, 4, 1);
 
     utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 1);

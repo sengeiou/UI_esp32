@@ -1,7 +1,7 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 #include <time.h>
-
+#include "dbg_task.h"
 
 #define RADIUS          62
 #define BUTTON_SIZE     62
@@ -417,6 +417,17 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
 void ui_preparations_enable_cappuccino(bool enable)
 {
     isCappuccinoEnable = enable;
+
+    if(false == isCappuccinoEnable)
+    {   
+        lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
+        lv_obj_set_state(obj_tabCappuccino, LV_STATE_DISABLED);
+    }
+    else
+    {
+        lv_obj_set_state(obj_tabCappuccino, LV_STATE_DEFAULT);
+    }
+    lv_obj_set_click(obj_tabCappuccino, isCappuccinoEnable);
 }
 
 void ui_preparations_set_power(bool on)
@@ -426,4 +437,6 @@ void ui_preparations_set_power(bool on)
 
     if(false == isMachinePowerOn)
         ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
+    else
+        special_function(DBG_ON_OFF);
 }
