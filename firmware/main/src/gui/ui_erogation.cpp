@@ -59,6 +59,7 @@ static void btn_stop_cb(lv_obj_t *obj, lv_event_t event)
         stop = true;
         special_function(funcCode);
         lv_obj_set_hidden(msgbox, false);
+        lv_obj_set_click(btn_stop, false);
     }
 }
 
@@ -207,6 +208,7 @@ void ui_erogation_init(void *data)
     lv_chart_set_type(obj_graph, LV_CHART_TYPE_LINE);
     lv_chart_set_point_count(obj_graph, 101);
     lv_chart_set_update_mode(obj_graph, LV_CHART_UPDATE_MODE_SHIFT);
+    lv_obj_set_click(obj_graph, false);
 
     /*Add a faded are effect*/
     lv_obj_set_style_local_bg_opa(obj_graph, LV_CHART_PART_SERIES, LV_STATE_DEFAULT, LV_OPA_50); /*Max. opa.*/
@@ -225,6 +227,7 @@ void ui_erogation_init(void *data)
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_label, 400, 100);
     lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_40);
+    lv_obj_set_click(obj_label, false);
 
     obj_bar = lv_bar_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(obj_bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);
@@ -236,6 +239,7 @@ void ui_erogation_init(void *data)
     lv_bar_set_range(obj_bar, 0, 100);
     lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
     lv_obj_align(obj_bar, obj_graph, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+    lv_obj_set_click(obj_bar, false);
 
     btn_stop = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_width(btn_stop, 58);
@@ -273,6 +277,9 @@ void ui_erogation_show(void *data)
         lv_obj_set_hidden(btn_stop, false);
         lv_obj_set_hidden(msgbox, true);
     }
+
+    lv_obj_set_click(btn_stop, true);
+
     ui_status_bar_show(false);
     isErogationPageActive = true;
     funcCode = DBG_NONE;
