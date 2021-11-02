@@ -70,7 +70,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
+        special_function(DBG_ON_OFF);
         ui_preparations_set_power(true);
-        ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
     }
 }

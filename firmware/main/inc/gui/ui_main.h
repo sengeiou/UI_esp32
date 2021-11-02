@@ -127,7 +127,7 @@ lv_obj_t *ui_page_get_obj(void);
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.
  * 
  */
-void ui_preparations_update(void);
+void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float pressure);
 
 /**
  * @brief Update cappuccino preparation information.
@@ -145,8 +145,9 @@ void ui_preparations_set_power(bool on);
  * @brief Update machine warning (descaling, pod full and water empty).
  * 
  */
-void ui_status_bar_set_warning(bool descaling, bool pod_full, bool water_empty);
-
+void ui_status_bar_set_descaling_warning(bool warning);
+void ui_status_bar_set_pod_warning(bool warning);
+void ui_status_bar_set_water_empty_warning(bool warning);
 
 /**
  * @brief Update the wifi status.

@@ -42,36 +42,35 @@ static void btn_warning_cb(lv_obj_t *obj, lv_event_t event);
 static void descaling_popup_cb(lv_obj_t *obj, lv_event_t event);
 static void basic_popup_cb(lv_obj_t* obj, lv_event_t event);
 
-void ui_status_bar_set_warning(bool descaling, bool pod_full, bool water_empty)
+void ui_status_bar_set_descaling_warning(bool warning)
 {
-    ESP_LOGI(LOG_TAG, "Warning UPDATE");
-
-    bool isToUpdate = false;
-    if(isWarningDescaling != descaling)
+    if(isWarningDescaling != warning)
     {
-        isToUpdate |= true;
-        isWarningDescaling = descaling;
-    }
-    if(isWarningPod != pod_full)
-    {
-        isToUpdate |= true;
-        isWarningPod = pod_full;
-    }
-    if(isWarningWater != water_empty)
-    {
-        isToUpdate |= true;
-        isWarningWater = water_empty;
-    }
-
-    if(true == isToUpdate)
-    {
-        ESP_LOGI(LOG_TAG, "Warning UPDATE");
+        ESP_LOGI(LOG_TAG, "Descaling Warning UPDATE");
+        isWarningDescaling = warning;
         lv_obj_set_click(btn_descaling, isWarningDescaling);
-        lv_obj_set_click(btn_water, isWarningWater);
-        lv_obj_set_click(btn_pod, isWarningPod);
-
         lv_obj_set_style_local_image_recolor(img_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningDescaling ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
+    }
+}
+
+void ui_status_bar_set_pod_warning(bool warning)
+{
+    if(isWarningPod != warning)
+    {
+        ESP_LOGI(LOG_TAG, "Pod Full Warning UPDATE");
+        isWarningPod = warning;
+        lv_obj_set_click(btn_pod, isWarningPod);
         lv_obj_set_style_local_image_recolor(img_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningPod ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
+    }
+}
+
+void ui_status_bar_set_water_empty_warning(bool warning)
+{
+    if(isWarningWater != warning)
+    {
+        ESP_LOGI(LOG_TAG, "Water Empty Warning UPDATE");
+        isWarningWater = warning;
+        lv_obj_set_click(btn_water, isWarningWater);
         lv_obj_set_style_local_image_recolor(img_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningWater ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
     }
 }
@@ -170,6 +169,9 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_image_recolor(img_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_image_recolor(img_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
 
+    lv_obj_set_click(btn_descaling, isWarningDescaling);
+    lv_obj_set_click(btn_pod, isWarningPod);
+    lv_obj_set_click(btn_water, isWarningWater);
     ui_status_bar_show(false);
 }
 

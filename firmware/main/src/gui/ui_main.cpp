@@ -136,8 +136,6 @@ void ui_main(void)
     ui_call_stack_push(&ui_standby_func);
     lv_port_sem_give();
 
-    ui_status_bar_set_warning(false, false, false);
-
     enable_livedata();
 }
 

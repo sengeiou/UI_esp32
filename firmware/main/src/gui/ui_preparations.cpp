@@ -94,7 +94,6 @@ void configure_image_style(lv_obj_t* obj, const void* src)
 void ui_preparations_init(void *data)
 {
     (void)data;
-    isCappuccinoEnable = true;
 
     /* Preparation page */
     obj_tabview = lv_tabview_create(lv_scr_act(), NULL);
@@ -111,7 +110,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, 2);
     lv_obj_set_style_local_border_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
 
     lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_CHECKED, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_CHECKED, 2);
@@ -267,14 +266,13 @@ static void tabview_cb(lv_obj_t* obj, lv_event_t event)
         uint16_t id = lv_tabview_get_tab_act(obj_tabview);
         switch(id)
         {
-            case 0:
-            {
-                break;
-            }
             case 1:
             {
+                if(false == isCappuccinoEnable)
+                    lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
                 break;
             }
+            case 0:
             default:
             {
                 //Not handled
@@ -417,17 +415,10 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
 void ui_preparations_enable_cappuccino(bool enable)
 {
     isCappuccinoEnable = enable;
-
+    
+    lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
     if(false == isCappuccinoEnable)
-    {   
         lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
-        lv_obj_set_state(obj_tabCappuccino, LV_STATE_DISABLED);
-    }
-    else
-    {
-        lv_obj_set_state(obj_tabCappuccino, LV_STATE_DEFAULT);
-    }
-    lv_obj_set_click(obj_tabCappuccino, isCappuccinoEnable);
 }
 
 void ui_preparations_set_power(bool on)
@@ -438,5 +429,5 @@ void ui_preparations_set_power(bool on)
     if(false == isMachinePowerOn)
         ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
     else
-        special_function(DBG_ON_OFF);
+        ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
 }

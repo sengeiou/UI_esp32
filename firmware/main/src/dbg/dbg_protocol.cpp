@@ -112,9 +112,7 @@ namespace lavazza
         bool parseLivedata(dbgMsg_stc& msg)
         {
             static uint8_t fsmStatus, oldFsmStatus;
-            static bool podWarning, oldPodWarning;
-            static bool waterWarning, oldWaterWarning;
-            static bool descalingWarning, oldDescalingWarning;
+            static bool podWarning, waterWarning, descalingWarning;
             static bool milkPresence, oldMilkPresence;
 
             //Logic value [39], [40]
@@ -141,14 +139,13 @@ namespace lavazza
                 //update data during brewing
                 uint8_t temperature = msg.payload[7];    //18 per il latte
                 uint16_t dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
-                //ui_erogation_update_data(dose, temperature);
+                // ui_erogation_update(dose, temperature, 0.0f);
                 printf("Dose %d, temperature %d\n", dose, temperature);
             }
 
-            if(oldPodWarning != podWarning || oldDescalingWarning != descalingWarning || oldWaterWarning != waterWarning)
-            {
-                ui_status_bar_set_warning(descalingWarning, podWarning, waterWarning);
-            }
+            ui_status_bar_set_descaling_warning(descalingWarning);
+            ui_status_bar_set_water_empty_warning(waterWarning);
+            ui_status_bar_set_pod_warning(podWarning);
 
             if(oldMilkPresence != milkPresence)
             {
@@ -157,9 +154,6 @@ namespace lavazza
 
             printf("Descaling %d, pod %d, water %d, milk %d\n", descalingWarning, podWarning, waterWarning, milkPresence);
             oldFsmStatus = fsmStatus;
-            oldDescalingWarning = descalingWarning;
-            oldWaterWarning = waterWarning;
-            oldPodWarning = podWarning;
             oldMilkPresence = milkPresence;
             return true;
         }
