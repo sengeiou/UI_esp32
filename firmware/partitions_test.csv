@@ -1,0 +1,12 @@
+# Name,   		Type, 	SubType,  	Offset,   	Size,	Flags
+nvs,			data,	nvs,		0x13000,	32K,    encrypted    
+otadata,		data,	ota,		0x1b000,	8K,     encrypted
+phy_init,		data,	phy,		0x1d000,	4K,     encrypted
+device_cert,	data, 	nvs,   	    0x1e000,	8K,     encrypted
+device_prv_key,	data, 	nvs,   	    0x20000,	8K,     encrypted
+device_cert_bd,	data, 	nvs,   	    0x22000,	16K,
+storage_bd,     data,	nvs,		0x28000,	16K
+coredump,		data,	coredump,	0x30000,	64K,    encrypted
+factory,		app,	factory,	0x40000,	2M,     encrypted
+storage,        data,   spiffs,     0x240000,   1M,
+data_storage,   data,	spiffs,		0x340000,	512K,   
