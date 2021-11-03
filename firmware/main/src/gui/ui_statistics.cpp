@@ -18,8 +18,6 @@ bool isStatisticsPageActive = false;
 
 static void update_parameters_from_machine(void)
 {
-    printf("Retrieve data from machine\n");
-
     static const uint16_t parNum[] = {300, 301, 302, 303, 304, 305, 306, 307, 308};
 
     for(uint8_t i = 0; i < sizeof(parNum)/sizeof(uint16_t); i++)
@@ -83,15 +81,15 @@ void ui_statistics_init(void *data)
     lv_table_set_cell_value(obj_fullstats, 7, 0, "Double Cappuccino");
     lv_table_set_cell_value(obj_fullstats, 8, 0, "Hot Milk");
 
-    lv_table_set_cell_value(obj_fullstats, 0, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 1, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 2, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 3, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 4, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 5, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 6, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 7, 1, "0");
-    lv_table_set_cell_value(obj_fullstats, 8, 1, "0");
+    lv_table_set_cell_value(obj_fullstats, 0, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 1, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 2, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 3, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 4, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 5, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 6, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 7, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 8, 1, "--");
 }
 
 void ui_statistics_show(void *data)
