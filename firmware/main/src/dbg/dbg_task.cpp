@@ -43,6 +43,28 @@ static int send_uart(const uint8_t* data)
     return txBytes;
 }
 
+void get_parameter(uint16_t id, uint8_t size)
+{
+    printf("Get parameter %d\n", id);
+    uint8_t data[9];
+    data[0] = CMD_SOF;
+    data[1] = DBG_CODE_GET_PAR;
+    data[2] = 0x04;
+    data[3] = HI_UINT16(id);
+    data[4] = LO_UINT16(id);
+    data[5] = 0x00;
+    data[6] = size;
+    uint16_t crc = crc::calculate(data, 7);
+    data[7] = HI_UINT16(crc);
+    data[8] = LO_UINT16(crc);
+
+    add_to_queue(xQueueDbgUartTx, data);
+}
+
+void set_parameter(uint16_t id, uint32_t value)
+{
+
+}
 
 void enable_livedata(void)
 {
@@ -143,12 +165,16 @@ void add_to_queue(QueueHandle_t xQueue, const uint8_t* data)
     }
 }
 
-bool process_msg(uint8_t* message)
+bool process_msg(uint8_t* message, uint8_t size)
 {
     bool retVal = false;
     dbgMsg_stc msg;
-    if(true == lavazza::dbg::checkMsg(message, msg))
+    uint8_t msgsIndex[2];
+    uint8_t nMsg = lavazza::dbg::findMsgs(message, size, msgsIndex);
+    
+    for(uint8_t i = 0; i < nMsg; i++)
     {
+        lavazza::dbg::checkMsg(&message[msgsIndex[i]], msg);
         // printf("Code %d | Len %d [", msg.cmdCode, msg.payloadLen);
         // for(uint8_t i = 0; i < msg.payloadLen; i++)
         //     printf("%d ", msg.payload[i]);
@@ -162,7 +188,7 @@ bool process_msg(uint8_t* message)
                 if(msg.payloadLen > 1)
                 {
                     if(DBG_ACK_VALUE == msg.payload[1])
-                        ESP_LOGI(DBG_CMD_TAG, "Rreceived ack for cmd 0x%2X", msg.payload[0]);
+                        ESP_LOGI(DBG_CMD_TAG, "Received ack for cmd 0x%2X", msg.payload[0]);
                     else
                         ESP_LOGW(DBG_CMD_TAG, "Received nack for cmd 0x%2X", msg.payload[0]);
                 }
@@ -174,6 +200,12 @@ bool process_msg(uint8_t* message)
                 lavazza::dbg::parseLivedata(msg);
                 break;
             }
+            case DBG_CODE_GET_PAR:
+            {
+                ESP_LOGI(DBG_CMD_TAG, "Received GET par");
+                lavazza::dbg::parseGetParResponse(msg);
+                break;
+            }
             default:
             {
                 /* Unknown message code: No response */
@@ -181,11 +213,6 @@ bool process_msg(uint8_t* message)
                 break;
             }
         }
-    }
-    else
-    {
-        /* Failed to check message */
-        retVal = false;
     }
     return retVal;
 }
@@ -222,7 +249,7 @@ void dbg_rx_task(void* arg)
             ESP_LOGD(DBG_CMD_TAG, "Received %d byte", rxBytes);
             ESP_LOG_BUFFER_HEXDUMP("DBG RX Task - MSG", data, rxBytes, ESP_LOG_DEBUG);
 
-            if(true == process_msg(data))
+            if(true == process_msg(data, rxBytes))
                 ESP_LOGD(DBG_CMD_TAG, "Message correct");
             else
                 ESP_LOGE(DBG_CMD_TAG, "Failed to process received message");

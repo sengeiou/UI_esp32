@@ -39,6 +39,8 @@ typedef enum
 	DBG_CODE_NONE                   = 0x00,
 	DBG_CODE_GET_LIVE_DATA          = 0x20,     /* Enable/Disable Live Data */
 	DBG_CODE_ACK_NACK               = 0xFE,     /* ACK/NACK Command Code */
+	DBG_CODE_GET_PAR                = 0x38,     /* Get parameter Command */
+	DBG_CODE_SET_PAR                = 0x3C,     /* Set parameter Command */
 	DBG_CODE_SPECILA_FUNC           = 0x36,     /* Executes special functions */
 } DBG_CODE_t;
 
@@ -114,7 +116,8 @@ namespace lavazza
     }
     namespace dbg
     {
-        uint8_t* createLiveDataMsg(void);
+		uint8_t findMsgs(const uint8_t* message, uint8_t size, uint8_t* msgsIndex);
+		bool parseGetParResponse(dbgMsg_stc& msg);
         bool checkMsg(const uint8_t* message, dbgMsg_stc &msg);
 		bool parseLivedata(dbgMsg_stc& msg);
     }

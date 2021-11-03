@@ -136,6 +136,12 @@ void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float press
 void ui_erogation_completed(void);
 
 /**
+ * @brief Update statistics table.
+ * 
+ */
+void ui_statistics_update_data(uint16_t parId, uint32_t value);
+
+/**
  * @brief Update cappuccino preparation information.
  * 
  */

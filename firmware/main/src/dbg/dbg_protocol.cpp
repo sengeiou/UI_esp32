@@ -92,10 +92,28 @@ namespace lavazza
     }
     namespace dbg
     {
+        uint8_t findMsgs(const uint8_t* message, uint8_t size, uint8_t* msgsIndex)
+        {
+            uint8_t retVal = 0;
+            uint8_t firstLen = message[2];
+            // printf("First msg len = %d\n", firstLen);
+            msgsIndex[retVal] = 0;
+            retVal++;
+            if((firstLen+5) != size)
+            {
+                uint8_t secondLen = message[7+firstLen];
+                // printf("Second msg len = %d\n", secondLen);
+                msgsIndex[retVal] = 5+firstLen;
+                retVal++;
+            }
+
+            return retVal;
+        }
+
         /**
         * @brief Check the received message.
         */
-        bool checkMsg(const uint8_t* message, dbgMsg_stc &msg)
+        bool checkMsg(const uint8_t* message, dbgMsg_stc& msg)
         {
             msg.startOfFrame = message[0];
             msg.cmdCode    = message[1];
@@ -106,8 +124,52 @@ namespace lavazza
             return true;
         }
 
+         /**
+        * @brief Parse the received GetPar message response.
+        */
+        bool parseGetParResponse(dbgMsg_stc& msg)
+        {
+            // printf("Cmd 0x%.2X | PldLen %d -> ", msg.cmdCode, msg.payloadLen);
+            // for(uint8_t i = 0; i < msg.payloadLen; i++)
+            // {   
+            //     printf("0x%.2X ", msg.payload[i]);
+            // }
+            // printf("\n");
+
+            uint16_t parId = BUILD_UINT16(msg.payload[0], msg.payload[1]);
+            uint32_t parVal;
+
+            uint8_t size = msg.payloadLen -2;
+
+            switch(size)
+            {
+                case 1:
+                {
+                    parVal = msg.payload[2];
+                    break;
+                }
+                case 2:
+                {
+                    parVal = BUILD_UINT16(msg.payload[3], msg.payload[2]);
+                    break;
+                }
+                case 4:
+                {
+                    parVal = BUILD_UINT32(msg.payload[5], msg.payload[4], msg.payload[3], msg.payload[2]);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }            
+            printf("Received parameter %d, value %d\n", parId, parVal);
+            ui_statistics_update_data(parId, parVal);
+            return true;
+        }
+
         /**
-        * @brief Parse the received message.
+        * @brief Parse the received livedata message.
         */
         bool parseLivedata(dbgMsg_stc& msg)
         {

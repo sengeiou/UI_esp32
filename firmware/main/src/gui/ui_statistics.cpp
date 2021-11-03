@@ -1,4 +1,5 @@
 #include "ui_main.h"
+#include "dbg_task.h"
 #include "lvgl_port.h"
 
 /* UI function declaration */
@@ -15,6 +16,29 @@ static lv_obj_t* obj_container = NULL;
 
 bool isStatisticsPageActive = false;
 
+static void update_parameters_from_machine(void)
+{
+    printf("Retrieve data from machine\n");
+
+    static const uint16_t parNum[] = {300, 301, 302, 303, 304, 305, 306, 307, 308};
+
+    for(uint8_t i = 0; i < sizeof(parNum)/sizeof(uint16_t); i++)
+    {
+        get_parameter(parNum[i], 4);
+        vTaskDelay(2);
+    }
+}
+
+
+void ui_statistics_update_data(uint16_t parId, uint32_t value)
+{
+    if(parId >= 300 && parId < 310)
+    {
+        char buff[4];
+        sprintf(buff, "%d", value);
+        lv_table_set_cell_value(obj_fullstats, parId-300, 1, buff);
+    }
+}
 
 void ui_statistics_init(void *data)
 {
@@ -34,7 +58,7 @@ void ui_statistics_init(void *data)
     lv_obj_set_style_local_radius(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 5);
     lv_obj_set_style_local_border_width(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_table_set_col_cnt(obj_fullstats, 2);
-    lv_table_set_row_cnt(obj_fullstats, 8);
+    lv_table_set_row_cnt(obj_fullstats, 9);
 
     lv_table_set_col_width(obj_fullstats, 0, 260);
     lv_table_set_col_width(obj_fullstats, 1, 100);
@@ -47,26 +71,27 @@ void ui_statistics_init(void *data)
     lv_table_set_cell_align(obj_fullstats, 5, 1, LV_LABEL_ALIGN_RIGHT);
     lv_table_set_cell_align(obj_fullstats, 6, 1, LV_LABEL_ALIGN_RIGHT);
     lv_table_set_cell_align(obj_fullstats, 7, 1, LV_LABEL_ALIGN_RIGHT);
+    lv_table_set_cell_align(obj_fullstats, 8, 1, LV_LABEL_ALIGN_RIGHT);
 
-    lv_table_set_cell_value(obj_fullstats, 0, 0, "Short Coffee");
-    lv_table_set_cell_value(obj_fullstats, 1, 0, "Medium Coffee");
-    lv_table_set_cell_value(obj_fullstats, 2, 0, "Long Coffee");
-    lv_table_set_cell_value(obj_fullstats, 3, 0, "Free Coffee");
-    lv_table_set_cell_value(obj_fullstats, 4, 0, "Short Cappuccino");
-    lv_table_set_cell_value(obj_fullstats, 5, 0, "Medium Cappuccino");
-    lv_table_set_cell_value(obj_fullstats, 6, 0, "Double Cappuccino");
-    lv_table_set_cell_value(obj_fullstats, 7, 0, "Hot Milk");
+    lv_table_set_cell_value(obj_fullstats, 0, 0, "Total Deliveries");
+    lv_table_set_cell_value(obj_fullstats, 1, 0, "Short Coffee");
+    lv_table_set_cell_value(obj_fullstats, 2, 0, "Medium Coffee");
+    lv_table_set_cell_value(obj_fullstats, 3, 0, "Long Coffee");
+    lv_table_set_cell_value(obj_fullstats, 4, 0, "Free Coffee");
+    lv_table_set_cell_value(obj_fullstats, 5, 0, "Short Cappuccino");
+    lv_table_set_cell_value(obj_fullstats, 6, 0, "Medium Cappuccino");
+    lv_table_set_cell_value(obj_fullstats, 7, 0, "Double Cappuccino");
+    lv_table_set_cell_value(obj_fullstats, 8, 0, "Hot Milk");
 
-    lv_table_set_cell_value(obj_fullstats, 0, 1, "24");
-    lv_table_set_cell_value(obj_fullstats, 1, 1, "13");
-    lv_table_set_cell_value(obj_fullstats, 2, 1, "2");
-    lv_table_set_cell_value(obj_fullstats, 3, 1, "6");
-    lv_table_set_cell_value(obj_fullstats, 4, 1, "34");
-    lv_table_set_cell_value(obj_fullstats, 5, 1, "12");
-    lv_table_set_cell_value(obj_fullstats, 6, 1, "9");
+    lv_table_set_cell_value(obj_fullstats, 0, 1, "0");
+    lv_table_set_cell_value(obj_fullstats, 1, 1, "0");
+    lv_table_set_cell_value(obj_fullstats, 2, 1, "0");
+    lv_table_set_cell_value(obj_fullstats, 3, 1, "0");
+    lv_table_set_cell_value(obj_fullstats, 4, 1, "0");
+    lv_table_set_cell_value(obj_fullstats, 5, 1, "0");
+    lv_table_set_cell_value(obj_fullstats, 6, 1, "0");
     lv_table_set_cell_value(obj_fullstats, 7, 1, "0");
-
-    // lv_obj_set_height(obj_fullstats, 250);
+    lv_table_set_cell_value(obj_fullstats, 8, 1, "0");
 }
 
 void ui_statistics_show(void *data)
@@ -80,6 +105,8 @@ void ui_statistics_show(void *data)
         lv_obj_set_hidden(obj_container, false);
         lv_obj_set_hidden(obj_fullstats, false);
     }
+
+    update_parameters_from_machine();
 
     isStatisticsPageActive = true;
 }

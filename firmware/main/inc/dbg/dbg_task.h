@@ -5,6 +5,9 @@
 
 
 /* Helper functions */
+void get_parameter(uint16_t id, uint8_t size);
+void set_parameter(uint16_t id, uint32_t value);
+
 void enable_livedata(void);
 void disable_livedata(void);
 
