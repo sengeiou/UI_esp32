@@ -66,7 +66,7 @@ static const char* cloud_command_string[] = {
         COFFEE_TYPE(CAPPUCCINO_MEDIUM)  \
         COFFEE_TYPE(CAPPUCCINO_DOUBLE)  \
         COFFEE_TYPE(HOT_MILK)           \
-        COFFEE_TYPE(COLD_MILK)
+        COFFEE_TYPE(HOT_WATER)
 
 
 enum coffee_type_t {
@@ -209,7 +209,7 @@ typedef enum
     DBG_MEDIUM_CAPPUCCINO = 0x12,
     DBG_DOUBLE_CAPPUCCINO = 0x13,
     DBG_HOT_MILK = 0x14,
-    DBG_COLD_MILK = 0x15
+    DBG_HOT_WATER = 0x15
 } dbg_special_func_code_t;
 
 

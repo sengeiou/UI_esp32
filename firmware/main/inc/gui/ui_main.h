@@ -124,6 +124,12 @@ void ui_status_bar_show(bool show);
 lv_obj_t *ui_page_get_obj(void);
 
 /**
+ * @brief Update the target dose value.
+ * 
+ */
+void ui_erogation_set_target_dose(uint16_t dose);
+
+/**
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.
  * 
  */

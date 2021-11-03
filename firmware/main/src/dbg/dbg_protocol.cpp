@@ -162,9 +162,22 @@ namespace lavazza
                 {
                     break;
                 }
-            }            
-            printf("Received parameter %d, value %d\n", parId, parVal);
-            ui_statistics_update_data(parId, parVal);
+            }
+
+            if(parId >= 300)    //Statistics
+            {
+                printf("Received statistic parameter %d, value %d\n", parId, parVal);
+                ui_statistics_update_data(parId, parVal);
+            }
+            else if(parId >= 110 && parId <= 115)   //Doses 
+            {
+                printf("Received dose parameter %d, value %d\n", parId, parVal);
+                ui_erogation_set_target_dose(parVal);
+            }
+            else
+            {
+                printf("Received parameter %d, value %d\n", parId, parVal);
+            }
             return true;
         }
 

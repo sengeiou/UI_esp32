@@ -337,7 +337,7 @@ static void btn_coffee_cb(lv_obj_t *obj, lv_event_t event)
 
 static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
 {
-    static bool milkCold = false;
+    static bool hotWater = false;
     if(true == isCappuccinoEnable)
     {
         if(LV_EVENT_FOCUSED == event)
@@ -359,9 +359,9 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
         {
             if(obj_milk_hot == obj)
             {
-                lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLUE);
-                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLUE);
-                milkCold = true;
+                lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_RED);
+                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
+                hotWater = true;
             }
         }
 
@@ -394,17 +394,17 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
             if(obj_milk_hot == obj)
             {
                 lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
-                if(false == milkCold)
+                if(false == hotWater)
                 {
                     ESP_LOGI(LOG_TAG, "MILK HOT CLICK");
                     preparation.desired_prep = HOT_MILK;
                 }
                 else
                 {
-                    ESP_LOGI(LOG_TAG, "MILK COLD CLICK");
-                    preparation.desired_prep = COLD_MILK;
+                    ESP_LOGI(LOG_TAG, "HOT WATER CLICK");
+                    preparation.desired_prep = HOT_WATER;
                 }
-                milkCold = false;
+                hotWater = false;
                 preparation.isError = false;
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }

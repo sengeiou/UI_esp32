@@ -143,7 +143,7 @@ void special_function(dbg_special_func_code_t cmd)
             add_to_queue(xQueueDbgUartTx, data);
             break;
         }
-        case DBG_COLD_MILK:
+        case DBG_HOT_WATER:
         {
             uint8_t data[] = {0xA5, 0x36, 0x01, 0x15, 0xD4, 0x53};
             add_to_queue(xQueueDbgUartTx, data);

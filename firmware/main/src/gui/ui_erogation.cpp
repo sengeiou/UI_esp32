@@ -111,6 +111,11 @@ void ui_erogation_completed(void)
     lv_obj_set_click(btn_stop, false);
 }
 
+void ui_erogation_set_target_dose(uint16_t dose)
+{
+    target_dose = dose;
+}
+
 void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float pressure)
 {
     progress = 100*current_dose/target_dose;
@@ -151,46 +156,55 @@ static void set_preparation_parameters(void)
             lv_label_set_text(obj_label, "COFFEE SHORT");
             funcCode = DBG_SHORT_COFFEE;
             target_dose = 4650;
+            get_parameter(110, 2);
             break;
         case COFFEE_MEDIUM:
             lv_label_set_text(obj_label, "COFFEE MEDIUM");
             funcCode = DBG_MEDIUM_COFFEE;
             target_dose = 6000;
+            get_parameter(111, 2);
             break;
         case COFFEE_LONG:
             lv_label_set_text(obj_label, "COFFEE LONG");
             funcCode = DBG_LONG_COFFEE;
             target_dose = 8500;
+            get_parameter(112, 2);
             break;
         case COFFEE_FREE:
             lv_label_set_text(obj_label, "COFFEE FREE");
             funcCode = DBG_FREE_COFFEE;
             target_dose = 15000;
+            get_parameter(113, 2);
             break;
         case CAPPUCCINO_SHORT:
             lv_label_set_text(obj_label, "CAPPUCCINO SHORT");
             funcCode = DBG_SHORT_CAPPUCCINO;
             target_dose = 6500;
+            get_parameter(114, 2);
             break;
         case CAPPUCCINO_MEDIUM:
             lv_label_set_text(obj_label, "CAPPUCCINO MEDIUM");
             funcCode = DBG_MEDIUM_CAPPUCCINO;
             target_dose = 6500;
+            get_parameter(114, 2);
             break;
         case CAPPUCCINO_DOUBLE:
             lv_label_set_text(obj_label, "CAPPUCCINO DOUBLE");
             funcCode = DBG_DOUBLE_CAPPUCCINO;
             target_dose = 6500;
+            get_parameter(114, 2);
             break;
         case HOT_MILK:
             lv_label_set_text(obj_label, "HOT MILK");
             funcCode = DBG_HOT_MILK;
             target_dose = 8500;
+            get_parameter(115, 2);
             break;
-        case COLD_MILK:
-            lv_label_set_text(obj_label, "COLD MILK");
-            funcCode = DBG_COLD_MILK;
+        case HOT_WATER:
+            lv_label_set_text(obj_label, "HOT WATER");
+            funcCode = DBG_HOT_WATER;
             target_dose = 8500;
+            get_parameter(115, 2);
             break;
         case COFFEE_NONE:
         default:
