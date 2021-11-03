@@ -27,11 +27,9 @@
 #ifdef ADVANCED_DEBUG
     #define DBG_TAG LINE_STRING "|" "DBG_TASK"
     #define DBG_CMD_TAG LINE_STRING "|" "DBG_COMMAND_TASK"
-    #define DBG_LD_TAG LINE_STRING "|" "DBG_LIVEDATA_TASK"
 #else
     #define DBG_TAG "DBG_TASK"
     #define DBG_CMD_TAG "DBG_CMD_TASK"
-    #define DBG_LD_TAG "DBG_LIVEDATA_TASK"
 #endif
 
 void add_to_queue(QueueHandle_t xQueue, const uint8_t* data);
@@ -41,7 +39,7 @@ static int send_uart(const uint8_t* data)
     const int len = data[2] + 5;
     const int txBytes = uart_write_bytes(CONFIG_DBG_UART_INTERFACE_NUMBER, data, len);
 
-    ESP_LOG_BUFFER_HEXDUMP("SEND MESSAGE", data, len, ESP_LOG_INFO);
+    ESP_LOG_BUFFER_HEXDUMP("SEND MESSAGE", data, len, ESP_LOG_DEBUG);
     return txBytes;
 }
 
@@ -164,15 +162,15 @@ bool process_msg(uint8_t* message)
                 if(msg.payloadLen > 1)
                 {
                     if(DBG_ACK_VALUE == msg.payload[1])
-                        printf("received ack for cmd 0x%2X\n", msg.payload[0]);
+                        ESP_LOGI(DBG_CMD_TAG, "Rreceived ack for cmd 0x%2X", msg.payload[0]);
                     else
-                        printf("received nack for cmd 0x%2X\n", msg.payload[0]);
+                        ESP_LOGW(DBG_CMD_TAG, "Received nack for cmd 0x%2X", msg.payload[0]);
                 }
                 break;
             }
             case DBG_CODE_GET_LIVE_DATA:
             {
-                printf("received livedata\n");
+                ESP_LOGD(DBG_CMD_TAG, "Received livedata");
                 lavazza::dbg::parseLivedata(msg);
                 break;
             }
@@ -222,7 +220,7 @@ void dbg_rx_task(void* arg)
         {
             data[rxBytes] = 0;
             ESP_LOGD(DBG_CMD_TAG, "Received %d byte", rxBytes);
-            ESP_LOG_BUFFER_HEXDUMP("DBG RX Task - MSG", data, rxBytes, ESP_LOG_INFO);
+            ESP_LOG_BUFFER_HEXDUMP("DBG RX Task - MSG", data, rxBytes, ESP_LOG_DEBUG);
 
             if(true == process_msg(data))
                 ESP_LOGD(DBG_CMD_TAG, "Message correct");

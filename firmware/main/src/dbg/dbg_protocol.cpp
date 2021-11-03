@@ -139,8 +139,12 @@ namespace lavazza
                 //update data during brewing
                 uint8_t temperature = msg.payload[7];    //18 per il latte
                 uint16_t dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
-                // ui_erogation_update(dose, temperature, 0.0f);
-                printf("Dose %d, temperature %d\n", dose, temperature);
+                ui_erogation_update(dose, temperature, 5.0f);
+            }
+            else if(fsmStatus == 0x03)
+            {
+                if(oldFsmStatus == 0x07 || oldFsmStatus == 0x08)    //from Steaming (0x08) or Brewing (0x07)
+                    ui_erogation_completed();
             }
 
             ui_status_bar_set_descaling_warning(descalingWarning);
@@ -152,7 +156,6 @@ namespace lavazza
                 ui_preparations_enable_cappuccino(milkPresence);
             }
 
-            printf("Descaling %d, pod %d, water %d, milk %d\n", descalingWarning, podWarning, waterWarning, milkPresence);
             oldFsmStatus = fsmStatus;
             oldMilkPresence = milkPresence;
             return true;

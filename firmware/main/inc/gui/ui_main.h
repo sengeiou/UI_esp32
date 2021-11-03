@@ -130,6 +130,12 @@ lv_obj_t *ui_page_get_obj(void);
 void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float pressure);
 
 /**
+ * @brief Complete current preparation information of preparations page. Call it when preparation is done.
+ * 
+ */
+void ui_erogation_completed(void);
+
+/**
  * @brief Update cappuccino preparation information.
  * 
  */
