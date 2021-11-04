@@ -416,9 +416,12 @@ void ui_preparations_enable_cappuccino(bool enable)
 {
     isCappuccinoEnable = enable;
     
-    lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
-    if(false == isCappuccinoEnable)
-        lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
+    if(NULL != obj_tabview)
+    {
+        lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
+        if(false == isCappuccinoEnable)
+            lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
+    }
 }
 
 void ui_preparations_set_power(bool on)
