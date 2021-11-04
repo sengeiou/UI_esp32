@@ -15,18 +15,33 @@
 extern "C" {
 #endif
 
+extern lv_font_t font_clock_32;
+extern lv_font_t font_clock_108;
 extern lv_font_t font_en_18;
 extern lv_font_t font_en_20;
 extern lv_font_t font_en_24;
 extern lv_font_t font_en_28;
 extern lv_font_t font_en_32;
+extern lv_font_t font_en_36;
 extern lv_font_t font_en_40;
+extern lv_font_t font_en_48;
+extern lv_font_t font_en_bold_16;
 extern lv_font_t font_en_bold_20;
 extern lv_font_t font_en_bold_24;
 extern lv_font_t font_en_bold_28;
 extern lv_font_t font_en_bold_32;
-extern lv_font_t font_en_bold_40;
+extern lv_font_t font_en_bold_36;
 extern lv_font_t font_en_bold_48;
+extern lv_font_t font_en_bold_60;
+extern lv_font_t font_en_bold_72;
+extern lv_font_t font_en_bold_24;
+extern lv_font_t font_en_bold_28;
+extern lv_font_t font_en_bold_48;
+extern lv_font_t font_en_20_compress;
+extern lv_font_t font_kb_24;
+extern lv_font_t font_symbol_28;
+extern lv_font_t font_en_thin_20;
+extern lv_font_t font_bar_symbol;
                                 
 #define LVGL_SCR_SIZE       (LV_HOR_RES_MAX * LV_VER_RES_MAX)
 #define LVGL_BUFFER_SIZE    (sizeof(lv_color_t) * LVGL_SCR_SIZE)
