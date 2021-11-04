@@ -51,6 +51,7 @@ static lv_obj_t* obj_tabCappuccino = NULL;
 
 static bool isCappuccinoEnable = false;
 static bool isMachinePowerOn = false;
+static bool isMachineFault = false;
 static uint8_t lastTabActive = 0;
 
 /* Extern image variable(s) */
@@ -414,23 +415,42 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
 
 void ui_preparations_enable_cappuccino(bool enable)
 {
-    isCappuccinoEnable = enable;
-    
-    if(NULL != obj_tabview)
+    if(isCappuccinoEnable != enable)
     {
-        lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
-        if(false == isCappuccinoEnable)
-            lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
+        isCappuccinoEnable = enable;
+        
+        if(NULL != obj_tabview)
+        {
+            lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
+            if(false == isCappuccinoEnable)
+                lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
+        }
     }
 }
 
 void ui_preparations_set_power(bool on)
 {
-    isMachinePowerOn = on;
-    ui_status_bar_show(on);
+    if(isMachinePowerOn != on)
+    {
+        isMachinePowerOn = on;
+        ui_status_bar_show(isMachinePowerOn);
 
-    if(false == isMachinePowerOn)
-        ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
-    else
-        ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+        if(false == isMachinePowerOn)
+            ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
+        else
+            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+    }
+}
+
+void ui_preparations_set_fault(bool fault)
+{
+    if(isMachineFault != fault)
+    {
+        isMachineFault = fault;
+
+        if(true == isMachineFault)
+            ui_show(&ui_fault_func, UI_SHOW_OVERRIDE);
+        else
+            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+    }
 }

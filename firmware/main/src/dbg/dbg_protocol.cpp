@@ -184,11 +184,11 @@ namespace lavazza
         /**
         * @brief Parse the received livedata message.
         */
-        bool parseLivedata(dbgMsg_stc& msg)
+        void parseLivedata(dbgMsg_stc& msg)
         {
-            static uint8_t fsmStatus, oldFsmStatus;
-            static bool podWarning, waterWarning, descalingWarning;
-            static bool milkPresence, oldMilkPresence;
+            static uint8_t fsmStatus;
+            static uint8_t oldFsmStatus = -1;
+            static bool podWarning, waterWarning, descalingWarning, milkPresence;
 
             //Logic value [39], [40]
             //Warning value [44], [45]
@@ -198,42 +198,68 @@ namespace lavazza
             descalingWarning = (msg.payload[45] & (1 << 4));
             milkPresence = (msg.payload[40] & (1 << 7));
 
-            if(fsmStatus == 0x01)
+            if(fsmStatus == 0x01)   //standby
             {
-                if(fsmStatus != oldFsmStatus)
+                if((false != guiInternalState.powerOn) || (oldFsmStatus != fsmStatus))
                 {
-                    ui_preparations_set_power(false);
-                }
-                else
-                {
-                    //Do nothing
+                    guiInternalState.powerOn = (fsmStatus != 0x01);
+                    xEventGroupSetBits(xGuiEvents, GUI_POWER_BIT);
                 }
             }
-            else if(fsmStatus == 0x07)
+            else if(fsmStatus == 0x09)  //fault
             {
-                //update data during brewing
-                uint8_t temperature = msg.payload[7];    //18 per il latte
-                uint16_t dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
-                ui_erogation_update(dose, temperature, 5.0f);
+                if((true != guiInternalState.isFault) || (oldFsmStatus != fsmStatus))
+                {
+                    guiInternalState.isFault = (fsmStatus == 0x09);
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
+                }
             }
-            else if(fsmStatus == 0x03)
+            else
             {
-                if(oldFsmStatus == 0x07 || oldFsmStatus == 0x08)    //from Steaming (0x08) or Brewing (0x07)
-                    ui_erogation_completed();
+                if(true != guiInternalState.powerOn)
+                {
+                    guiInternalState.powerOn = true;
+                    xEventGroupSetBits(xGuiEvents, GUI_POWER_BIT);
+                }
+                
+                if(false != guiInternalState.isFault)
+                {
+                    guiInternalState.isFault = false;
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
+                }
+
+                if(fsmStatus == 0x07)   //Brewing
+                {
+                    guiInternalState.erogation.dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
+                    guiInternalState.erogation.temperature = msg.payload[7];    //18 per il latte
+                    xEventGroupSetBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
+                }
+                else if(fsmStatus == 0x03)  //Ready to brew
+                {
+                    if(oldFsmStatus == 0x07 || oldFsmStatus == 0x08)    //from Steaming (0x08) or Brewing (0x07)
+                    {
+                        xEventGroupSetBits(xGuiEvents, GUI_STOP_EROGATION_BIT);
+                    }
+                }
             }
 
-            ui_status_bar_set_descaling_warning(descalingWarning);
-            ui_status_bar_set_water_empty_warning(waterWarning);
-            ui_status_bar_set_pod_warning(podWarning);
-
-            if(oldMilkPresence != milkPresence)
+            if( guiInternalState.warnings.descaling != descalingWarning || 
+                guiInternalState.warnings.waterEmpty != waterWarning ||
+                guiInternalState.warnings.podFull != podWarning)
             {
-                ui_preparations_enable_cappuccino(milkPresence);
+                guiInternalState.warnings.descaling = descalingWarning;
+                guiInternalState.warnings.waterEmpty = waterWarning;
+                guiInternalState.warnings.podFull = podWarning;
+                xEventGroupSetBits(xGuiEvents, GUI_WARNINGS_BIT);
+            }
+
+            if(guiInternalState.milkHeadPresence != milkPresence)
+            {
+                guiInternalState.milkHeadPresence = milkPresence;
+                xEventGroupSetBits(xGuiEvents, GUI_ENABLE_CAPPUCCINO_BIT);
             }
 
             oldFsmStatus = fsmStatus;
-            oldMilkPresence = milkPresence;
-            return true;
         }
     }
 }

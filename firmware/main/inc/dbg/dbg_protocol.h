@@ -119,7 +119,7 @@ namespace lavazza
 		uint8_t findMsgs(const uint8_t* message, uint8_t size, uint8_t* msgsIndex);
 		bool parseGetParResponse(dbgMsg_stc& msg);
         bool checkMsg(const uint8_t* message, dbgMsg_stc &msg);
-		bool parseLivedata(dbgMsg_stc& msg);
+		void parseLivedata(dbgMsg_stc& msg);
     }
 }
 namespace crc

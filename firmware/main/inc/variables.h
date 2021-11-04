@@ -27,11 +27,21 @@
 #define WIFI_NEW_OTA_RETRY              (1 << 4)
 
 
+#define GUI_POWER_BIT                   (1 << 0)
+#define GUI_STATISTICS_DATA_BIT         (1 << 1)
+#define GUI_SETTINGS_DATA_BIT           (1 << 2)
+#define GUI_NEW_EROGATION_DATA_BIT      (1 << 3)
+#define GUI_STOP_EROGATION_BIT          (1 << 4)
+#define GUI_ENABLE_CAPPUCCINO_BIT       (1 << 5)
+#define GUI_WARNINGS_BIT                (1 << 6)
+#define GUI_MACHINE_FAULT_BIT           (1 << 7)
+
+
 /* Queue handlers */
 inline QueueHandle_t xQueueDbgUartTx, xQueueAzureTx;
 
 /* Events handlers */
-inline  EventGroupHandle_t xWifiEvents, xModuleEvents;
+inline  EventGroupHandle_t xWifiEvents, xModuleEvents, xGuiEvents;
 
 /* Task handlers */
 inline TaskHandle_t xHandleWiFi, xHandleMainTask, xHandleGui;
@@ -48,5 +58,5 @@ inline machine_connectivity_t machineConnectivity;
 
 /* Machine current state */
 inline internal_state_t machineInternalState;
-
+inline gui_status_t     guiInternalState;
 #endif // VARIABLES_H_

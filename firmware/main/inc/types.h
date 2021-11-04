@@ -110,7 +110,6 @@ static const char *ota_status_string[] = {
 
 typedef struct
 {
-	bool 					powerOffRequest;
 	coffee_type_t			desiredPreparation;
 	struct
 	{
@@ -212,5 +211,24 @@ typedef enum
     DBG_HOT_WATER = 0x15
 } dbg_special_func_code_t;
 
+typedef struct
+{
+    bool powerOn;
+    bool isFault;
+    bool milkHeadPresence;
+
+    struct
+    {
+        uint8_t temperature;
+        uint16_t dose;
+    } erogation;
+
+    struct
+    {
+        bool descaling;
+        bool podFull;
+        bool waterEmpty;
+    } warnings;    
+} gui_status_t;
 
 #endif // TYPES_H_

@@ -101,7 +101,7 @@ _UI_FUNC_DEF_(wifi);
 _UI_FUNC_DEF_(full_cleaning);
 _UI_FUNC_DEF_(fast_cleaning);
 _UI_FUNC_DEF_(standby);
-
+_UI_FUNC_DEF_(fault);
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.
@@ -158,6 +158,12 @@ void ui_preparations_enable_cappuccino(bool enable);
  * 
  */
 void ui_preparations_set_power(bool on);
+
+/**
+ * @brief Update machine fault status.
+ * 
+ */
+void ui_preparations_set_fault(bool fault);
 
 /**
  * @brief Update machine warning (descaling, pod full and water empty).

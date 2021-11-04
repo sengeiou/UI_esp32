@@ -160,6 +160,7 @@ void init_firmware()
     nvs_flash_init();
 
     xModuleEvents = xEventGroupCreate();
+    xGuiEvents = xEventGroupCreate();
     
     /*Read Certificates from Partition*/
     #if (CONFIG_AZURE_AUTHENTICATION_METHOD_X509 == 1 || CONFIG_AZURE_AUTHENTICATION_METHOD_SHARED_ACCESS_KEY == 1)
