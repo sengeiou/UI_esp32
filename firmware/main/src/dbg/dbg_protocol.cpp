@@ -125,6 +125,7 @@ namespace lavazza
                 }
                 default:
                 {
+                    parVal = 0;
                     break;
                 }
             }

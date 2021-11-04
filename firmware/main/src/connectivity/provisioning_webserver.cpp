@@ -113,7 +113,7 @@ static esp_err_t wsHandler(httpd_req_t* req)
     wsHand = req->handle;
     fd = httpd_req_to_sockfd(req);
 
-    printf("Handler %d (%d), fd %d\n", wsHand, httpServerInstance, fd);
+    //printf("Handler %d (%d), fd %d\n", wsHand, httpServerInstance, fd);
 
     httpd_ws_frame_t ws_pkt;
     uint8_t* buf = (uint8_t*)calloc(1, 1024);

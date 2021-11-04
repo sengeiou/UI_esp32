@@ -187,7 +187,7 @@ void wifi_sta_init(void)
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
     wifi_config_t wifi_sta_config = {};
-    strncpy((char*)wifi_sta_config.sta.ssid, machineConnectivity.ssid, 64);
+    strncpy((char*)wifi_sta_config.sta.ssid, machineConnectivity.ssid, 32);
     strncpy((char*)wifi_sta_config.sta.password, machineConnectivity.password, 64);
     wifi_sta_config.sta.bssid_set = false;
     wifi_sta_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
@@ -210,7 +210,7 @@ void wifi_sta_ap_init(bool hidden)
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
     wifi_config_t wifi_sta_config = {};
-    strncpy((char*)wifi_sta_config.sta.ssid, machineConnectivity.ssid, 64);
+    strncpy((char*)wifi_sta_config.sta.ssid, machineConnectivity.ssid, 32);
     strncpy((char*)wifi_sta_config.sta.password, machineConnectivity.password, 64);
     wifi_sta_config.sta.bssid_set = false;
     wifi_sta_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;

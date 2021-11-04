@@ -291,7 +291,7 @@ void azure_tx_task(void *pvParameter)
             {
                 case EROGATION_PROGRESS:
                 {
-                    ESP_LOGI(AZURE_TX_TAG, "MsgType = %d - Payload = preparation %s", xQueueAzureTxMsg.type);
+                    // ESP_LOGI(AZURE_TX_TAG, "MsgType = %d - Payload = preparation %s", xQueueAzureTxMsg.type, coffee_type_string[xQueueAzureTxMsg.payload.preparation]);
                     char* payload_str = "{\"preparation\":\"COFFEE_LONG\", \"desiredDose\":22, \"currentDose\":2}";
                     IOTHUB_MESSAGE_HANDLE message = IoTHubMessage_CreateFromByteArray((const unsigned char*) payload_str, strlen(payload_str));
                     IoTHubMessage_SetContentTypeSystemProperty(message, "application%2Fjson");

@@ -96,7 +96,7 @@ void read_certificates_from_partition(void)
 
         cert.device_common_name = (char*) malloc(sizeof(char) * strlen("deviceID"));
 
-        strncpy(cert.device_common_name, "deviceID", strlen("deviceID"));
+        strcpy(cert.device_common_name, "deviceID");
         ESP_LOGW(TAG_SECURITY, "DEFAULT COMMON NAME: %s", cert.device_common_name);
     }
     else
@@ -127,11 +127,11 @@ void memory_check_task(void* p)
     {
         freeheap = esp_get_free_heap_size();
         if(freeheap > 20000)
-            ESP_LOGI(MEMORY_CHECK_TAG, "Free heap memory: %lu", freeheap);
+            ESP_LOGI(MEMORY_CHECK_TAG, "Free heap memory: %u", freeheap);
         else if(freeheap > 10000)
-            ESP_LOGW(MEMORY_CHECK_TAG, "Free heap memory: %lu", freeheap);
+            ESP_LOGW(MEMORY_CHECK_TAG, "Free heap memory: %u", freeheap);
         else
-            ESP_LOGE(MEMORY_CHECK_TAG, "Free heap memory: %lu", freeheap);
+            ESP_LOGE(MEMORY_CHECK_TAG, "Free heap memory: %u", freeheap);
 
         if(nullptr != xHandleWiFi)
             ESP_LOGD(MEMORY_CHECK_TAG, "%s -> %d", "wifi_task", uxTaskGetStackHighWaterMark(xHandleWiFi));
@@ -287,6 +287,16 @@ void main_task(void* p)
                             break;
                         }
                     }
+                    break;
+                }
+                case FIRMWARE_UPDATE:
+                {
+                    //To be done
+                    break;
+                }
+                default:
+                {
+                    //Do nothing
                     break;
                 }
             }

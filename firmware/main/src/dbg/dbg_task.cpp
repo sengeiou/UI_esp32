@@ -148,7 +148,13 @@ void special_function(dbg_special_func_code_t cmd)
             uint8_t data[] = {0xA5, 0x36, 0x01, 0x15, 0xD4, 0x53};
             add_to_queue(xQueueDbgUartTx, data);
             break;
-        }       
+        }
+        case DBG_NONE:
+        default:
+        {
+            //Do nothing
+            break;
+        }
     }
 }
 
