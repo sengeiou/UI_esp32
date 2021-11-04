@@ -316,6 +316,8 @@ void ui_erogation_show(void *data)
     }
 
     lv_obj_set_click(btn_stop, true);
+    lv_chart_clear_serie(obj_graph, obj_temp_series);
+    lv_chart_clear_serie(obj_graph, obj_pressure_series);
 
     ui_status_bar_show(false);
     isErogationPageActive = true;
