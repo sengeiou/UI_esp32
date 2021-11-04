@@ -78,12 +78,11 @@ void ui_status_bar_set_water_empty_warning(bool warning)
 
 void ui_status_bar_update_wifi_status(bool active)
 {
-    isWifiEnabled = active;
-
-    if(isWifiEnabled)
-        lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLUE);
-    else
-        lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    if(isWifiEnabled != active)
+    {
+        isWifiEnabled = active;
+        lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, isWifiEnabled ? LV_COLOR_BLUE : LV_COLOR_GRAY);
+    }
 }
 
 void ui_status_bar_init(void)
@@ -223,7 +222,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
             {
                 if(true == isWifiPageActive)
                 {
-                    ui_status_bar_update_wifi_status(isWifiEnabled);   
+                    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, isWifiEnabled ? LV_COLOR_BLUE : LV_COLOR_GRAY);
                     ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
                 }
                 else

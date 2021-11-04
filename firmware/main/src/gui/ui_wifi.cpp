@@ -21,6 +21,7 @@ static lv_obj_t* obj_btn_save = NULL;
 
 bool isWifiPageActive = false;
 
+static void basic_popup_cb(lv_obj_t* obj, lv_event_t event);
 
 static void kb_event_cb(lv_obj_t* keyboard, lv_event_t event)
 {
@@ -67,15 +68,26 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
                 machineConnectivity.wifiEnabled = true;
                 utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 1);
                 vTaskDelay(1000/portTICK_PERIOD_MS);
+                strcpy(machineConnectivity.ssid, lv_textarea_get_text(obj_ssid_area));
+                strcpy(machineConnectivity.password, lv_textarea_get_text(obj_password_area));
+                machineConnectivity.wifiEnabled = true;
+                xEventGroupSetBits(xWifiEvents, WIFI_CONFIGURATION_BIT);
+
+                ui_status_bar_update_wifi_status(machineConnectivity.wifiEnabled);
+                ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+            }
+            else
+            {
+                static const char* btns[] = { "OK", "" };
+                lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_msgbox_set_text(msgbox, "Please reset wifi\n    from settings");
+                lv_msgbox_add_btns(msgbox, btns);
+                lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+                lv_obj_set_event_cb(msgbox, basic_popup_cb);
             }
             
-            strcpy(machineConnectivity.ssid, lv_textarea_get_text(obj_ssid_area));
-            strcpy(machineConnectivity.password, lv_textarea_get_text(obj_password_area));
-            machineConnectivity.wifiEnabled = true;
-            xEventGroupSetBits(xWifiEvents, WIFI_CONFIGURATION_BIT);
-
-            ui_status_bar_update_wifi_status(machineConnectivity.wifiEnabled);
-            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+            
             return;
         }
     }
@@ -116,6 +128,8 @@ void ui_wifi_init(void *data)
     lv_obj_set_event_cb(obj_ssid_area, ta_event_cb);
     lv_obj_set_event_cb(obj_password_area, ta_event_cb);
     lv_obj_set_event_cb(obj_btn_save, btn_cb);
+
+    ui_status_bar_update_wifi_status(machineConnectivity.wifiEnabled);
 }
 
 void ui_wifi_show(void *data)
@@ -162,4 +176,16 @@ void ui_wifi_hide(void *data)
         }
     }
     isWifiPageActive = false;
+}
+
+
+static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
+{
+    if(LV_EVENT_VALUE_CHANGED == event)
+    {
+        if(0 == lv_msgbox_get_active_btn(obj))
+        {
+            lv_obj_del(obj);
+        }
+    }
 }
