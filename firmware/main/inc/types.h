@@ -228,7 +228,12 @@ typedef struct
         bool descaling;
         bool podFull;
         bool waterEmpty;
-    } warnings;    
+    } warnings;
+
+    struct
+    {
+        coffee_type_t coffeeType;
+    } cloudReq;
 } gui_status_t;
 
 #endif // TYPES_H_

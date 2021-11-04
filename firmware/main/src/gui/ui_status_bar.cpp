@@ -1,5 +1,6 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
+#include "variables.h"
 
 #define LOG_TAG "UI_STATUS"
 
@@ -115,7 +116,7 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_border_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_set_style_local_value_font(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
-    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_value_color(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, machineConnectivity.wifiEnabled ? LV_COLOR_BLUE : LV_COLOR_GRAY);
     lv_obj_set_style_local_value_str(btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_WIFI);
     lv_obj_align(btn_wifi, status_bar, LV_ALIGN_IN_LEFT_MID, 15, 0);
     lv_obj_set_event_cb(btn_wifi, btn_cb);

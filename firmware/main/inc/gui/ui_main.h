@@ -166,6 +166,13 @@ void ui_preparations_set_power(bool on);
 void ui_preparations_set_fault(bool fault);
 
 /**
+ * @brief Set desired preparation.
+ * 
+ */
+void ui_preparations_set_desired(coffee_type_t prep);
+
+
+/**
  * @brief Update machine warning (descaling, pod full and water empty).
  * 
  */

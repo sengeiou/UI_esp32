@@ -8,41 +8,6 @@
 #include "utils.h"
 #include "ui_main.h"
 
-static uint8_t createErrorsBitField()
-{
-    dbgErrors_t error_union;
-    // error_union.bits.temperature = machineInternalState.errors.temperature;
-    // error_union.bits.heaterTimeout = machineInternalState.errors.heaterTimeout;
-    // error_union.bits.notUsed1 = 0;
-    // error_union.bits.ntc = machineInternalState.errors.ntc;
-    // error_union.bits.zc = machineInternalState.errors.zc;
-    // error_union.bits.notUsed2 = 0;
-    return error_union.bitFieldValue;
-}
-
-static uint8_t createLogicValuesBitField()
-{
-    dbgLogicValues_t logicValue_union;
-    // logicValue_union.bits.shortCoffeeButtonStuck = (uiStatus.buttonShort == STUCK_CLICK);
-    // logicValue_union.bits.longCoffeeButtonStuck = (uiStatus.buttonLong == STUCK_CLICK);
-    // logicValue_union.bits.pumpState = (machineInternalState.pumpActivationDuty != 0) ? 1 : 0;
-    // logicValue_union.bits.waterValveState = (uint8_t)machineInternalState.waterValveState;
-    // logicValue_union.bits.currentPreparation = (uint8_t)machineInternalState.desiredPreparation;
-    // logicValue_union.bits.firstInstallation = 0;
-    // logicValue_union.bits.notUsed = 0;
-    return logicValue_union.bitFieldValue;
-}
-
-static uint8_t createWarningStatusBitField()
-{
-    dbgWarningStatus_t warningStatus_union;
-    // warningStatus_union.bits.podFull = (machineRegisters.stats.podFullDeliveries >= CONFIG_MAX_POD_CONTAINER);
-    // warningStatus_union.bits.descalingProc = (machineRegisters.stats.descaleState != DESCALING_NOT_NEEDED);
-    // warningStatus_union.bits.emptyWater = (machineInternalState.waterTankState == WT_EMPTY);
-    // warningStatus_union.bits.notUsed = 0;
-    return warningStatus_union.bitFieldValue;
-}
-
 namespace lavazza
 {      
     namespace common

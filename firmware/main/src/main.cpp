@@ -161,6 +161,7 @@ void init_firmware()
 
     xModuleEvents = xEventGroupCreate();
     xGuiEvents = xEventGroupCreate();
+    xWifiEvents = xEventGroupCreate();
     
     /*Read Certificates from Partition*/
     #if (CONFIG_AZURE_AUTHENTICATION_METHOD_X509 == 1 || CONFIG_AZURE_AUTHENTICATION_METHOD_SHARED_ACCESS_KEY == 1)
@@ -180,7 +181,8 @@ void start_tasks()
     utils::system::start_thread_core(&dbg_task, &xHandleDbg, "dbg_task", 1024*4, 4, 0);
     utils::system::start_thread_core(&gui_task, &xHandleGui, "gui_task", 1024*32, 4, 1);
 
-    utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 1);
+    if(true == machineConnectivity.wifiEnabled)
+        utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 1);
 }
 
 void main_task(void* p)
@@ -188,8 +190,108 @@ void main_task(void* p)
     if(ESP_OK != esp_task_wdt_add(nullptr))
         ESP_LOGE(MAIN_TAG, "Failed to add watchdog to Main Task");
 
+    EventBits_t uxBits;
     while(true)
     {
+        uxBits = xEventGroupWaitBits(xModuleEvents, EVENT_INTERACTION_CLOUD, pdFALSE, pdFALSE, MAIN_LOOP_PERIOD_MS/portTICK_PERIOD_MS);
+
+        if(EVENT_INTERACTION_CLOUD & uxBits)
+        {
+            xEventGroupClearBits(xModuleEvents, EVENT_INTERACTION_CLOUD);
+            
+            switch(machineInternalState.azureRequest.command)
+            {
+                case POWER_ON:
+                {
+                    if(false == guiInternalState.powerOn)
+                    {
+                        special_function(DBG_ON_OFF);
+                    }
+                    break;
+                }
+                case POWER_OFF:
+                {
+                    if(true == guiInternalState.powerOn)
+                    {
+                        special_function(DBG_ON_OFF);
+                    }
+                    break;
+                }
+                case MAKE_COFFEE:
+                {
+                    switch(machineInternalState.azureRequest.desiredPreparation)
+                    {
+                        case COFFEE_SHORT:
+                        {
+                            guiInternalState.cloudReq.coffeeType = COFFEE_SHORT;
+                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            break;
+                        }
+                        case COFFEE_MEDIUM:
+                        {
+                            guiInternalState.cloudReq.coffeeType = COFFEE_MEDIUM;
+                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            break;
+                        }
+                        case COFFEE_LONG:
+                        {
+                            guiInternalState.cloudReq.coffeeType = COFFEE_LONG;
+                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            break;
+                        }
+                        case CAPPUCCINO_SHORT:
+                        {
+                            if(true == guiInternalState.milkHeadPresence)
+                            {
+                                guiInternalState.cloudReq.coffeeType = CAPPUCCINO_SHORT;
+                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            }
+                            break;
+                        }
+                        case CAPPUCCINO_MEDIUM:
+                        {
+                            if(true == guiInternalState.milkHeadPresence)
+                            {
+                                guiInternalState.cloudReq.coffeeType = CAPPUCCINO_MEDIUM;
+                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            }
+                            break;
+                        }
+                        case CAPPUCCINO_DOUBLE:
+                        {
+                            if(true == guiInternalState.milkHeadPresence)
+                            {
+                                guiInternalState.cloudReq.coffeeType = CAPPUCCINO_DOUBLE;
+                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            }
+                            break;
+                        }
+                        case HOT_MILK:
+                        {
+                            if(true == guiInternalState.milkHeadPresence)
+                            {
+                                guiInternalState.cloudReq.coffeeType = HOT_MILK;
+                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            }
+                            break;
+                        }
+                        case HOT_WATER:
+                        {
+                            guiInternalState.cloudReq.coffeeType = HOT_WATER;
+                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
+                            break;
+                        }
+                        default:
+                        {
+                            //Do nothing
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
         if(ESP_OK != esp_task_wdt_reset())
         {
             ESP_LOGE(MAIN_TAG, "Failed to reset watchdog");

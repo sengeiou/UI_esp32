@@ -18,7 +18,6 @@
 
 /* Events handlers */
 #define EVENT_INTERACTION_CLOUD             (1 << 0)
-#define EVENT_INTERACTION_LOCAL             (1 << 1)
 
 #define WIFI_CONNECTED_BIT              (1 << 0)
 #define WIFI_DISCONNECTED_BIT           (1 << 1)
@@ -35,6 +34,8 @@
 #define GUI_ENABLE_CAPPUCCINO_BIT       (1 << 5)
 #define GUI_WARNINGS_BIT                (1 << 6)
 #define GUI_MACHINE_FAULT_BIT           (1 << 7)
+#define GUI_CLOUD_REQUEST_BIT           (1 << 8)
+
 
 
 /* Queue handlers */

@@ -209,7 +209,6 @@ void ui_preparations_init(void *data)
     lv_obj_set_event_cb(obj_cappuccino_medium, btn_cappuccino_cb);
     lv_obj_set_event_cb(obj_milk_hot, btn_cappuccino_cb);
 
-    ui_status_bar_show(true);
     lv_obj_set_event_cb(obj_tabview, tabview_cb);
 
     ui_preparations_state = ui_state_show;
@@ -242,6 +241,7 @@ void ui_preparations_show(void *data)
     lv_obj_set_style_local_image_recolor(img_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_tabview_set_tab_act(obj_tabview, lastTabActive, LV_ANIM_OFF);
+    ui_status_bar_show(true);
 }
 
 void ui_preparations_hide(void *data)
@@ -259,6 +259,13 @@ void ui_preparations_hide(void *data)
         ui_preparations_state = ui_state_hide;
     }
 }
+
+void ui_preparations_set_desired(coffee_type_t prep)
+{
+    preparation.desired_prep = prep;
+    preparation.isError = false;
+    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+}   
 
 static void tabview_cb(lv_obj_t* obj, lv_event_t event)
 {

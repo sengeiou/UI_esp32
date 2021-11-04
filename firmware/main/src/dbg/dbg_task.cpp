@@ -286,6 +286,6 @@ void dbg_task(void *pvParameter)
     dbg_init_uart();
     utils::system::start_thread_core(&dbg_tx_task, &xHandleDbgTx, "dbg_tx_task", 1024*4, 4, 0);
     disable_livedata();
-    utils::system::start_thread_core(&dbg_rx_task, &xHandleDbgRx, "dbg_rx_task", 1024*14, 4, 0);
+    utils::system::start_thread_core(&dbg_rx_task, &xHandleDbgRx, "dbg_rx_task", 1024*4, 4, 0);
     vTaskDelete(nullptr);
 }

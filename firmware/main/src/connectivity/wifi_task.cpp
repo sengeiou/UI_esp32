@@ -247,9 +247,10 @@ void wifi_task(void *pvParameter)
         netifCfg = nullptr;
     }
 
+    machineConnectivity.wifiEnabled = true;
+    
     if(true == machineConnectivity.wifiEnabled)
     {
-        xWifiEvents = xEventGroupCreate();
         EventBits_t bits;
 
         esp_err_t err = nvs_flash_init();

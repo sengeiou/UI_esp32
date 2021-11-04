@@ -1,8 +1,9 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 #include "variables.h"
-
-
+#include "spiffs_utils.h"
+#include "wifi_task.h"
+#include "system_utils.h"
 
 /* UI function declaration */
 ui_func_desc_t ui_wifi_func = {
@@ -61,12 +62,19 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
     {
         if(obj_btn_save == obj)
         {
+            if(false == machineConnectivity.wifiEnabled)
+            {
+                machineConnectivity.wifiEnabled = true;
+                utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 1);
+                vTaskDelay(1000/portTICK_PERIOD_MS);
+            }
+            
             strcpy(machineConnectivity.ssid, lv_textarea_get_text(obj_ssid_area));
             strcpy(machineConnectivity.password, lv_textarea_get_text(obj_password_area));
             machineConnectivity.wifiEnabled = true;
-            machineConnectivity.status = WIFI_CONFIGURED;
-            
-            ui_status_bar_update_wifi_status(true);
+            xEventGroupSetBits(xWifiEvents, WIFI_CONFIGURATION_BIT);
+
+            ui_status_bar_update_wifi_status(machineConnectivity.wifiEnabled);
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
             return;
         }

@@ -1,6 +1,6 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
-
+#include "variables.h"
 
 #define BUTTON_X_SIZE     140
 #define BUTTON_Y_SIZE     110
@@ -38,7 +38,8 @@ static void wifi_reset_cb(lv_obj_t *obj, lv_event_t event)
     {
         if(1 == lv_msgbox_get_active_btn(obj))
         {
-            ui_status_bar_update_wifi_status(false);
+            machineConnectivity.wifiEnabled = false;
+            ui_status_bar_update_wifi_status(machineConnectivity.wifiEnabled);
         }
 
         ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
