@@ -7,8 +7,7 @@ device_prv_key,	data, 	nvs,   	    0x20000,	8K,     encrypted
 device_cert_bd,	data, 	nvs,   	    0x22000,	16K,
 storage_bd,     data,	nvs,		0x28000,	16K
 coredump,		data,	coredump,	0x30000,	64K,    encrypted
-factory,        app,    factory,    0x40000,    2M,     encrypted
-ota_0,			app,  	ota_0,	  	0x240000,   2M,     encrypted
-ota_1,			app,  	ota_1,		0x440000,	2M,     encrypted
+ota_0,			app,  	ota_0,	  	0x40000,    3M,     encrypted
+ota_1,			app,  	ota_1,		0x340000,	3M,     encrypted
 storage,        data,   spiffs,     0x640000,   1M,
 data_storage,   data,	spiffs,		0x740000,	536K,    
