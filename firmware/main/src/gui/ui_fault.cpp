@@ -1,7 +1,11 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 
-#define LOG_TAG "UI_FAULT"
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_FAULT"
+#else
+    #define LOG_TAG "UI_FAULT"
+#endif
 
 /* UI function declaration */
 ui_func_desc_t ui_fault_func = {

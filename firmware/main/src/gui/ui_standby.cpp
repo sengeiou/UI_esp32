@@ -3,7 +3,11 @@
 #include "lv_qrcode.h"
 #include "dbg_task.h"
 
-#define LOG_TAG "UI_STANDBY"
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_STANDBY"
+#else
+    #define LOG_TAG "UI_STANDBY"
+#endif
 
 /* UI function declaration */
 ui_func_desc_t ui_standby_func = {

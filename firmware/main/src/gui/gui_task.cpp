@@ -18,10 +18,16 @@
 
 #include "variables.h"
 
-#define LCD_SIZE_BUFF (LV_HOR_RES_MAX * LV_VER_RES_MAX)
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "GUI_TASK"
+#else
+    #define LOG_TAG "GUI_TASK"
+#endif
 
-#define LV_TICK_PERIOD_MS 1
-static void lv_tick_task(void *arg)
+#define LCD_SIZE_BUFF       (LV_HOR_RES_MAX * LV_VER_RES_MAX)
+#define LV_TICK_PERIOD_MS   1
+
+static void lv_tick_task(void* arg)
 {
     (void) arg;
     lv_tick_inc(LV_TICK_PERIOD_MS);
@@ -111,7 +117,7 @@ void gui_task(void* data)
             heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM),
             heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
             heap_caps_get_total_size(MALLOC_CAP_SPIRAM));
-        ESP_LOGI("MEM", "%s", buffer);
+        ESP_LOGI(LOG_TAG, "%s", buffer);
         #endif
     }
     

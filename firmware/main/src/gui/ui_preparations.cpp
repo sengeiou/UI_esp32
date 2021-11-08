@@ -13,7 +13,11 @@
 
 ui_preparation_t    preparation;
 
-#define LOG_TAG "UI_PREP"
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_PREP"
+#else
+    #define LOG_TAG "UI_PREP"
+#endif
 
 /* UI function declaration */
 ui_func_desc_t ui_preparations_func = {

@@ -2,7 +2,11 @@
 #include "lvgl_port.h"
 #include "variables.h"
 
-#define LOG_TAG "UI_STATUS"
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_STATUS"
+#else
+    #define LOG_TAG "UI_STATUS"
+#endif
 
 /* LVGL objects defination */
 static lv_obj_t* status_bar = NULL;

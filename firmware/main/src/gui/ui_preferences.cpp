@@ -9,7 +9,11 @@
 #define Y_CENTER        65
 #define Y_OFFSET        20
 
-#define LOG_TAG "UI_PREF"
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_PREF"
+#else
+    #define LOG_TAG "UI_PREF"
+#endif
 
 /* UI function declaration */
 ui_func_desc_t ui_preferences_func = {

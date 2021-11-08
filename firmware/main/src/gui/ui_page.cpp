@@ -5,6 +5,12 @@ extern "C" {
 #include "ui_main.h"
 #include "lvgl_port.h"
 
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_PAGE"
+#else
+    #define LOG_TAG "UI_PAGE"
+#endif
+
 ui_func_desc_t ui_page_func = {
     .name = "Page",
     .init = ui_page_init,

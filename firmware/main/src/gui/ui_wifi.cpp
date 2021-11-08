@@ -5,6 +5,12 @@
 #include "wifi_task.h"
 #include "system_utils.h"
 
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_WIFI"
+#else
+    #define LOG_TAG "UI_WIFI"
+#endif
+
 /* UI function declaration */
 ui_func_desc_t ui_wifi_func = {
     .name = "ui_wifi",

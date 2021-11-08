@@ -2,6 +2,12 @@
 #include "dbg_task.h"
 #include "lvgl_port.h"
 
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_STATS"
+#else
+    #define LOG_TAG "UI_STATS"
+#endif
+
 /* UI function declaration */
 ui_func_desc_t ui_statistics_func = {
     .name = "ui_statistics",

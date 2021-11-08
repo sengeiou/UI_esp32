@@ -2,7 +2,11 @@
 #include "lvgl_port.h"
 #include "dbg_task.h"
 
-#define LOG_TAG "UI_EROG"
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_EROG"
+#else
+    #define LOG_TAG "UI_EROG"
+#endif
 
 /* UI function declaration */
 ui_func_desc_t ui_erogation_func = {

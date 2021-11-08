@@ -1,24 +1,3 @@
-/**
- * @file lvgl_port.c
- * @brief LVGL required fuctions
- * @version 0.1
- * @date 2021-01-14
- * 
- * @copyright Copyright 2021 Espressif Systems (Shanghai) Co. Ltd.
- *
- *      Licensed under the Apache License, Version 2.0 (the "License");
- *      you may not use this file except in compliance with the License.
- *      You may obtain a copy of the License at
- *
- *               http://www.apache.org/licenses/LICENSE-2.0
- * 
- *      Unless required by applicable law or agreed to in writing, software
- *      distributed under the License is distributed on an "AS IS" BASIS,
- *      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *      See the License for the specific language governing permissions and
- *      limitations under the License.
- */
-
 #include "lvgl_port.h"
 #include <stdio.h>
 
@@ -130,15 +109,16 @@ esp_err_t lvgl_init(size_t buffer_pix_size, uint32_t buffer_caps)
     // }
 
     /* Task for lvgl event handler and screen flush */
-    if (lv_port_default_handler_en)
+    if(lv_port_default_handler_en)
     {
         if (pdPASS != xTaskCreate(
             (TaskFunction_t)        lv_handler_task,
-            (const char * const)    "LVGL Handler Task",
+            (const char * const)    "LVGL_Task",
             (const uint32_t)        16 * 1024,
-            (void * const)          NULL,
+            (void* const)           NULL,
             (UBaseType_t)           configMAX_PRIORITIES - 3,
-            (TaskHandle_t * const)  NULL)) {
+            (TaskHandle_t* const)   NULL)) 
+        {
             return ESP_ERR_NO_MEM;
         }
     }

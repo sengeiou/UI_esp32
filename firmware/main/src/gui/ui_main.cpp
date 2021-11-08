@@ -4,8 +4,11 @@
 #include "esp_log.h"
 #include "dbg_task.h"
 
-#define LOG_TAG "UI_MAIN"
-
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_MAIN"
+#else
+    #define LOG_TAG "UI_MAIN"
+#endif
 
 void* data_on_off = NULL;
 void* data_short_coffee = NULL;
