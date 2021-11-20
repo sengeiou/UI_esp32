@@ -1,7 +1,11 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 
-#define LOG_TAG "UI_FULL_CLEAN"
+#ifdef ADVANCED_DEBUG
+    #define LOG_TAG LINE_STRING "|" "UI_FULL_CLEAN"
+#else
+    #define LOG_TAG "UI_FULL_CLEAN"
+#endif
 
 /* UI function declaration */
 ui_func_desc_t ui_full_cleaning_func = {
