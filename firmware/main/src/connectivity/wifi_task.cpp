@@ -16,7 +16,6 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
-#include "provisioning_webserver.h"
 #include "sdkconfig.h"
 #include "variables.h"
 #include "system_utils.h"
@@ -101,7 +100,6 @@ void wifi_init(void)
         {
             setWifiLed(LED_BLINKING, WIFI_AP_LED_PERIOD, 20);
             wifi_ap_init();
-            startHttpServer();
             ESP_LOGI(TAG_WIFI, "WiFi not provisioned. Stating in AccessPoint mode");
             break;
         }
@@ -110,7 +108,6 @@ void wifi_init(void)
         case WIFI_LAVAZZA_CONNECTED:
         {
             setWifiLed(LED_BLINKING, WIFI_STA_CONNECTION_LED_PERIOD, 50);
-            stopHttpServer();
             wifi_sta_init();
             ESP_LOGI(TAG_WIFI, "WiFi provisioned. Stating in Station mode. Trying to connect to network: %s with password %s", machineConnectivity.ssid, machineConnectivity.password);
 
@@ -131,9 +128,7 @@ void wifi_init(void)
 }
 
 void wifi_deinit(void)
-{
-    stopHttpServer();
-    
+{    
     ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_station_event_handler));
     ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_station_event_handler));
 

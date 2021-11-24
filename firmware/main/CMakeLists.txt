@@ -13,13 +13,9 @@ set(incdir 	"inc"
 			"inc/dbg"
 			"inc/connectivity"
 			"lv_lib_qrcode")	
-		
-set(resources 	"resources/index.html"
-		"resources/menu.html")
 					
 idf_component_register(SRC_DIRS ${srcs_dirs}
-                        INCLUDE_DIRS ${incdir}
-                        EMBED_FILES ${resources})
+                        INCLUDE_DIRS ${incdir})
 					
 component_compile_definitions(ADVANCED_DEBUG)
 
