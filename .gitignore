@@ -2,6 +2,5 @@ firmware/build
 firmware/main/src/complete_ui
 firmware/sdkconfig
 firmware/sdkconfig.old
-components
 esp-idf*
 .vscode
