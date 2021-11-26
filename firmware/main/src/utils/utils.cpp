@@ -23,6 +23,7 @@
 #include <chrono>
 
 #include "dbg_protocol.h"
+#include "camera_protocol.h"
 #include "sdkconfig.h"
 
 #ifdef ADVANCED_DEBUG
@@ -124,6 +125,7 @@ void init_queue(void)
 {
     xQueueAzureTx = xQueueCreate(5, sizeof(azure_queue_message_t));
     xQueueDbgUartTx = xQueueCreate(5, DBG_MESSAGE_LENGTH*sizeof(uint8_t));
+    xQueueCamUartTx = xQueueCreate(5, CAM_MESSAGE_LENGTH*sizeof(uint8_t));
 }
 
 void init_gpio(void)
@@ -147,5 +149,7 @@ void init_gpio(void)
     gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_RXD);
     gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_TXD);
 
-    xQueueDbgUartTx = xQueueCreate(5, DBG_MESSAGE_LENGTH*sizeof(uint8_t));
+    /* Camera Uart */
+    gpio_reset_pin((gpio_num_t)CONFIG_CAM_UART_RXD);
+    gpio_reset_pin((gpio_num_t)CONFIG_CAM_UART_TXD);
 }

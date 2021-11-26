@@ -39,7 +39,7 @@
 
 
 /* Queue handlers */
-inline QueueHandle_t xQueueDbgUartTx, xQueueAzureTx;
+inline QueueHandle_t xQueueDbgUartTx, xQueueCamUartTx, xQueueAzureTx;
 
 /* Events handlers */
 inline  EventGroupHandle_t xWifiEvents, xModuleEvents, xGuiEvents;
@@ -48,6 +48,7 @@ inline  EventGroupHandle_t xWifiEvents, xModuleEvents, xGuiEvents;
 inline TaskHandle_t xHandleWiFi, xHandleMainTask, xHandleGui;
 inline TaskHandle_t xHandleAzure, xHandleAzureTx, xHandleOta;
 inline TaskHandle_t xHandleUi, xHandleDbg, xHandleDbgRx, xHandleDbgTx, xHandleDbgLiveData;
+inline TaskHandle_t xHandleCam, xHandleCamRx, xHandleCamTx;
 
 /* Azure variables */
 inline Certificates cert;

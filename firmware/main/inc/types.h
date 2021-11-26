@@ -211,6 +211,15 @@ typedef enum
     DBG_HOT_WATER = 0x15
 } dbg_special_func_code_t;
 
+typedef enum
+{
+    CAM_NONE = 0x00,
+    CAM_TAKE_PHOTO = 0x01,
+    CAM_GET_PHOTO = 0x02,
+    CAM_ENABLE_LED = 0x03,
+    CAM_DISABLE_LED = 0x04,
+} camera_func_code_t;
+
 typedef struct
 {
     bool powerOn;
