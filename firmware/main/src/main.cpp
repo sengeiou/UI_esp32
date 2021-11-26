@@ -170,7 +170,7 @@ void init_firmware()
     
     init_queue();
     init_spiffs_memory();
-
+    init_gpio();
     esp_task_wdt_init(60, false); //Init watchdog
 }
 

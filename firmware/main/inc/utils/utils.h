@@ -50,5 +50,6 @@ namespace utils::time
 void firmware_restart(uint8_t delay_sec);
 
 void init_queue(void);
+void init_gpio(void);
 
 #endif // UTILS_H_

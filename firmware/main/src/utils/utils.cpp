@@ -125,3 +125,27 @@ void init_queue(void)
     xQueueAzureTx = xQueueCreate(5, sizeof(azure_queue_message_t));
     xQueueDbgUartTx = xQueueCreate(5, DBG_MESSAGE_LENGTH*sizeof(uint8_t));
 }
+
+void init_gpio(void)
+{
+    /* Touch controller */
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_MISO);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_MOSI);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_CLK);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_CS);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_PIN_IRQ);
+
+    /* TFT display */
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_MOSI);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_MISO);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_CLK);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_CS);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_PIN_DC);
+    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_PIN_RST);
+
+    /* DBG Uart */
+    gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_RXD);
+    gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_TXD);
+
+    xQueueDbgUartTx = xQueueCreate(5, DBG_MESSAGE_LENGTH*sizeof(uint8_t));
+}
