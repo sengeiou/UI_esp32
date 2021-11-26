@@ -102,6 +102,7 @@ _UI_FUNC_DEF_(full_cleaning);
 _UI_FUNC_DEF_(fast_cleaning);
 _UI_FUNC_DEF_(standby);
 _UI_FUNC_DEF_(fault);
+_UI_FUNC_DEF_(recognition);
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.

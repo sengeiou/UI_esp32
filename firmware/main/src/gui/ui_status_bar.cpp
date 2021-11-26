@@ -15,10 +15,12 @@ static lv_obj_t* btn_setting = NULL;
 static lv_obj_t* btn_pod = NULL;
 static lv_obj_t* btn_descaling = NULL;
 static lv_obj_t* btn_water = NULL;
+static lv_obj_t* btn_recognition = NULL;
 
 static lv_obj_t* img_descaling_warn = NULL;
 static lv_obj_t* img_pod_warn = NULL;
 static lv_obj_t* img_water_warn = NULL;
+static lv_obj_t* img_recognition = NULL;
 
 
 extern bool isPreferencesPageActive;
@@ -28,6 +30,8 @@ extern bool isErogationPageActive;
 extern bool isWifiPageActive;
 extern bool isDescalingPageActive;
 extern bool isCleaningPageActive;
+extern bool isRecognitionPageActive;
+
 
 static bool isWifiEnabled = false;
 
@@ -130,7 +134,7 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_bg_color(btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(btn_descaling, status_bar, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align(btn_descaling, status_bar, LV_ALIGN_CENTER, -30, 0);
     lv_obj_set_event_cb(btn_descaling, btn_warning_cb);
 
     img_descaling_warn = lv_img_create(btn_descaling, NULL);
@@ -145,7 +149,7 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_bg_color(btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(btn_pod, status_bar, LV_ALIGN_CENTER, -65, 0);
+    lv_obj_align(btn_pod, status_bar, LV_ALIGN_CENTER, -95, 0);
     lv_obj_set_event_cb(btn_pod, btn_warning_cb);
     
     img_pod_warn = lv_img_create(btn_pod, NULL);
@@ -160,7 +164,7 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_bg_color(btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(btn_water, status_bar, LV_ALIGN_CENTER, 65, 0);
+    lv_obj_align(btn_water, status_bar, LV_ALIGN_CENTER, 30, 0);
     lv_obj_set_event_cb(btn_water, btn_warning_cb);
 
     img_water_warn = lv_img_create(btn_water, NULL);
@@ -168,6 +172,18 @@ void ui_status_bar_init(void)
     lv_img_set_zoom(img_water_warn, 128);
     lv_obj_set_style_local_image_recolor_opa(img_water_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
     lv_obj_align(img_water_warn, NULL, LV_ALIGN_CENTER, 0, 0);
+
+    btn_recognition = lv_obj_create(status_bar, NULL);
+    lv_obj_set_width(btn_recognition, 58);
+    lv_obj_set_style_local_radius(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);
+    lv_obj_set_style_local_bg_color(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_width(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_value_font(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
+    lv_obj_set_style_local_value_color(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_value_str(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_EYE_OPEN);
+    lv_obj_align(btn_recognition, status_bar, LV_ALIGN_CENTER, 95, 0);
+    lv_obj_set_event_cb(btn_recognition, btn_cb);
 
     lv_obj_set_style_local_image_recolor(img_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_image_recolor(img_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
@@ -237,6 +253,28 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
             }
             return;
         }
+
+        if(btn_recognition == obj) 
+        {
+            if( false == isPreferencesPageActive &&
+                false == isSettingsPageActive && 
+                false == isStatisticsPageActive &&
+                false == isErogationPageActive)
+            {
+                if(true == isRecognitionPageActive)
+                {
+                    lv_obj_set_style_local_value_color(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+                    ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+                }
+                else
+                {
+                    lv_obj_set_style_local_value_color(btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+                    ui_show(&ui_recognition_func, UI_SHOW_OVERRIDE);
+                }
+            }
+            return;
+        }
+        
     }
 }
 
