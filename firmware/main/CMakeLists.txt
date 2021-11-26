@@ -13,7 +13,12 @@ set(incdir 	"inc"
 			"inc/dbg"
 			"inc/connectivity"
 			"lv_lib_qrcode")	
-					
+
+set(COMPONENT_REQUIRES
+    esp-azure
+	lvgl
+	lvgl_esp32_drivers)
+
 idf_component_register(SRC_DIRS ${srcs_dirs}
                         INCLUDE_DIRS ${incdir})
 					
