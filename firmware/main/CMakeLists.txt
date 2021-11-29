@@ -3,6 +3,7 @@ set(srcs_dirs 	"src"
 				"src/gui"
 				"src/utils"
 				"src/dbg"
+				"src/camera"
 				"src/connectivity"
 				"lv_fonts"
 				"lv_lib_qrcode")
@@ -11,6 +12,7 @@ set(incdir 	"inc"
 			"inc/gui"
 			"inc/utils"
 			"inc/dbg"
+			"inc/camera"
 			"inc/connectivity"
 			"lv_lib_qrcode")	
 
