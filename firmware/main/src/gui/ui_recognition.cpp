@@ -40,12 +40,30 @@ void ui_recognition_init(void *data)
     lv_obj_align(obj_container, NULL, LV_ALIGN_CENTER, 0, 20);
     lv_page_set_scrl_layout(obj_container, LV_LAYOUT_PRETTY_TOP);
     lv_page_set_scrl_height(obj_container, 250);
-    lv_page_set_scrlbar_mode(obj_container, LV_SCRLBAR_MODE_AUTO);
+    lv_page_set_scrlbar_mode(obj_container, LV_SCRLBAR_MODE_OFF);
+
+    obj_take_photo_btn = lv_obj_create(obj_container, NULL);
+    lv_obj_set_size(obj_take_photo_btn, 200, 100);
+    lv_obj_set_style_local_bg_color(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_bg_color(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
+    lv_obj_set_style_local_radius(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
+    lv_obj_set_style_local_border_width(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_align(obj_take_photo_btn, obj_container, LV_ALIGN_IN_TOP_MID, 90, 100);
+    lv_obj_set_auto_realign(obj_take_photo_btn, true);
+
+    obj_get_photo_btn = lv_obj_create(obj_container, NULL);
+    lv_obj_set_size(obj_get_photo_btn, 200, 100);
+    lv_obj_set_style_local_bg_color(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_bg_color(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
+    lv_obj_set_style_local_radius(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
+    lv_obj_set_style_local_border_width(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_align(obj_get_photo_btn, obj_container, LV_ALIGN_IN_TOP_MID, -90, 100);
+    lv_obj_set_auto_realign(obj_get_photo_btn, true);
 
     obj_slider_flash = lv_slider_create(obj_container, NULL);
     lv_obj_set_width(obj_slider_flash, 370);
     lv_obj_set_height(obj_slider_flash, 10);
-    lv_obj_align(obj_slider_flash, obj_container, LV_ALIGN_IN_TOP_MID, 0, 20);
+    lv_obj_align(obj_slider_flash, obj_container, LV_ALIGN_IN_TOP_MID, 0, 250);
     lv_slider_set_range(obj_slider_flash, 80, 150);
     lv_slider_set_value(obj_slider_flash, 0, LV_ANIM_OFF);
 
@@ -53,24 +71,6 @@ void ui_recognition_init(void *data)
     lv_label_set_text(obj_label_flash, "Flash [PWM]: 0");
     lv_obj_set_auto_realign(obj_label_flash, true);
     lv_obj_align(obj_label_flash, obj_slider_flash, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-
-    obj_take_photo_btn = lv_obj_create(obj_container, NULL);
-    lv_obj_set_size(obj_take_photo_btn, 100, 100);
-    lv_obj_set_style_local_bg_color(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_bg_color(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
-    lv_obj_set_style_local_radius(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
-    lv_obj_set_style_local_border_width(obj_take_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_take_photo_btn, obj_slider_flash, LV_ALIGN_OUT_BOTTOM_MID, 90, 90);
-    lv_obj_set_auto_realign(obj_take_photo_btn, true);
-
-    obj_get_photo_btn = lv_obj_create(obj_container, NULL);
-    lv_obj_set_size(obj_get_photo_btn, 100, 100);
-    lv_obj_set_style_local_bg_color(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_bg_color(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, COLOR_THEME);
-    lv_obj_set_style_local_radius(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
-    lv_obj_set_style_local_border_width(obj_get_photo_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_get_photo_btn, obj_slider_flash, LV_ALIGN_OUT_BOTTOM_MID, -90, 90);
-    lv_obj_set_auto_realign(obj_get_photo_btn, true);
 
     lv_obj_set_style_local_value_str(obj_take_photo_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "TAKE\nPHOTO");
     lv_obj_set_style_local_value_font(obj_take_photo_btn, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
@@ -86,7 +86,7 @@ void ui_recognition_init(void *data)
 
     lv_obj_set_event_cb(obj_slider_flash, slider_cb);
     lv_obj_set_event_cb(obj_take_photo_btn, btn_cb);
-    lv_obj_set_event_cb(obj_get_photo_btn, btn_cb);    
+    lv_obj_set_event_cb(obj_get_photo_btn, btn_cb);
 }
 
 void ui_recognition_show(void *data)
