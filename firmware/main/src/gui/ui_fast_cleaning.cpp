@@ -1,5 +1,6 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
+#include "dbg_task.h"
 
 #ifdef ADVANCED_DEBUG
     #define LOG_TAG LINE_STRING "|" "UI_FAST_CLEAN"
@@ -18,39 +19,58 @@ ui_func_desc_t ui_fast_cleaning_func = {
 // /* LVGL objects defination */
 static lv_obj_t* obj_bar = NULL;
 static lv_obj_t* obj_label = NULL;
-static lv_obj_t* obj_button = NULL;
+static lv_obj_t* obj_status_btn = NULL;
+static lv_obj_t* obj_stop_btn = NULL;
 
 /* Static function forward declaration */
 static void btn_cb(lv_obj_t *obj, lv_event_t event);
 
 bool isCleaningPageActive = false;
 
-static int progress = 0;
+static uint8_t progress = 0;
+static uint8_t oldProgress = 0;
+
+void ui_cleaning_fast_update(uint8_t current_step, uint8_t total_step)
+{
+    progress = 100*(current_step + 1)/total_step;
+
+    if(oldProgress != progress)
+    {
+        if(current_step != (total_step - 1))
+        {
+            lv_obj_set_click(obj_status_btn, false);
+            lv_obj_set_style_local_value_str(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
+            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
+            lv_label_set_text(obj_label, "Fast Cleaning in progress...");
+        }
+        else
+        {
+            lv_label_set_text(obj_label, "Fast Cleaning done");
+            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+            lv_obj_set_style_local_value_str(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "DONE");
+            lv_obj_set_click(obj_status_btn, true);
+        }
+        lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
+
+        oldProgress = progress;
+    }
+}
+
 
 static void simulator_cleaning_task(void* data)
 {
     (void)data;
 
-    progress = 0;
-    lv_obj_set_click(obj_button, false);
-    lv_obj_set_style_local_value_str(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
-    lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_label_set_text(obj_label, "Fast Cleaning in progress...");
-
-    while(progress <= 100)
+    uint8_t currentStep = 0;
+    uint8_t totalStep = 4;
+    for(uint8_t i = 0; i < totalStep; i++)
     {
-        progress++;
-        lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
-        vTaskDelay(10);
+        ui_cleaning_fast_update(currentStep, totalStep);
+        currentStep++;
+        vTaskDelay(100);
     }
-
-    lv_label_set_text(obj_label, "Fast Cleaning done");
-
-    lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
-    lv_obj_set_style_local_value_str(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "Done");
-    lv_obj_set_click(obj_button, true);
 
     vTaskDelete(NULL);
 }
@@ -80,21 +100,36 @@ void ui_fast_cleaning_init(void *data)
     lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
     lv_obj_align(obj_bar, obj_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 30);
 
-    obj_button = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_button, 200, 100);
-    lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
-    lv_obj_set_style_local_border_width(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_button, obj_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
-    lv_obj_set_click(obj_button, false);
-    lv_obj_set_event_cb(obj_button, btn_cb);
+    obj_status_btn = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_size(obj_status_btn, 200, 100);
+    lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
+    lv_obj_set_style_local_radius(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
+    lv_obj_set_style_local_border_width(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_align(obj_status_btn, obj_bar, LV_ALIGN_OUT_BOTTOM_LEFT, -10, 40);
+    lv_obj_set_click(obj_status_btn, false);
+    lv_obj_set_event_cb(obj_status_btn, btn_cb);
 
-    lv_obj_set_style_local_value_str(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
-    lv_obj_set_style_local_value_font(obj_button, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
-    lv_obj_set_style_local_value_align(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
-    lv_obj_set_style_local_value_color(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_value_color(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
+    lv_obj_set_style_local_value_str(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
+    lv_obj_set_style_local_value_font(obj_status_btn, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
+    lv_obj_set_style_local_value_align(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
+    lv_obj_set_style_local_value_color(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_value_color(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
+
+    obj_stop_btn = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_size(obj_stop_btn, 200, 100);
+    lv_obj_set_style_local_bg_color(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    lv_obj_set_style_local_bg_color(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+    lv_obj_set_style_local_radius(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
+    lv_obj_set_style_local_border_width(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_align(obj_stop_btn, obj_bar, LV_ALIGN_OUT_BOTTOM_RIGHT, 10, 40);
+    lv_obj_set_event_cb(obj_stop_btn, btn_cb);
+
+    lv_obj_set_style_local_value_str(obj_stop_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "STOP");
+    lv_obj_set_style_local_value_font(obj_stop_btn, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
+    lv_obj_set_style_local_value_align(obj_stop_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
+    lv_obj_set_style_local_value_color(obj_stop_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_value_color(obj_stop_btn,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK); 
 }
 
 void ui_fast_cleaning_show(void *data)
@@ -107,7 +142,8 @@ void ui_fast_cleaning_show(void *data)
     {
         lv_obj_set_hidden(obj_label, false);
         lv_obj_set_hidden(obj_bar, false);
-        lv_obj_set_hidden(obj_button, false);
+        lv_obj_set_hidden(obj_status_btn, false);
+        lv_obj_set_hidden(obj_stop_btn, false);
     }
     isCleaningPageActive = true;
 
@@ -122,7 +158,8 @@ void ui_fast_cleaning_hide(void *data)
     {
         lv_obj_set_hidden(obj_label, true);
         lv_obj_set_hidden(obj_bar, true);
-        lv_obj_set_hidden(obj_button, true);
+        lv_obj_set_hidden(obj_status_btn, true);
+        lv_obj_set_hidden(obj_stop_btn, true);
     }
     isCleaningPageActive = false;
 }
@@ -132,6 +169,15 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
-        ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
+        if(obj == obj_status_btn)
+        {
+            ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
+        }
+
+        if(obj == obj_stop_btn)
+        {
+            special_function(DBG_ON_OFF);
+            ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
+        }
     }
 }

@@ -237,6 +237,14 @@ typedef struct
 
     struct
     {
+        uint8_t recipeId;
+        uint8_t totalSteps;
+        uint8_t currentSteps;
+    } cleaning;
+    
+
+    struct
+    {
         bool descaling;
         bool podFull;
         bool waterEmpty;

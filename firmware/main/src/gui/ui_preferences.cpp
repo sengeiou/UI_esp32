@@ -227,18 +227,26 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
         if(obj == obj_page_fast_cleaning)
         {
             if(true == guiInternalState.powerOn)
+            {
                 special_function(DBG_ON_OFF);
+                vTaskDelay(pdMS_TO_TICKS(200));
+            }
 
             special_function(DBG_FAST_CLEANING);
+            vTaskDelay(pdMS_TO_TICKS(200));
             ui_show(&ui_fast_cleaning_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_page_full_cleaning)
         {
             if(true == guiInternalState.powerOn)
+            {
                 special_function(DBG_ON_OFF);
+                vTaskDelay(pdMS_TO_TICKS(200));
+            }
 
             special_function(DBG_FULL_CLEANING);
+            vTaskDelay(pdMS_TO_TICKS(200));
             ui_show(&ui_full_cleaning_func, UI_SHOW_OVERRIDE);
         }
     }

@@ -35,6 +35,7 @@
 #define GUI_WARNINGS_BIT                (1 << 6)
 #define GUI_MACHINE_FAULT_BIT           (1 << 7)
 #define GUI_CLOUD_REQUEST_BIT           (1 << 8)
+#define GUI_NEW_CLEANING_DATA_BIT       (1 << 9)
 
 
 

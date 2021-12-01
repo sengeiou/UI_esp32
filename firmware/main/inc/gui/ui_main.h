@@ -131,6 +131,13 @@ lv_obj_t *ui_page_get_obj(void);
 void ui_erogation_set_target_dose(uint16_t dose);
 
 /**
+ * @brief Update current cleaning information of cleaning page. Call it when preparation data is updated.
+ * 
+ */
+void ui_cleaning_fast_update(uint8_t current_step, uint8_t total_step);
+void ui_cleaning_full_update(uint8_t current_step, uint8_t total_step);
+
+/**
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.
  * 
  */

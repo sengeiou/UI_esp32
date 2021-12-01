@@ -59,7 +59,7 @@ void gui_task(void* data)
     {
         bits = xEventGroupWaitBits(xGuiEvents, GUI_POWER_BIT | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
                                                GUI_NEW_EROGATION_DATA_BIT | GUI_STOP_EROGATION_BIT | GUI_ENABLE_CAPPUCCINO_BIT |
-                                               GUI_WARNINGS_BIT | GUI_MACHINE_FAULT_BIT | GUI_CLOUD_REQUEST_BIT, 
+                                               GUI_WARNINGS_BIT | GUI_MACHINE_FAULT_BIT | GUI_CLOUD_REQUEST_BIT | GUI_NEW_CLEANING_DATA_BIT, 
                                                pdFALSE, pdFALSE, 2000/portTICK_PERIOD_MS);
 
         if(bits & GUI_POWER_BIT)
@@ -72,6 +72,24 @@ void gui_task(void* data)
         {
             xEventGroupClearBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
             ui_erogation_update(guiInternalState.erogation.dose, guiInternalState.erogation.temperature, 5.0f);
+        }
+
+        if(bits & GUI_NEW_CLEANING_DATA_BIT)
+        {
+            xEventGroupClearBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
+            if(guiInternalState.cleaning.recipeId == 0)
+            {
+                ui_cleaning_fast_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
+            }
+            else if(guiInternalState.cleaning.recipeId == 1)
+            {
+                ui_cleaning_full_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
+            }
+            else
+            {
+                //Do nothing
+            }
+
         }
 
         if(bits & GUI_STOP_EROGATION_BIT)
