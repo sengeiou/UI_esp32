@@ -187,6 +187,14 @@ void ui_status_bar_set_water_empty_warning(bool warning);
  */
 void ui_status_bar_update_wifi_status(bool active);
 
+#if ENABLE_CAPS_RECOGNITION_MODULE == 1
+/**
+ * @brief Update the recognition status.
+ * 
+ */
+void ui_status_bar_update_recognition_status(void);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

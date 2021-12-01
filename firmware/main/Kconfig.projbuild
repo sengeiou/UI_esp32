@@ -58,6 +58,11 @@ menu "UI Firmware"
                 The corresponding PIN for Debug UART RX.
     endmenu
 
+    config ENABLE_CAPS_RECOGNITION_MODULE
+        prompt "Enable Capsule Recognition Module"
+        bool
+        default false
+
     menu "Camera UART Configuration"
         choice CAM_UART_INTERFACE
             prompt "Camera UART Interface"

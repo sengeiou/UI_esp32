@@ -161,7 +161,12 @@ void ui_wifi_show(void *data)
         lv_textarea_set_text(obj_ssid_area, "ssid");
         lv_textarea_set_text(obj_password_area, "password");
     }
+
     isWifiPageActive = true;
+
+    #if ENABLE_CAPS_RECOGNITION_MODULE == 1
+    ui_status_bar_update_recognition_status();
+    #endif
 }
 
 void ui_wifi_hide(void *data)
