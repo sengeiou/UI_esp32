@@ -208,8 +208,20 @@ typedef enum
     DBG_MEDIUM_CAPPUCCINO = 0x12,
     DBG_DOUBLE_CAPPUCCINO = 0x13,
     DBG_HOT_MILK = 0x14,
-    DBG_HOT_WATER = 0x15
+    DBG_HOT_WATER = 0x15,
+    DBG_FAST_CLEANING = 0x19,
+    DBG_FULL_CLEANING = 0x1D,
+    DBG_FACTORY_RESET = 0x1C
 } dbg_special_func_code_t;
+
+typedef enum
+{
+    CAM_NONE = 0x00,
+    CAM_TAKE_PHOTO = 0x01,
+    CAM_GET_PHOTO = 0x02,
+    CAM_ENABLE_LED = 0x03,
+    CAM_DISABLE_LED = 0x04,
+} camera_func_code_t;
 
 typedef struct
 {

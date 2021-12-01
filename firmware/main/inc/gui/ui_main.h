@@ -102,6 +102,7 @@ _UI_FUNC_DEF_(full_cleaning);
 _UI_FUNC_DEF_(fast_cleaning);
 _UI_FUNC_DEF_(standby);
 _UI_FUNC_DEF_(fault);
+_UI_FUNC_DEF_(recognition);
 
 /**
  * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.
@@ -185,6 +186,14 @@ void ui_status_bar_set_water_empty_warning(bool warning);
  * 
  */
 void ui_status_bar_update_wifi_status(bool active);
+
+#if ENABLE_CAPS_RECOGNITION_MODULE == 1
+/**
+ * @brief Update the recognition status.
+ * 
+ */
+void ui_status_bar_update_recognition_status(void);
+#endif
 
 #ifdef __cplusplus
 }

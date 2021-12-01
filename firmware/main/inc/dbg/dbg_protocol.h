@@ -41,7 +41,9 @@ typedef enum
 	DBG_CODE_ACK_NACK               = 0xFE,     /* ACK/NACK Command Code */
 	DBG_CODE_GET_PAR                = 0x38,     /* Get parameter Command */
 	DBG_CODE_SET_PAR                = 0x3C,     /* Set parameter Command */
-	DBG_CODE_SPECILA_FUNC           = 0x36,     /* Executes special functions */
+	DBG_CODE_SPECIAL_FUNC           = 0x36,     /* Executes special functions */
+	CAM_RECEIVED_PHOTO_CHUNK		= 0x98,
+	CAM_RECEIVED_QR_DATA			= 0x99
 } DBG_CODE_t;
 
 typedef struct

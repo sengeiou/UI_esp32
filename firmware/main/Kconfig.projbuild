@@ -58,6 +58,70 @@ menu "UI Firmware"
                 The corresponding PIN for Debug UART RX.
     endmenu
 
+    config ENABLE_CAPS_RECOGNITION_MODULE
+        prompt "Enable Capsule Recognition Module"
+        bool
+        default false
+
+    menu "Camera UART Configuration"
+        choice CAM_UART_INTERFACE
+            prompt "Camera UART Interface"
+            default CAM_UART_INTERFACE_1
+            help
+                Choose the UART interface between 0, 1 and 2 (not available for sleep mode) to communicate with the Module.
+    
+            config CAM_UART_INTERFACE_0
+                bool "UART 0"
+            config CAM_UART_INTERFACE_1
+                bool "UART 1"
+            config CAM_UART_INTERFACE_2
+                bool "UART 2"
+        endchoice
+
+        config CAM_UART_INTERFACE_NUMBER
+            int
+            default 0 if CAM_UART_INTERFACE_0
+            default 1 if CAM_UART_INTERFACE_1
+            default 2 if CAM_UART_INTERFACE_2
+
+        config CAM_UART_BAUDRATE
+                int "Debug UART Baudrate"
+                default 115200
+                help
+                    This defines the Camera UART baudrate, generally is 115200.
+
+        choice CAM_UART_PARITY
+            prompt "Camera UART parity flag"
+            default CAM_PARITY_NONE
+            help
+                This defines the Camera UART parity flag.
+            config CAM_PARITY_NONE
+                bool "None"
+            config CAM_PARITY_EVEN
+                bool "Even"
+            config CAM_PARITY_ODD
+                bool "Odd"
+        endchoice
+
+        config CAM_UART_PARITY_FLAG
+            int
+            default 0 if CAM_PARITY_NONE
+            default 2 if CAM_PARITY_EVEN
+            default 3 if CAM_PARITY_ODD
+
+        config CAM_UART_TXD
+            int "Camer UART TXD Pin"
+            default 17
+            help
+                The corresponding PIN for Camera UART TX.
+
+        config CAM_UART_RXD
+            int "Camera UART RXD Pin"
+            default 16
+            help
+                The corresponding PIN for Camera UART RX.
+    endmenu
+
     menu "Azure Configuration"
         menu "WiFi AP Configuration"
             config WIFI_AP_SSID_ROOT
