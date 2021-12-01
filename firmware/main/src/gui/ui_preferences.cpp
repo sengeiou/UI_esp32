@@ -1,6 +1,7 @@
 #include "ui_main.h"
 #include "lvgl_port.h"
 #include "variables.h"
+#include "dbg_task.h"
 
 #define BUTTON_X_SIZE     140
 #define BUTTON_Y_SIZE     110
@@ -162,6 +163,10 @@ void ui_preferences_show(void *data)
         lv_obj_set_hidden(obj_page_full_cleaning, false);
     }
     isPreferencesPageActive = true;
+
+    #if ENABLE_CAPS_RECOGNITION_MODULE == 1
+    ui_status_bar_update_recognition_status();
+    #endif
 }
 
 void ui_preferences_hide(void *data)
@@ -221,11 +226,19 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
 
         if(obj == obj_page_fast_cleaning)
         {
+            if(true == guiInternalState.powerOn)
+                special_function(DBG_ON_OFF);
+
+            special_function(DBG_FAST_CLEANING);
             ui_show(&ui_fast_cleaning_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_page_full_cleaning)
         {
+            if(true == guiInternalState.powerOn)
+                special_function(DBG_ON_OFF);
+
+            special_function(DBG_FULL_CLEANING);
             ui_show(&ui_full_cleaning_func, UI_SHOW_OVERRIDE);
         }
     }
