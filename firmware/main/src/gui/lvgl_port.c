@@ -64,39 +64,39 @@ esp_err_t lvgl_init(size_t buffer_pix_size, uint32_t buffer_caps)
 {
     lv_init();
 
-    lvgl_driver_init();
+    // lvgl_driver_init();
 
-    lvgl_mutex = xSemaphoreCreateMutex();
+    // lvgl_mutex = xSemaphoreCreateMutex();
 
-    /* Create a display buffer */
-    static lv_disp_buf_t disp_buf;
-    static DRAM_ATTR lv_color_t *lv_buf;
+    // /* Create a display buffer */
+    // static lv_disp_buf_t disp_buf;
+    // static DRAM_ATTR lv_color_t *lv_buf;
 
-    /*!< Use DRAM as sigle none screen size buffer */
-    lv_buf = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_pix_size, buffer_caps);
-    lv_disp_buf_init(&disp_buf, lv_buf, NULL, buffer_pix_size);
+    // /*!< Use DRAM as sigle none screen size buffer */
+    // lv_buf = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_pix_size, buffer_caps);
+    // lv_disp_buf_init(&disp_buf, lv_buf, NULL, buffer_pix_size);
 
-    if (NULL == lv_buf)
-    {
-        ESP_LOGE(TAG, "No free mem for allocating buffer");
-        return ESP_ERR_NO_MEM;
-    }
+    // if (NULL == lv_buf)
+    // {
+    //     ESP_LOGE(TAG, "No free mem for allocating buffer");
+    //     return ESP_ERR_NO_MEM;
+    // }
 
-    /*Create a display*/
-    lv_disp_drv_t disp_drv;
-    lv_disp_drv_init(&disp_drv);
-    disp_drv.buffer = &disp_buf;
-    disp_drv.flush_cb = lvgl_flush_cb;
-    lv_disp_drv_register(&disp_drv);
+    // /*Create a display*/
+    // lv_disp_drv_t disp_drv;
+    // lv_disp_drv_init(&disp_drv);
+    // disp_drv.buffer = &disp_buf;
+    // disp_drv.flush_cb = lvgl_flush_cb;
+    // lv_disp_drv_register(&disp_drv);
 
-    /*!< Register input devcie and callback */
-    #if CONFIG_LV_TOUCH_CONTROLLER != TOUCH_CONTROLLER_NONE
-    lv_indev_drv_t indev_drv;
-    lv_indev_drv_init(&indev_drv);
-    indev_drv.type = LV_INDEV_TYPE_POINTER;
-    indev_drv.read_cb = lvgl_read_cb;
-    lv_indev_drv_register(&indev_drv);
-    #endif
+    // /*!< Register input devcie and callback */
+    // #if CONFIG_LV_TOUCH_CONTROLLER != TOUCH_CONTROLLER_NONE
+    // lv_indev_drv_t indev_drv;
+    // lv_indev_drv_init(&indev_drv);
+    // indev_drv.type = LV_INDEV_TYPE_POINTER;
+    // indev_drv.read_cb = lvgl_read_cb;
+    // lv_indev_drv_register(&indev_drv);
+    // #endif
     
     // if (pdPASS != xTaskCreate(
 	// 	(TaskFunction_t)        lvgl_tick_task,

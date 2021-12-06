@@ -12,6 +12,7 @@
 #include "esp_log.h"
 
 /* Littlevgl specific */
+#include "bsp_lcd.h"
 #include "ui_main.h"
 #include "lvgl_port.h"
 #include "lv_port_fs.h"
@@ -44,6 +45,8 @@ void gui_task(void* data)
     ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
     ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, LV_TICK_PERIOD_MS * 1000));
 
+    ESP_ERROR_CHECK(bsp_lcd_init());
+    
     /* Init LVGL, allocating buffer and create tasks for tick and handler */
     ESP_ERROR_CHECK(lvgl_init(DISP_BUF_SIZE, MALLOC_CAP_DMA));
 
