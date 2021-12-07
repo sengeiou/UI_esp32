@@ -14,10 +14,10 @@
 #define BUILD_UINT32(mmsb, mlsb, lmsb, llsb) ((((uint32_t) llsb) & 0x000000FFu) | ((((uint32_t) lmsb) & 0x000000FFu) << 8u) | ((((uint32_t) mlsb) & 0x000000FFu) << 16u) | ((((uint32_t) mmsb) & 0x000000FFu) << 24u))
 
 
-#define CMD_SOF                     (0xA5)      /** Plain text message Start Of Frame (SOF) */
-#define ACK_SOF                     (0x5A)      /** ACK/NACK Start Of Frame */
+#define CMD_SOF                     (0xA5)  /** Plain text message Start Of Frame (SOF) */
+#define ACK_SOF                     (0x5A)  /** ACK/NACK Start Of Frame */
 
-#define DBG_PLAIN_HDR_SIZE          (3)         /** CMD_SOF  + CMD_CODE + PLD_LENGTH */
+#define DBG_PLAIN_HDR_SIZE            (3)   /** CMD_SOF  + CMD_CODE + PLD_LENGTH */
 
 #define DBG_PAYLOAD_MAX_SIZE    	(256)
 #define SETPAR_PAYLOAD_LENGTH   	  (9)   /* Length of payload for set parameter response */
