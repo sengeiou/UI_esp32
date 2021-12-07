@@ -164,6 +164,8 @@ void ui_preferences_show(void *data)
     }
     isPreferencesPageActive = true;
 
+    ui_status_bar_show(true);
+
     #if ENABLE_CAPS_RECOGNITION_MODULE == 1
     ui_status_bar_update_recognition_status();
     #endif
