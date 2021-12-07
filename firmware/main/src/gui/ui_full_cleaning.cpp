@@ -27,30 +27,34 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event);
 
 extern bool isCleaningPageActive;
 
-static uint8_t progress = 0;
-static uint8_t oldProgress = 0;
+static int progress = 0;
+static int oldProgress = 0;
 
 void ui_cleaning_full_update(uint8_t current_step, uint8_t total_step)
 {
     progress = 100*(current_step + 1)/total_step;
+    ESP_LOGI(LOG_TAG, "UPDATE: %d/%d %d", current_step, total_step, progress);
 
     if(oldProgress != progress)
     {
-        if(current_step != (total_step - 1))
+        if(current_step == (total_step - 1))    //LAST STEP
         {
-            lv_obj_set_click(obj_status_btn, false);
-            lv_obj_set_style_local_value_str(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
-            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-            lv_label_set_text(obj_label, "Full Cleaning in progress...");
-        }
-        else
-        {
-            lv_label_set_text(obj_label, "Full Cleaning done");
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
             lv_obj_set_style_local_value_str(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "DONE");
             lv_obj_set_click(obj_status_btn, true);
+            lv_obj_set_style_local_bg_color(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+            lv_obj_set_style_local_bg_color(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
+            lv_obj_set_click(obj_stop_btn, false);
+            lv_label_set_text(obj_label, "Full Cleaning done");
+        }
+        else
+        {
+            lv_obj_set_style_local_value_str(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
+            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+            lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
+            lv_obj_set_click(obj_status_btn, false);
+            lv_label_set_text(obj_label, "Full Cleaning in progress...");
         }
         lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
 
@@ -146,7 +150,7 @@ void ui_full_cleaning_show(void *data)
     }
     isCleaningPageActive = true;
 
-    xTaskCreate(simulator_cleaning_task, "Full Cleaning Simulator Task", 4*1024, NULL, 5, NULL);
+    // xTaskCreate(simulator_cleaning_task, "Full Cleaning Simulator Task", 4*1024, NULL, 5, NULL);
 }
 
 void ui_full_cleaning_hide(void *data)
