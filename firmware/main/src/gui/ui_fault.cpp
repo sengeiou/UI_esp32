@@ -29,8 +29,8 @@ void ui_fault_init(void *data)
 
     obj_image = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(obj_image, data_fault);
-    lv_img_set_zoom(obj_image, 256);
-    lv_obj_align(obj_image, NULL, LV_ALIGN_CENTER, 0, -30);
+    lv_img_set_zoom(obj_image, 512);
+    lv_obj_align(obj_image, NULL, LV_ALIGN_CENTER, 0, -50);
 
     obj_label = lv_label_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
@@ -38,8 +38,8 @@ void ui_fault_init(void *data)
     lv_obj_set_size(obj_label, 400, 60);
     lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_bold_48);
     lv_obj_align(obj_label, obj_image, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-    lv_label_set_text(obj_label, "FAULT");
     lv_label_set_align(obj_label, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_text(obj_label, "FAULT");
     lv_obj_set_auto_realign(obj_label, true);
 }
 
