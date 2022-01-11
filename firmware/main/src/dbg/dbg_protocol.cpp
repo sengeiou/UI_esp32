@@ -20,8 +20,8 @@ static void printUint16(uint8_t msb, uint8_t lsb)
     }
     printf("\n");
 
-    printf("LSB[0-7]: %u | %u | %u | %u | %u | %u | %u | %u\n", (logicValues & (1 << 0)), (logicValues & (1 << 1)), (logicValues & (1 << 2)), (logicValues & (1 << 3)), (logicValues & (1 << 4)), (logicValues & (1 << 5)), (logicValues & (1 << 6)), (logicValues & (1 << 7)));
-    printf("MSB[8-15]: %u | %u | %u | %u | %u | %u | %u | %u\n", (logicValues & (1 << 8)), (logicValues & (1 << 9)), (logicValues & (1 << 10)), (logicValues & (1 << 11)), (logicValues & (1 << 12)), (logicValues & (1 << 13)), (logicValues & (1 << 14)), (logicValues & (1 << 15)));
+    // printf("LSB[0-7]: %u | %u | %u | %u | %u | %u | %u | %u\n", (logicValues & (1 << 0)), (logicValues & (1 << 1)), (logicValues & (1 << 2)), (logicValues & (1 << 3)), (logicValues & (1 << 4)), (logicValues & (1 << 5)), (logicValues & (1 << 6)), (logicValues & (1 << 7)));
+    // printf("MSB[8-15]: %u | %u | %u | %u | %u | %u | %u | %u\n", (logicValues & (1 << 8)), (logicValues & (1 << 9)), (logicValues & (1 << 10)), (logicValues & (1 << 11)), (logicValues & (1 << 12)), (logicValues & (1 << 13)), (logicValues & (1 << 14)), (logicValues & (1 << 15)));
 
     printf("lsb[0-7]: %u | %u | %u | %u | %u | %u | %u | %u\n", ((logicValues >> 0) & 1), ((logicValues >> 1) & 1), ((logicValues >> 2) & 1), ((logicValues >> 3) & 1), ((logicValues >> 4) & 1), ((logicValues >> 5) & 1), ((logicValues >> 6) & 1), ((logicValues >> 7) & 1));
     printf("msb[8-15]: %u | %u | %u | %u | %u | %u | %u | %u\n", ((logicValues >> 8) & 1), ((logicValues >> 9) & 1), ((logicValues >> 10) & 1), ((logicValues >> 11) & 1), ((logicValues >> 12) & 1), ((logicValues >> 13) & 1), ((logicValues >> 14) & 1), ((logicValues >> 15) & 1));
@@ -176,17 +176,21 @@ namespace lavazza
             static uint8_t oldFsmStatus = -1;
             static bool podFull, podOverflow, podRemoved;
             static bool podWarning, waterWarning, descalingWarning, milkPresence;
+            static uint8_t recipeId;
             uint16_t logicValues = BUILD_UINT16(msg.payload[22], msg.payload[21]);
 
             fsmStatus = msg.payload[0];
             milkPresence = ((logicValues >> 0) & 1);
-            podRemoved = ((logicValues >> 1) & 1);
+            podRemoved = ((logicValues >> 1) & 0);
             podFull = ((logicValues >> 2) & 1);
             podOverflow = ((logicValues >> 3) & 1);
             podWarning = (podFull | podOverflow | podRemoved);
             waterWarning = ((logicValues >> 4) & 1);
+            recipeId = static_cast<uint8_t>(((logicValues >> 12) & 1));
             descalingWarning = ((logicValues >> 15) & 1);   //not implemented on NR_OCS
 
+            printUint16(msg.payload[22], msg.payload[21]);
+            //printf("STS %d -> LOGIC VALUES %d (%d | %d | %d | %d | %d | %d)\n", fsmStatus, logicValues, milkPresence, podRemoved, podFull, podOverflow, waterWarning, descalingWarning, recipeId);
             if(fsmStatus == 0x01)   //standby
             {
                 if((false != guiInternalState.powerOn) || (oldFsmStatus != fsmStatus))
@@ -205,10 +209,10 @@ namespace lavazza
             }
             else if(fsmStatus == 0x0B)  //cleaning
             {
-                guiInternalState.cleaning.recipeId = ((logicValues >> 12) & 1);
-                guiInternalState.cleaning.totalSteps = msg.payload[47];
-                guiInternalState.cleaning.currentSteps = msg.payload[46];
-
+                guiInternalState.cleaning.recipeId = recipeId;
+                guiInternalState.cleaning.totalSteps = msg.payload[48];
+                guiInternalState.cleaning.currentSteps = msg.payload[47];
+                printf("CLEANING %d (%d / %d)\n", guiInternalState.cleaning.recipeId, guiInternalState.cleaning.currentSteps , guiInternalState.cleaning.totalSteps);
                 xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
             }
             else
