@@ -3,9 +3,9 @@
 #include "dbg_task.h"
 
 #ifdef ADVANCED_DEBUG
-    #define LOG_TAG LINE_STRING "|" "UI_FAST_CLEAN"
+    #define LOG_TAG LINE_STRING "|" "UI_AUTO_CLEAN"
 #else
-    #define LOG_TAG "UI_FAST_CLEAN"
+    #define LOG_TAG "UI_AUTO_CLEAN"
 #endif
 
 /* UI function declaration */
@@ -33,7 +33,7 @@ static int oldProgress = 0;
 void ui_cleaning_fast_update(uint8_t current_step, uint8_t total_step)
 {
     progress = 100*(current_step + 1)/total_step;
-    ESP_LOGI(LOG_TAG, "UPDATE: %d/%d %d", current_step, total_step, progress);
+    ESP_LOGI(LOG_TAG, "UPDATE: %d/%d %d", current_step+1, total_step, progress);
 
     if(oldProgress != progress)
     {
@@ -46,15 +46,16 @@ void ui_cleaning_fast_update(uint8_t current_step, uint8_t total_step)
             lv_obj_set_style_local_bg_color(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
             lv_obj_set_style_local_bg_color(obj_stop_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
             lv_obj_set_click(obj_stop_btn, false);
-            lv_label_set_text(obj_label, "Fast Cleaning done");
+            lv_label_set_text(obj_label, "Auto Cleaning done");
         }
         else
         {
-            lv_obj_set_style_local_value_str(obj_status_btn,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
             lv_obj_set_click(obj_status_btn, false);
-            lv_label_set_text(obj_label, "Fast Cleaning in progress...");
+            char buf[64];
+            sprintf(buf, "Auto Cleaning in progress... (%d/%d)", current_step+1, total_step);
+            lv_label_set_text(obj_label, buf);
           
         }
         lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
@@ -89,7 +90,7 @@ void ui_fast_cleaning_init(void *data)
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_label, 400, 100);
     lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_bold_48);
-    lv_label_set_text(obj_label, "Fast Cleaning in progress...");
+    lv_label_set_text(obj_label, "Auto Cleaning in progress...");
     lv_label_set_align(obj_label, LV_LABEL_ALIGN_CENTER);
     lv_obj_align(obj_label, NULL, LV_ALIGN_CENTER, 0, -80);
     lv_obj_set_auto_realign(obj_label, true);
@@ -152,7 +153,7 @@ void ui_fast_cleaning_show(void *data)
     }
     isCleaningPageActive = true;
 
-    // xTaskCreate(simulator_cleaning_task, "Fast Cleaning Simulator Task", 4*1024, NULL, 5, NULL);
+    // xTaskCreate(simulator_cleaning_task, "Auto Cleaning Simulator Task", 4*1024, NULL, 5, NULL);
 }
 
 void ui_fast_cleaning_hide(void *data)
