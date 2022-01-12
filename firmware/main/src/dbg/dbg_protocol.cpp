@@ -189,7 +189,7 @@ namespace lavazza
             recipeId = static_cast<uint8_t>(((logicValues >> 12) & 1));
             descalingWarning = ((logicValues >> 15) & 1);   //not implemented on NR_OCS
 
-            printUint16(msg.payload[22], msg.payload[21]);
+            // printUint16(msg.payload[22], msg.payload[21]);
             //printf("STS %d -> LOGIC VALUES %d (%d | %d | %d | %d | %d | %d)\n", fsmStatus, logicValues, milkPresence, podRemoved, podFull, podOverflow, waterWarning, descalingWarning, recipeId);
             if(fsmStatus == 0x01)   //standby
             {
@@ -209,11 +209,18 @@ namespace lavazza
             }
             else if(fsmStatus == 0x0B)  //cleaning
             {
-                guiInternalState.cleaning.recipeId = recipeId;
-                guiInternalState.cleaning.totalSteps = msg.payload[48];
-                guiInternalState.cleaning.currentSteps = msg.payload[47];
-                printf("CLEANING %d (%d / %d)\n", guiInternalState.cleaning.recipeId, guiInternalState.cleaning.currentSteps , guiInternalState.cleaning.totalSteps);
-                xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
+                if(2 == recipeId)
+                {
+                    printf("CLEANING FAST recipe %d\n", recipeId);
+                }
+                else
+                {
+                    guiInternalState.cleaning.recipeId = recipeId;
+                    guiInternalState.cleaning.totalSteps = msg.payload[48];
+                    guiInternalState.cleaning.currentSteps = msg.payload[47];
+                    printf("CLEANING %d (%d / %d)\n", guiInternalState.cleaning.recipeId, guiInternalState.cleaning.currentSteps , guiInternalState.cleaning.totalSteps);
+                    xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
+                }
             }
             else
             {
