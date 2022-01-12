@@ -53,7 +53,7 @@ void ui_standby_show(void *data)
         lv_obj_set_hidden(img_qr, false);
     }
 
-    char qr_text[] = "https://www.lavazza.it/it.html";
+    char qr_text[] = "18000USA_LAVAZZATESTUSA000003";
     lv_qrcode_update(img_qr, qr_text, strlen(qr_text));
 }
 
