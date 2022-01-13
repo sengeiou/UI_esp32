@@ -60,7 +60,7 @@ int azure_init(void)
     #endif
    
     ESP_LOGI(AZURE_MAIN_TAG, "Iothub API Version: %s", IoTHubClient_GetVersionString());
-    ESP_LOGI(AZURE_MAIN_TAG, "Lavazza Environment: %s (%s)", AZURE_ENVIRONMENT, CONFIG_DPS_ID_SCOPE);
+    ESP_LOGI(AZURE_MAIN_TAG, "Lavazza Environment: %s (%s)", AZURE_ENVIRONMENT, AZURE_DPS_SCOPE_ID);
 
     bool traceOnAzure = AZURE_DEBUG_ENABLED;
 

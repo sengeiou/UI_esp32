@@ -24,6 +24,7 @@ void* data_water_warning  = NULL;
 void* data_pod_warning  = NULL;
 void* data_foam_boost  = NULL;
 void* data_temp_boost  = NULL;
+void* data_fault = NULL;
 
 void* data_icon_app = NULL;
 void* data_icon_about = NULL;
@@ -42,6 +43,7 @@ static ui_data_fetch_t img_fetch_list[] = {
     { "S:/coffee/descaling.bin", &data_descaling_warning },
     { "S:/coffee/pod.bin", &data_pod_warning },
     { "S:/coffee/water.bin", &data_water_warning },
+    { "S:/coffee/fault.bin", &data_fault },    
 };
 
 static void ui_init_internal(void);

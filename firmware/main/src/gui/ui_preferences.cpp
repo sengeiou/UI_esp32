@@ -127,13 +127,13 @@ void ui_preferences_init(void *data)
     lv_obj_set_style_local_value_color(obj_page_wifi_reset,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_wifi_reset,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 
-    lv_obj_set_style_local_value_str(obj_page_fast_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, " Fast\nClean");
+    lv_obj_set_style_local_value_str(obj_page_fast_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, " Auto\nClean");
     lv_obj_set_style_local_value_font(obj_page_fast_cleaning, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
     lv_obj_set_style_local_value_align(obj_page_fast_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
     lv_obj_set_style_local_value_color(obj_page_fast_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_page_fast_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 
-    lv_obj_set_style_local_value_str(obj_page_full_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "  Full\nClean");
+    lv_obj_set_style_local_value_str(obj_page_full_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "Semi-Auto\n    Clean");
     lv_obj_set_style_local_value_font(obj_page_full_cleaning, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
     lv_obj_set_style_local_value_align(obj_page_full_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
     lv_obj_set_style_local_value_color(obj_page_full_cleaning,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
@@ -163,6 +163,8 @@ void ui_preferences_show(void *data)
         lv_obj_set_hidden(obj_page_full_cleaning, false);
     }
     isPreferencesPageActive = true;
+
+    ui_status_bar_show(true);
 
     #if ENABLE_CAPS_RECOGNITION_MODULE == 1
     ui_status_bar_update_recognition_status();
