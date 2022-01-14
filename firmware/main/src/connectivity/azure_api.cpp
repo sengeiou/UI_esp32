@@ -26,6 +26,8 @@
 #include "spiffs_utils.h"
 #include "gui_task.h"
 
+#include "lavazza_cloud_protocol.h"
+
 #include "esp_log.h"
 
 #ifdef ADVANCED_DEBUG
@@ -338,6 +340,41 @@ int azure_iothub_device_method(const char* method_name, const unsigned char* pay
             ESP_LOGE(AZURE_IOTHUB_TAG, "Firmware update invalid request. Version is wrong or Url is empty");
         }
     }
+    else if (0 == strcmp("isConnected", method_name))
+    {
+        result = 200;
+        deviceMethodResponse = isConnectedResponse(0, "correlationId", nullptr);
+    }
+    else if (0 == strcmp("turnOnMachine", method_name))
+    {
+        machineInternalState.azureRequest.command = POWER_ON;
+        xEventGroupSetBits(xModuleEvents, EVENT_INTERACTION_CLOUD);
+        result = 200;
+        // deviceMethodResponse = turnOnOffMachineResponse(status, "correlationId", nullptr);
+    }
+    else if (0 == strcmp("makeCoffeeByButtons", method_name))
+    {
+        result = 200;
+        // deviceMethodResponse = makeCoffeeByButtonsResponse(status, "correlationId", nullptr);
+    }
+    else if (0 == strcmp("stopBrewing", method_name))
+    {
+        result = 200;
+        // deviceMethodResponse = stopBrewingResponse(status, "correlationId", nullptr);
+    }
+    else if (0 == strcmp("turnOffMachine", method_name))
+    {
+        machineInternalState.azureRequest.command = POWER_OFF;
+        xEventGroupSetBits(xModuleEvents, EVENT_INTERACTION_CLOUD);
+        result = 200;
+        // deviceMethodResponse = turnOnOffMachineResponse(status, "correlationId", "propertyBag");
+    }
+    else
+    {
+        // Method not implemented
+        result = 405;
+        ESP_LOGW(AZURE_IOTHUB_TAG, "Method not implemented");
+    }
 
     switch(result)
     {
@@ -385,7 +422,8 @@ void azure_iothub_on_device_twin_update(DEVICE_TWIN_UPDATE_STATE update_state, c
     ESP_LOGD(AZURE_DEVICE_TWIN_TAG, "New property received: %.*s", (int)size, payLoad);
     ESP_LOGI(AZURE_DEVICE_TWIN_TAG, "New property received. Update type: %s", MU_ENUM_TO_STRING(DEVICE_TWIN_UPDATE_STATE, update_state));
 
-    // azure_iothub_report_new_device_twin((const char *)configuration2json(&config_to_be_reported, (DEVICE_TWIN_UPDATE_COMPLETE == update_state)), isNewFirmwareTMAvailable, isNewFirmwareMBAvailable);
+    char fake_property[256] = "{\"fwTMVer\":\"99-0-18-2\",\"fwMBVer\":\"7-0-0-30\",\"mbParameters\":{\"2\":\"18000USA\",\"3\":\"LAVAZZATESTUSA000003\"}}";
+    azure_iothub_report_new_device_twin((const char *) fake_property, false, false);
 }
 
 void azure_iothub_report_device_twin(int status_code, void* userContextCallback)
@@ -405,5 +443,5 @@ void azure_iothub_report_new_device_twin(const char* reportedProperties, bool is
     {
         ESP_LOGE(AZURE_DEVICE_TWIN_TAG, "Failed to report property \"%s\"", reportedProperties); 
     }
-    free((void*)reportedProperties);  
+    // free((void*)reportedProperties);  
 }
