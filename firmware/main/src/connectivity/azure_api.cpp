@@ -343,31 +343,39 @@ int azure_iothub_device_method(const char* method_name, const unsigned char* pay
     else if (0 == strcmp("isConnected", method_name))
     {
         result = 200;
-        deviceMethodResponse = isConnectedResponse(0, "correlationId", nullptr);
+        deviceMethodResponse = cloud::protocol::response::isConnected(0, "correlationId", nullptr);
     }
     else if (0 == strcmp("turnOnMachine", method_name))
     {
         machineInternalState.azureRequest.command = POWER_ON;
         xEventGroupSetBits(xModuleEvents, EVENT_INTERACTION_CLOUD);
         result = 200;
-        // deviceMethodResponse = turnOnOffMachineResponse(status, "correlationId", nullptr);
+        deviceMethodResponse = cloud::protocol::response::turnOnOffMachine(0, "correlationId", nullptr);
     }
     else if (0 == strcmp("makeCoffeeByButtons", method_name))
     {
+        uint8_t preparation = utils::json::getValue<uint8_t>(std::string((const char*)payload), "payload.buttonId");
+
+        machineInternalState.azureRequest.command = MAKE_COFFEE;
+        machineInternalState.azureRequest.desiredPreparation = static_cast<coffee_type_t>(preparation);
+
+        xEventGroupSetBits(xModuleEvents, EVENT_INTERACTION_CLOUD);
         result = 200;
-        // deviceMethodResponse = makeCoffeeByButtonsResponse(status, "correlationId", nullptr);
+        deviceMethodResponse = cloud::protocol::response::makeCoffeeByButtons(0, "correlationId", nullptr);
     }
     else if (0 == strcmp("stopBrewing", method_name))
     {
+        machineInternalState.azureRequest.command = MAKE_COFFEE;
+        xEventGroupSetBits(xModuleEvents, EVENT_INTERACTION_CLOUD);
         result = 200;
-        // deviceMethodResponse = stopBrewingResponse(status, "correlationId", nullptr);
+        deviceMethodResponse = cloud::protocol::response::stopBrewing(0, "correlationId", nullptr);
     }
     else if (0 == strcmp("turnOffMachine", method_name))
     {
         machineInternalState.azureRequest.command = POWER_OFF;
         xEventGroupSetBits(xModuleEvents, EVENT_INTERACTION_CLOUD);
         result = 200;
-        // deviceMethodResponse = turnOnOffMachineResponse(status, "correlationId", "propertyBag");
+        deviceMethodResponse = cloud::protocol::response::turnOnOffMachine(0, "correlationId", nullptr);
     }
     else
     {
