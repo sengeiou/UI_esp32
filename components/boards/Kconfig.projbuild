@@ -10,7 +10,7 @@ menu "Board Options"
         config BOARD_ESP32_LCDKIT
             bool "Board ESP32-LCDKit_V1.1"        
         config BOARD_CUSTOM
-            bool "Lavazza 4.3' capacitive"
+            bool "Custom board"
     endchoice
 
     menu "Custom Board Options"

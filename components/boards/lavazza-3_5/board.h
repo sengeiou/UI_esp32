@@ -32,6 +32,8 @@ typedef enum {
 #define BOARD_IO_SPI2_MOSI 27
 #define BOARD_IO_SPI2_MISO 33
 
+#define BOARD_LCD_WIDTH     320
+#define BOARD_LCD_HEIGHT    480
 
 /**< Screen interface pins */
 #define BOARD_LCD_SPI_HOST 1

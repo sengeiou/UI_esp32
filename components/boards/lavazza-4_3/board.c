@@ -15,6 +15,7 @@ static i2c_bus_handle_t s_spi2_bus_handle = NULL;
         return (ret); \
     }
 
+
 /****Private board level API ****/
 static i2c_bus_handle_t s_i2c0_bus_handle = NULL;
 
@@ -41,9 +42,11 @@ static esp_err_t board_i2c_bus_init(void)
 
 static esp_err_t board_i2c_bus_deinit(void)
 {
-    if (s_i2c0_bus_handle != NULL) {
+    if (s_i2c0_bus_handle != NULL)
+    {
         i2c_bus_delete(&s_i2c0_bus_handle);
-        if (s_i2c0_bus_handle != NULL) {
+        if (s_i2c0_bus_handle != NULL)
+        {
             return ESP_FAIL;
         }
     }
@@ -77,17 +80,18 @@ static esp_err_t board_spi_bus_deinit(void)
 
 esp_err_t iot_board_init(void)
 {
+    if(s_board_is_init)
+    {
+        return ESP_OK;
+    }
+    int ret;
+
     gpio_reset_pin((gpio_num_t)0);
     gpio_reset_pin((gpio_num_t)2);
     gpio_reset_pin((gpio_num_t)4);
     gpio_reset_pin((gpio_num_t)5);
     gpio_reset_pin((gpio_num_t)12);
     gpio_reset_pin((gpio_num_t)15);
-
-    if(s_board_is_init) {
-        return ESP_OK;
-    }
-    int ret;
 
     ret = board_i2c_bus_init();
     BOARD_CHECK(ret == ESP_OK, "i2c init failed", ret);

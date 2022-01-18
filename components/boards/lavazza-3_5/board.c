@@ -1,5 +1,5 @@
 /**
-*Board support for ESP32-LCDKit
+*Board support for Lavazza Small Resistive screen
 *
 **/
 #include <stdio.h>
@@ -80,6 +80,12 @@ static esp_err_t board_spi_bus_deinit(void)
 
 esp_err_t iot_board_init(void)
 {
+    if(s_board_is_init)
+    {
+        return ESP_OK;
+    }
+    int ret;
+
     gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_MISO);
     gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_MOSI);
     gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_SCK);
@@ -88,13 +94,7 @@ esp_err_t iot_board_init(void)
     gpio_reset_pin((gpio_num_t)BOARD_LCD_SPI_RESET_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_TOUCH_SPI_CS_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_TOUCH_IRQ_TOUCH_PIN);
-
-    if(s_board_is_init)
-    {
-        return ESP_OK;
-    }
-    int ret;
-
+    
     ret = board_i2c_bus_init();
     BOARD_CHECK(ret == ESP_OK, "i2c init failed", ret);
 

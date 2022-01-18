@@ -36,6 +36,9 @@ typedef enum {
 #define BOARD_IO_SPI2_MOSI 21
 #define BOARD_IO_SPI2_MISO 27
 
+#define BOARD_LCD_WIDTH     480
+#define BOARD_LCD_HEIGHT    800
+
 /*Definations of Peripheral*/
 #define BOARD_I2C0_MODE I2C_MODE_MASTER
 #define BOARD_I2C0_SPEED (100000)
