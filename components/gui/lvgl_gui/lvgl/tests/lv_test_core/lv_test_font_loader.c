@@ -7,17 +7,14 @@
  *      INCLUDES
  *********************/
 
-#include "../../lvgl.h"
+#include "lvgl/lvgl.h"
 #if LV_BUILD_TEST
 #include "../lv_test_assert.h"
-#include "../src/lv_font/lv_font_fmt_txt.h"
-#include "../src/lv_font/lv_font.h"
-#include "../src/lv_font/lv_font_loader.h"
+#include "lvgl/src/lv_font/lv_font_fmt_txt.h"
+#include "lvgl/src/lv_font/lv_font.h"
+#include "lvgl/src/lv_font/lv_font_loader.h"
 
-#include "lv_test_font_loader.h"
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
+#include "lv_test_font_loader.h" 
 
 /*********************
  *      DEFINES
@@ -31,7 +28,7 @@
  *  STATIC PROTOTYPES
  **********************/
 
-#if LV_USE_FILESYSTEM
+#if LV_USE_FILESYSTEM && LV_FONT_FMT_TXT_LARGE == 0
 static int compare_fonts(lv_font_t * f1, lv_font_t * f2);
 #endif
 
@@ -53,12 +50,7 @@ extern lv_font_t font_3;
 
 void lv_test_font_loader(void)
 {
-#if LV_USE_FILESYSTEM
-    lv_test_print("");
-    lv_test_print("===================");
-    lv_test_print("Start lv_font tests");
-    lv_test_print("===================");
-
+#if LV_USE_FILESYSTEM && LV_FONT_FMT_TXT_LARGE == 0
     lv_font_t * font_1_bin = lv_font_load("f:font_1.fnt");
     lv_font_t * font_2_bin = lv_font_load("f:font_2.fnt");
     lv_font_t * font_3_bin = lv_font_load("f:font_3.fnt");
@@ -75,7 +67,7 @@ void lv_test_font_loader(void)
 #endif
 }
 
-#if LV_USE_FILESYSTEM
+#if LV_USE_FILESYSTEM && LV_FONT_FMT_TXT_LARGE == 0
 static int compare_fonts(lv_font_t * f1, lv_font_t * f2)
 {
     lv_test_assert_true(f1 != NULL && f2 != NULL, "font not null");
@@ -215,9 +207,9 @@ static int compare_fonts(lv_font_t * f1, lv_font_t * f2)
 }
 #endif
 
-#pragma GCC diagnostic pop
 /**********************
  *   STATIC FUNCTIONS
  **********************/
 
 #endif // LV_BUILD_TEST
+

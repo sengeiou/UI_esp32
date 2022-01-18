@@ -188,34 +188,34 @@ esp_err_t ft5x06_init(const touch_panel_config_t *config)
     ft5x06_dev_t *dev = &g_dev;
     ESP_LOGI(TAG, "FT5x06 frameware version [%x]", ft5x06_read_fw_ver(dev));
     ESP_LOGI(TAG, "Touch panel size width: %d, height: %d", g_dev.width, g_dev.height);
-    // Init default values. (From NHD-3.5-320240MF-ATXL-CTP-1 datasheet)
-    // Valid touching detect threshold
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_THGROUP, 0x16);
+    // // Init default values. (From NHD-3.5-320240MF-ATXL-CTP-1 datasheet)
+    // // Valid touching detect threshold
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_THGROUP, 0x16);
 
-    // valid touching peak detect threshold
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_THPEAK, 0x3C);
+    // // valid touching peak detect threshold
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_THPEAK, 0x3C);
 
-    // Touch focus threshold
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_THCAL, 0xE9);
+    // // Touch focus threshold
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_THCAL, 0xE9);
 
-    // threshold when there is surface water
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_THWATER, 0x01);
+    // // threshold when there is surface water
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_THWATER, 0x01);
 
-    // threshold of temperature compensation
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_THTEMP, 0x01);
+    // // threshold of temperature compensation
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_THTEMP, 0x01);
 
-    // Touch difference threshold
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_THDIFF, 0xA0);
+    // // Touch difference threshold
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_THDIFF, 0xA0);
 
-    // Delay to enter 'Monitor' status (s)
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_TIMEENTERMONITOR, 0x0A);
+    // // Delay to enter 'Monitor' status (s)
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_TIMEENTERMONITOR, 0x0A);
 
-    // Period of 'Active' status (ms)
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_PERIODACTIVE, 0x06);
+    // // Period of 'Active' status (ms)
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_PERIODACTIVE, 0x06);
 
-    // Timer to enter 'idle' when in 'Monitor' (ms)
-    ret |= ft5x06_write_reg(dev, FT5X0X_REG_PERIODMONITOR, 0x28);
-    TOUCH_CHECK(ESP_OK == ret, "ft5x06 write reg failed", ESP_FAIL);
+    // // Timer to enter 'idle' when in 'Monitor' (ms)
+    // ret |= ft5x06_write_reg(dev, FT5X0X_REG_PERIODMONITOR, 0x28);
+    // TOUCH_CHECK(ESP_OK == ret, "ft5x06 write reg failed", ESP_FAIL);
 
     ESP_LOGI(TAG, "Initial successful | GPIO INT:%d | ADDR:0x%x | dir:%d",
              config->pin_num_int, config->interface_i2c.i2c_addr, config->direction);

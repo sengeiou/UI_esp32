@@ -1,3 +1,4 @@
+
 /**
  * @file lv_roller.c
  *
@@ -157,6 +158,7 @@ void lv_roller_set_options(lv_obj_t * roller, const char * options, lv_roller_mo
     LV_ASSERT_OBJ(roller, LV_OBJX_NAME);
     LV_ASSERT_STR(options);
 
+
     lv_roller_ext_t * ext = lv_obj_get_ext_attr(roller);
     lv_obj_t * label = get_label(roller);
 
@@ -176,7 +178,7 @@ void lv_roller_set_options(lv_obj_t * roller, const char * options, lv_roller_mo
         lv_label_set_text(label, options);
     }
     else {
-        ext->mode = LV_ROLLER_MODE_INFINITE;
+        ext->mode = LV_ROLLER_MODE_INIFINITE;
 
         size_t opt_len = strlen(options) + 1; /*+1 to add '\n' after option lists*/
         char * opt_extra = _lv_mem_buf_get(opt_len * LV_ROLLER_INF_PAGES);
@@ -237,7 +239,7 @@ void lv_roller_set_selected(lv_obj_t * roller, uint16_t sel_opt, lv_anim_enable_
     lv_roller_ext_t * ext = lv_obj_get_ext_attr(roller);
 
     /*In infinite mode interpret the new ID relative to the currently visible "page"*/
-    if(ext->mode == LV_ROLLER_MODE_INFINITE) {
+    if(ext->mode == LV_ROLLER_MODE_INIFINITE) {
         int32_t sel_opt_signed = sel_opt;
         uint16_t page = ext->sel_opt_id / LV_ROLLER_INF_PAGES;
 
@@ -301,7 +303,7 @@ uint16_t lv_roller_get_selected(const lv_obj_t * roller)
     LV_ASSERT_OBJ(roller, LV_OBJX_NAME);
 
     lv_roller_ext_t * ext = lv_obj_get_ext_attr(roller);
-    if(ext->mode == LV_ROLLER_MODE_INFINITE) {
+    if(ext->mode == LV_ROLLER_MODE_INIFINITE) {
         uint16_t real_id_cnt = ext->option_cnt / LV_ROLLER_INF_PAGES;
         return ext->sel_opt_id % real_id_cnt;
     }
@@ -309,6 +311,7 @@ uint16_t lv_roller_get_selected(const lv_obj_t * roller)
         return ext->sel_opt_id;
     }
 }
+
 
 /**
  * Get the current selected option as a string
@@ -353,7 +356,7 @@ uint16_t lv_roller_get_option_cnt(const lv_obj_t * roller)
     LV_ASSERT_OBJ(roller, LV_OBJX_NAME);
 
     lv_roller_ext_t * ext = lv_obj_get_ext_attr(roller);
-    if(ext->mode == LV_ROLLER_MODE_INFINITE) {
+    if(ext->mode == LV_ROLLER_MODE_INIFINITE) {
         return ext->option_cnt / LV_ROLLER_INF_PAGES;
     }
     else {
@@ -396,6 +399,7 @@ const char * lv_roller_get_options(const lv_obj_t * roller)
 
     return lv_label_get_text(get_label(roller));
 }
+
 
 /**********************
  *   STATIC FUNCTIONS
@@ -505,6 +509,7 @@ static lv_design_res_t lv_roller_design(lv_obj_t * roller, const lv_area_t * cli
     return LV_DESIGN_RES_OK;
 }
 
+
 /**
  * Handle the drawing related tasks of the roller's label
  * @param roller pointer to an object
@@ -522,7 +527,7 @@ static lv_design_res_t lv_roller_label_design(lv_obj_t * label, const lv_area_t 
     }
     /*Draw the object*/
     else if(mode == LV_DESIGN_DRAW_MAIN) {
-        /* Split the drawing of the label into an upper (above the selected area)
+        /* Split the drawing of the label into  an upper (above the selected area)
          * and a lower (below the selected area)*/
         lv_obj_t * roller = lv_obj_get_parent(lv_obj_get_parent(label));
         const lv_font_t * font = lv_obj_get_style_text_font(roller, LV_ROLLER_PART_BG);
@@ -824,6 +829,7 @@ static void draw_bg(lv_obj_t * roller, const lv_area_t * clip_area)
     }
 }
 
+
 /**
  * Refresh the position of the roller. It uses the id stored in: ext->ddlist.selected_option_id
  * @param roller pointer to a roller object
@@ -874,6 +880,7 @@ static void refr_position(lv_obj_t * roller, lv_anim_enable_t anim_en)
 #endif
     }
 }
+
 
 static lv_res_t release_handler(lv_obj_t * roller)
 {
@@ -949,6 +956,7 @@ static void refr_width(lv_obj_t * roller)
             break;
     }
 
+
     if(lv_roller_get_auto_fit(roller) == false) return;
 
     lv_coord_t label_w = lv_obj_get_width(label);
@@ -998,7 +1006,7 @@ static void inf_normalize(void * scrl)
     lv_obj_t * roller      = lv_obj_get_parent(roller_scrl);
     lv_roller_ext_t * ext  = lv_obj_get_ext_attr(roller);
 
-    if(ext->mode == LV_ROLLER_MODE_INFINITE) {
+    if(ext->mode == LV_ROLLER_MODE_INIFINITE) {
         uint16_t real_id_cnt = ext->option_cnt / LV_ROLLER_INF_PAGES;
         ext->sel_opt_id = ext->sel_opt_id % real_id_cnt;
         ext->sel_opt_id += (LV_ROLLER_INF_PAGES / 2) * real_id_cnt; /*Select the middle page*/

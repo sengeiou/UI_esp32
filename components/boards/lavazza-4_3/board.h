@@ -29,12 +29,8 @@ typedef enum {
     BOARD_SPI2_ID,
 }board_res_id_t;
 
-#define BOARD_IO_I2C0_SCL 3
-#define BOARD_IO_I2C0_SDA 1
-
-#define BOARD_IO_SPI2_SCK 22
-#define BOARD_IO_SPI2_MOSI 21
-#define BOARD_IO_SPI2_MISO 27
+#define BOARD_IO_I2C0_SCL 16
+#define BOARD_IO_I2C0_SDA 17
 
 #define BOARD_LCD_WIDTH     480
 #define BOARD_LCD_HEIGHT    800
@@ -80,11 +76,12 @@ typedef enum {
  * When both the screen and the touch panel are SPI interfaces, 
  * they can choose to share a SPI host. The board ESP32-LCDKit is this.
  */
-#define BOARD_TOUCH_SPI_CS_PIN 32
 
 #define BOARD_TOUCH_I2C_PORT_NUM 0
 #define BOARD_TOUCH_I2C_SCL_PIN BOARD_IO_I2C0_SCL
 #define BOARD_TOUCH_I2C_SDA_PIN BOARD_IO_I2C0_SDA
+#define BOARD_TOUCH_I2C_INT_PIN 34
+#define BOARD_TOUCH_I2C_CLOCK_FREQ BOARD_I2C0_SPEED
 
 #ifdef __cplusplus
 extern "C"

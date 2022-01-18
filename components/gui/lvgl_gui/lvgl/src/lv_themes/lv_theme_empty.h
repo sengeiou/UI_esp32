@@ -1,5 +1,5 @@
 /**
- * @file lv_theme_empty.h
+ * @file lv_theme_material.h
  *
  */
 
@@ -29,6 +29,7 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 
+
 /**
  * Initialize the default
  * @param color_primary the primary color of the theme
@@ -53,4 +54,4 @@ lv_theme_t * lv_theme_empty_init(lv_color_t color_primary, lv_color_t color_seco
 } /* extern "C" */
 #endif
 
-#endif /*LV_THEME_EMPTY_H*/
+#endif /*LV_THEME_ALIEN_H*/

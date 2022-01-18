@@ -19,11 +19,11 @@ set(incdir 	"inc"
 set(COMPONENT_REQUIRES
     esp-azure
 	lvgl
-	lvgl_esp32_drivers)
+	lvgl_gui)
 
 idf_component_register(SRC_DIRS ${srcs_dirs}
                         INCLUDE_DIRS ${incdir})
 					
 component_compile_definitions(ADVANCED_DEBUG)
 
-# spiffs_create_partition_image(storage ../spiffs FLASH_IN_PROJECT)
+spiffs_create_partition_image(storage ../spiffs FLASH_IN_PROJECT)
