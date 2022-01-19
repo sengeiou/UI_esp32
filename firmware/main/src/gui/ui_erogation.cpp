@@ -223,14 +223,14 @@ void ui_erogation_init(void *data)
     (void)data;
 
     obj_graph = lv_chart_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_graph, 460, 220);
+    lv_obj_set_size(obj_graph, EROG_CHART_WIDTH, EROG_CHART_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_bg_color(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
-    lv_obj_set_style_local_radius(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 5);
-    lv_obj_set_style_local_border_width(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_set_style_local_value_font(obj_graph, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_18);
+    lv_obj_set_style_local_radius(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, EROG_CHART_RADIUS);
+    lv_obj_set_style_local_border_width(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, EROG_CHART_BORDER);
+    lv_obj_set_style_local_value_font(obj_graph, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &erog_chart_font);
     lv_obj_set_style_local_text_color(obj_graph, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_align(obj_graph, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align(obj_graph, NULL, LV_ALIGN_CENTER, EROG_CHART_X_OFFSET, EROG_CHART_Y_OFFSET);
     lv_chart_set_type(obj_graph, LV_CHART_TYPE_LINE);
     lv_chart_set_point_count(obj_graph, 101);
     lv_chart_set_update_mode(obj_graph, LV_CHART_UPDATE_MODE_SHIFT);
@@ -251,9 +251,9 @@ void ui_erogation_init(void *data)
     const char* x_list_of_values = "0\n20\n40\n60\n80\n100";
     const char* y_list_of_values = "30\n50\n70\n90\n110\n130\n150";
 
-    lv_obj_set_style_local_pad_left(obj_graph,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 40);
-    lv_obj_set_style_local_pad_bottom(obj_graph,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 30);
-    lv_obj_set_style_local_pad_right(obj_graph,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 20);
+    lv_obj_set_style_local_pad_left(obj_graph,  LV_CHART_PART_BG, LV_STATE_DEFAULT, EROG_CHART_PAD_LEFT);
+    lv_obj_set_style_local_pad_bottom(obj_graph,  LV_CHART_PART_BG, LV_STATE_DEFAULT, EROG_CHART_PAD_BOTTOM);
+    lv_obj_set_style_local_pad_right(obj_graph,  LV_CHART_PART_BG, LV_STATE_DEFAULT, EROG_CHART_PAD_RIGHT);
 
     lv_chart_set_div_line_count(obj_graph, 5, 9);
     lv_chart_set_x_tick_length(obj_graph, 0, 0);
@@ -265,7 +265,7 @@ void ui_erogation_init(void *data)
     obj_label = lv_label_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_size(obj_label, 400, 100);
+    lv_obj_set_size(obj_label, EROG_LABEL_WIDTH, EROG_LABEL_HEIGHT);
     lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_40);
     lv_obj_set_click(obj_label, false);
 
@@ -274,30 +274,30 @@ void ui_erogation_init(void *data)
     lv_obj_set_style_local_border_color(obj_bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLUE);
     lv_obj_set_style_local_border_color(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_BLUE);
     lv_obj_set_style_local_bg_color(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_CYAN);
-    lv_obj_set_style_local_border_width(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, 2);
-    lv_obj_set_size(obj_bar, 400, 20);
+    lv_obj_set_style_local_border_width(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, EROG_BAR_BORDER);
+    lv_obj_set_size(obj_bar, EROG_BAR_WIDTH, EROG_BAR_HEIGHT);
     lv_bar_set_range(obj_bar, 0, 100);
     lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
-    lv_obj_align(obj_bar, obj_graph, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+    lv_obj_align(obj_bar, obj_graph, LV_ALIGN_OUT_BOTTOM_MID, EROG_BAR_X_OFFSET, EROG_BAR_Y_OFFSET);
     lv_obj_set_click(obj_bar, false);
 
     btn_stop = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_width(btn_stop, 58);
-    lv_obj_set_style_local_radius(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);
+    lv_obj_set_width(btn_stop, EROG_BUTTON_WIDTH);
+    lv_obj_set_style_local_radius(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, EROG_BUTTON_RADIUS);
     lv_obj_set_style_local_bg_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_border_width(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_set_style_local_value_font(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
+    lv_obj_set_style_local_border_width(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, EROG_BUTTON_BORDER);
+    lv_obj_set_style_local_value_font(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &erog_button_font);
     lv_obj_set_style_local_value_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_value_str(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_STOP);
-    lv_obj_align(btn_stop, NULL, LV_ALIGN_IN_TOP_RIGHT, 2, 2);
+    lv_obj_align(btn_stop, NULL, LV_ALIGN_IN_TOP_RIGHT, EROG_BUTTON_X_OFFSET, EROG_BUTTON_Y_OFFSET);
     lv_obj_set_event_cb(btn_stop, btn_stop_cb);
 
     msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-    lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+    lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &erog_label_font);
     lv_msgbox_set_text(msgbox, "Your drink\nis ready!");
     lv_msgbox_add_btns(msgbox, btns);
-    lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, EROG_MSGBOX_X_OFFSET, EROG_MSGBOX_Y_OFFSET);
     lv_obj_set_event_cb(msgbox, erogation_done_cb);
 
     lv_obj_set_hidden(msgbox, true);

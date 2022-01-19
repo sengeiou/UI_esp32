@@ -14,34 +14,6 @@
 #include "defines_4_3.h"
 #endif
 
-extern lv_font_t font_clock_32;
-extern lv_font_t font_clock_108;
-extern lv_font_t font_en_18;
-extern lv_font_t font_en_20;
-extern lv_font_t font_en_24;
-extern lv_font_t font_en_28;
-extern lv_font_t font_en_32;
-extern lv_font_t font_en_36;
-extern lv_font_t font_en_40;
-extern lv_font_t font_en_48;
-extern lv_font_t font_en_bold_16;
-extern lv_font_t font_en_bold_20;
-extern lv_font_t font_en_bold_24;
-extern lv_font_t font_en_bold_28;
-extern lv_font_t font_en_bold_32;
-extern lv_font_t font_en_bold_36;
-extern lv_font_t font_en_bold_48;
-extern lv_font_t font_en_bold_60;
-extern lv_font_t font_en_bold_72;
-extern lv_font_t font_en_bold_24;
-extern lv_font_t font_en_bold_28;
-extern lv_font_t font_en_bold_48;
-extern lv_font_t font_en_20_compress;
-extern lv_font_t font_kb_24;
-extern lv_font_t font_symbol_28;
-extern lv_font_t font_en_thin_20;
-extern lv_font_t font_bar_symbol;
-
 #define COLOR_THEME LV_COLOR_BLACK
 #define COLOR_DEEP  lv_color_make(246, 174, 61)
 #define COLOR_TEXT  LV_COLOR_WHITE

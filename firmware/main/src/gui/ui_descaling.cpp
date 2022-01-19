@@ -70,11 +70,11 @@ void ui_descaling_init(void *data)
     obj_label = lv_label_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_size(obj_label, 400, 100);
-    lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_bold_48);
+    lv_obj_set_size(obj_label, DESC_LABEL_WIDTH, DESC_LABEL_HEIGHT);
+    lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &desc_label_font);
     lv_label_set_text(obj_label, "Descaling in progress...");
     lv_label_set_align(obj_label, LV_LABEL_ALIGN_CENTER);
-    lv_obj_align(obj_label, NULL, LV_ALIGN_CENTER, 0, -80);
+    lv_obj_align(obj_label, NULL, LV_ALIGN_CENTER, DESC_LABEL_X_OFFSET, DESC_LABEL_Y_OFFSET);
     lv_obj_set_auto_realign(obj_label, true);
 
     obj_bar = lv_bar_create(lv_scr_act(), NULL);
@@ -82,24 +82,24 @@ void ui_descaling_init(void *data)
     lv_obj_set_style_local_border_color(obj_bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLUE);
     lv_obj_set_style_local_border_color(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_BLUE);
     lv_obj_set_style_local_bg_color(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_CYAN);
-    lv_obj_set_style_local_border_width(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, 2);
-    lv_obj_set_size(obj_bar, 400, 12);
+    lv_obj_set_style_local_border_width(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, DESC_BAR_BORDER);
+    lv_obj_set_size(obj_bar, DESC_BAR_WIDTH, DESC_BAR_HEIGHT);
     lv_bar_set_range(obj_bar, 0, 100);
     lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
-    lv_obj_align(obj_bar, obj_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 30);
+    lv_obj_align(obj_bar, obj_label, LV_ALIGN_OUT_BOTTOM_MID, DESC_BAR_X_OFFSET, DESC_BAR_Y_OFFSET);
 
     obj_button = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_button, 200, 100);
+    lv_obj_set_size(obj_button, DESC_BUTTON_WIDTH, DESC_BUTTON_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_radius(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 10);
-    lv_obj_set_style_local_border_width(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_align(obj_button, obj_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+    lv_obj_set_style_local_radius(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, DESC_BUTTON_RADIUS);
+    lv_obj_set_style_local_border_width(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, DESC_BUTTON_BORDER);
+    lv_obj_align(obj_button, obj_bar, LV_ALIGN_OUT_BOTTOM_MID, DESC_BUTTON_X_OFFSET, DESC_BUTTON_Y_OFFSET);
     lv_obj_set_click(obj_button, false);
     lv_obj_set_event_cb(obj_button, btn_cb);
 
     lv_obj_set_style_local_value_str(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, "In progress...");
-    lv_obj_set_style_local_value_font(obj_button, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
+    lv_obj_set_style_local_value_font(obj_button, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &desc_button_font);
     lv_obj_set_style_local_value_align(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_ALIGN_CENTER);
     lv_obj_set_style_local_value_color(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_color(obj_button,  LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
