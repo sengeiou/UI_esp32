@@ -81,5 +81,23 @@ inline lv_font_t erog_button_font = lv_font_montserrat_36;
 #define EROG_MSGBOX_X_OFFSET    0
 #define EROG_MSGBOX_Y_OFFSET    0
 
+// Cleaning Pages
+inline lv_font_t clean_label_font  = font_en_bold_60;
+inline lv_font_t clean_button_font = font_en_28;
+#define CLEAN_LABEL_WIDTH        660
+#define CLEAN_LABEL_HEIGHT       150
+#define CLEAN_LABEL_X_OFFSET     0
+#define CLEAN_LABEL_Y_OFFSET     -120
+#define CLEAN_BAR_WIDTH          660
+#define CLEAN_BAR_HEIGHT         16
+#define CLEAN_BAR_BORDER         3
+#define CLEAN_BAR_X_OFFSET       0
+#define CLEAN_BAR_Y_OFFSET       45
+#define CLEAN_BUTTON_WIDTH       330
+#define CLEAN_BUTTON_HEIGHT      150
+#define CLEAN_BUTTON_RADIUS      15
+#define CLEAN_BUTTON_BORDER      0
+#define CLEAN_BUTTON_X_OFFSET    16
+#define CLEAN_BUTTON_Y_OFFSET    60
 
 #endif /* _DEFINES_H_ */
