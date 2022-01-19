@@ -99,4 +99,12 @@ inline lv_font_t clean_button_font = font_en_24;
 #define CLEAN_BUTTON_BORDER      0
 #define CLEAN_BUTTON_X_OFFSET    10
 #define CLEAN_BUTTON_Y_OFFSET    40
+
+
+// General purpose Pages
+#define GENERAL_WIDTH        480
+#define GENERAL_HEIGHT       320
+#define GENERAL_X_OFFSET     0
+#define GENERAL_Y_OFFSET     25
+
 #endif /* _DEFINES_H_ */
