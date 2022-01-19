@@ -100,11 +100,20 @@ inline lv_font_t clean_button_font = font_en_24;
 #define CLEAN_BUTTON_X_OFFSET    10
 #define CLEAN_BUTTON_Y_OFFSET    40
 
-
-// General purpose Pages
+// General purpose Page
 #define GENERAL_WIDTH        480
 #define GENERAL_HEIGHT       320
 #define GENERAL_X_OFFSET     0
 #define GENERAL_Y_OFFSET     25
+
+// Preferences Page
+inline lv_font_t pref_button_font = font_en_24;
+#define PREF_BUTTON_WIDTH       140
+#define PREF_BUTTON_HEIGHT      110
+#define PREF_BUTTON_RADIUS      10
+#define PREF_BUTTON_BORDER      0
+#define PREF_BUTTON_X_CENTER    160
+#define PREF_BUTTON_Y_CENTER    65
+#define PREF_BUTTON_Y_OFFSET    20
 
 #endif /* _DEFINES_H_ */
