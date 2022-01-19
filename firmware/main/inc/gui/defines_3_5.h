@@ -1,7 +1,9 @@
 #ifndef _DEFINES_H_
 #define _DEFINES_H_
 
-#include "lv_font.h"
+#include "lvgl.h"
+#include "sdkconfig.h"
+
 
 extern lv_font_t font_clock_32;
 extern lv_font_t font_clock_108;
@@ -153,5 +155,34 @@ inline lv_font_t pref_button_font = font_en_24;
 #define STAT_CONT_Y_OFFSET      20
 #define STAT_COL1_WIDTH         260
 #define STAT_COL2_WIDTH         100
+
+//Status bar
+inline lv_font_t stsbar_button_font = lv_font_montserrat_32;
+#define STSBAR_WIDTH                   480
+#define STSBAR_HEIGHT                  60
+#define STSBAR_X_OFFSET                0
+#define STSBAR_Y_OFFSET                0
+#define STSBAR_RADIUS                  0
+#define STSBAR_BORDER                  0
+#define STSBAR_BUTTON_WIDTH            58
+#define STSBAR_BUTTON_SETT_X_OFFSET    -15
+#define STSBAR_BUTTON_WIFI_X_OFFSET    15
+#if CONFIG_ENABLE_CAPS_RECOGNITION_MODULE == 1
+#define STSBAR_BUTTON_DESC_X_OFFSET    -30
+#define STSBAR_BUTTON_POD_X_OFFSET     -95
+#define STSBAR_BUTTON_WATER_X_OFFSET   30
+#else
+#define STSBAR_BUTTON_DESC_X_OFFSET    0
+#define STSBAR_BUTTON_POD_X_OFFSET     -65
+#define STSBAR_BUTTON_WATER_X_OFFSET   65
+#endif
+#define STSBAR_BUTTON_RECO_X_OFFSET    95
+#define STSBAR_BUTTON_Y_OFFSET         0
+#define STSBAR_IMG_ZOOM                128
+#define STSBAR_IMG_X_OFFSET            0
+#define STSBAR_IMG_Y_OFFSET            0
+#define STSBAR_BUTTON_RADIUS           5
+#define STSBAR_BUTTON_BORDER           0
+
 
 #endif /* _DEFINES_H_ */
