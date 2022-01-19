@@ -48,14 +48,13 @@ void ui_statistics_init(void *data)
     (void)data;
 
     obj_container = lv_page_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_container, 460, 250);
-    lv_obj_align(obj_container, NULL, LV_ALIGN_CENTER, 0, 20);
+    lv_obj_set_size(obj_container, STAT_CONT_WIDTH, STAT_CONT_HEIGHT);
+    lv_obj_align(obj_container, NULL, LV_ALIGN_CENTER, STAT_CONT_X_OFFSET, STAT_CONT_Y_OFFSET);
     lv_page_set_scrl_layout(obj_container, LV_LAYOUT_PRETTY_TOP);
-    lv_page_set_scrl_height(obj_container, 250);
+    lv_page_set_scrl_height(obj_container, STAT_CONT_HEIGHT);
     lv_page_set_scrlbar_mode(obj_container, LV_SCRLBAR_MODE_AUTO);
 
     obj_fullstats = lv_table_create(obj_container, NULL);
-    // lv_obj_set_size(obj_fullstats, 460, 250);
     lv_obj_set_style_local_bg_color(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_bg_color(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 5);
@@ -63,8 +62,8 @@ void ui_statistics_init(void *data)
     lv_table_set_col_cnt(obj_fullstats, 2);
     lv_table_set_row_cnt(obj_fullstats, 9);
 
-    lv_table_set_col_width(obj_fullstats, 0, 260);
-    lv_table_set_col_width(obj_fullstats, 1, 100);
+    lv_table_set_col_width(obj_fullstats, 0, STAT_COL1_WIDTH);
+    lv_table_set_col_width(obj_fullstats, 1, STAT_COL2_WIDTH);
 
     lv_table_set_cell_align(obj_fullstats, 0, 1, LV_LABEL_ALIGN_RIGHT);
     lv_table_set_cell_align(obj_fullstats, 1, 1, LV_LABEL_ALIGN_RIGHT);

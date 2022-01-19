@@ -146,4 +146,12 @@ inline lv_font_t pref_button_font = font_en_28;
 #define SETT_LABEL_X_OFFSET     0
 #define SETT_LABEL_Y_OFFSET     15
 
+// Statistics Page
+#define STAT_CONT_WIDTH         780
+#define STAT_CONT_HEIGHT        375
+#define STAT_CONT_X_OFFSET      0
+#define STAT_CONT_Y_OFFSET      30
+#define STAT_COL1_WIDTH         430
+#define STAT_COL2_WIDTH         160
+
 #endif /* _DEFINES_H_ */
