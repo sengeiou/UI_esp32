@@ -1,6 +1,5 @@
 #include "ui_main.h"
 #include "sys_check.h"
-#include "lvgl_port.h"
 #include "esp_log.h"
 #include "dbg_task.h"
 
@@ -56,7 +55,6 @@ static esp_err_t ui_call_stack_clear(void);
 void ui_main(void)
 {
     /* Init main screen */
-    lv_port_sem_take();
     lv_obj_set_style_local_bg_color(lv_scr_act(), LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
 
     /* Show logo */
@@ -65,7 +63,6 @@ void ui_main(void)
     lv_obj_set_style_local_bg_color(img, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_img_set_src(img, &lavazza_logo);
     lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, -50);
-    lv_port_sem_give();
 
     if(ESP_OK != sys_check())
     {
@@ -76,7 +73,6 @@ void ui_main(void)
         }
     }
 
-    lv_port_sem_take();
     /* Create a bar to update loading progress */
     lv_obj_t *bar = lv_bar_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);
@@ -94,17 +90,14 @@ void ui_main(void)
     lv_obj_set_style_local_text_font(label_loading_hint, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_24);
     lv_obj_set_style_local_text_color(label_loading_hint, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_NAVY);
     lv_obj_align(label_loading_hint, bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-    lv_port_sem_give();
 
     /* Load resource from SD crad to PSARM */
     TickType_t tick = xTaskGetTickCount();
     for(size_t i = 0; i < sizeof(img_fetch_list) / sizeof(ui_data_fetch_t); i++)
     {
-        lv_port_sem_take();
         lv_bar_set_value(bar, i + 1, LV_ANIM_ON);
         lv_label_set_text_fmt(label_loading_hint, "Loading \"%s\"", img_fetch_list[i].path);
         lv_obj_align(label_loading_hint, bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-        lv_port_sem_give();
 
         if(ESP_OK != img_file_check(img_fetch_list[i].path))
         {
@@ -124,22 +117,20 @@ void ui_main(void)
     vTaskDelay(pdMS_TO_TICKS(500));
 
     /* Remove image and bar, reset background color */
-    lv_port_sem_take();
     lv_obj_del(img);
     lv_obj_del(bar);
     lv_obj_del(label_loading_hint);
     lv_obj_set_style_local_bg_color(lv_scr_act(), LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, COLOR_BG);
-    lv_port_sem_give();
 
     /* Init call queue and pre-init widgets */
     ui_init_internal();
 
     /* Entering main UI */
-    lv_port_sem_take();
     ui_status_bar_init();
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);
-    lv_port_sem_give();
+    // ui_preparations_show(NULL);
+    // ui_call_stack_push(&ui_preparations_func);
 
     enable_livedata();
 }

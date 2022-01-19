@@ -1,5 +1,4 @@
 #include "ui_main.h"
-#include "lvgl_port.h"
 #include "lv_qrcode.h"
 #include "dbg_task.h"
 
@@ -29,7 +28,7 @@ void ui_standby_init(void *data)
     (void)data;
 
     obj_button = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_button, 480, 320);
+    lv_obj_set_size(obj_button, BOARD_LCD_WIDTH, BOARD_LCD_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_bg_color(obj_button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_radius(obj_button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
@@ -37,7 +36,7 @@ void ui_standby_init(void *data)
     lv_obj_align(obj_button, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_event_cb(obj_button, btn_cb);
    
-    img_qr = lv_qrcode_create(lv_scr_act(), 250, LV_COLOR_BLACK, LV_COLOR_WHITE);
+    img_qr = lv_qrcode_create(lv_scr_act(), QR_CODE_SIZE, LV_COLOR_BLACK, LV_COLOR_WHITE);
     lv_obj_align(img_qr, NULL, LV_ALIGN_CENTER, 0, 0);
 }
 

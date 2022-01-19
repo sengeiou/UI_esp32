@@ -3,7 +3,6 @@ extern "C" {
 #endif
 
 #include "ui_main.h"
-#include "lvgl_port.h"
 
 #ifdef ADVANCED_DEBUG
     #define LOG_TAG LINE_STRING "|" "UI_PAGE"

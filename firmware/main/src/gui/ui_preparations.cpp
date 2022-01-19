@@ -1,5 +1,4 @@
 #include "ui_main.h"
-#include "lvgl_port.h"
 #include <time.h>
 #include "dbg_task.h"
 

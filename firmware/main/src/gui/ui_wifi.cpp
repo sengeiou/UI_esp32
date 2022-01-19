@@ -1,5 +1,4 @@
 #include "ui_main.h"
-#include "lvgl_port.h"
 #include "variables.h"
 #include "spiffs_utils.h"
 #include "wifi_task.h"
