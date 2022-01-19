@@ -116,4 +116,20 @@ inline lv_font_t pref_button_font = font_en_24;
 #define PREF_BUTTON_Y_CENTER    65
 #define PREF_BUTTON_Y_OFFSET    20
 
+// Preparation Page
+#define PREP_TAB_WIDTH          470
+#define PREP_TAB_HEIGHT         250
+#define PREP_TAB_PAD            10
+#define PREP_TAB_X_OFFSET       0
+#define PREP_TAB_Y_OFFSET       20
+#define PREP_IMAGE_ZOOM         170
+#define PREP_BUTTON_WIDTH       180
+#define PREP_BUTTON_HEIGHT      100
+#define PREP_BUTTON_RADIUS      15
+#define PREP_BUTTON_BORDER      2
+#define PREP_BUTTON_X_OFFSET    20
+#define PREP_BUTTON_Y_OFFSET    20
+#define PREP_IMAGES_X_OFFSET    0
+#define PREP_IMAGES_Y_OFFSET    0
+
 #endif /* _DEFINES_H_ */
