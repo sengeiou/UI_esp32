@@ -24,6 +24,7 @@
 
 #include "dbg_protocol.h"
 #include "camera_protocol.h"
+#include "board.h"
 #include "sdkconfig.h"
 
 #ifdef ADVANCED_DEBUG
@@ -71,10 +72,6 @@ void get_time_from_sntp(bool& sync)
 {
     ESP_LOGI(TAG_UTILS, "Initializing SNTP");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    
-    // ip_addr_t addr;
-	// inet_pton(AF_INET, "10.16.11.1", &addr);
-	// sntp_setserver(0, &addr);
     sntp_setservername(0, "pool.ntp.org");
     
     sntp_init();
@@ -130,26 +127,53 @@ void init_queue(void)
 
 void init_gpio(void)
 {
-    /* Touch controller */
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_MISO);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_MOSI);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_CLK);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_SPI_CS);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_TOUCH_PIN_IRQ);
+    #if (CONFIG_BOARD_LAVAZZA_4_3 == 1)
+    /* Touch controller (I2C) */
+    gpio_reset_pin((gpio_num_t)BOARD_IO_I2C0_SCL);
+    gpio_reset_pin((gpio_num_t)BOARD_IO_I2C0_SDA);
+    gpio_reset_pin((gpio_num_t)BOARD_TOUCH_I2C_INT_PIN);
 
-    /* TFT display */
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_MOSI);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_MISO);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_CLK);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_SPI_CS);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_PIN_DC);
-    gpio_reset_pin((gpio_num_t)CONFIG_LV_DISP_PIN_RST);
+    /* TFT display (I2S) */
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_WR_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_RS_PIN;
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D0_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D1_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D2_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D3_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D4_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D5_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D6_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D7_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D8_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D9_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D10_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D11_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D12_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D13_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D14_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D15_PIN);    
+    #elif (CONFIG_BOARD_LAVAZZA_3_5 == 1)
+    gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_MOSI);
+    gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_MISO);
+    gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_SCK);
+
+    /* Touch controller (SPI) */
+    gpio_reset_pin((gpio_num_t)BOARD_TOUCH_SPI_CS_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_TOUCH_IRQ_TOUCH_PIN);
+
+    /* TFT display (SPI) */
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_SPI_CS_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_SPI_DC_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_SPI_RESET_PIN);
+    #else
+    //TODO clean your used pins
+    #endif
 
     /* DBG Uart */
     gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_RXD);
     gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_TXD);
 
     /* Camera Uart */
-    gpio_reset_pin((gpio_num_t)CONFIG_CAM_UART_RXD);
-    gpio_reset_pin((gpio_num_t)CONFIG_CAM_UART_TXD);
+    // gpio_reset_pin((gpio_num_t)CONFIG_CAM_UART_RXD);
+    // gpio_reset_pin((gpio_num_t)CONFIG_CAM_UART_TXD);
 }
