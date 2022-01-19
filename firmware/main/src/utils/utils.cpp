@@ -135,7 +135,7 @@ void init_gpio(void)
 
     /* TFT display (I2S) */
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_WR_PIN);
-    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_RS_PIN;
+    gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_RS_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D0_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D1_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D2_PIN);
