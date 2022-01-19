@@ -40,71 +40,71 @@ void ui_setting_init(void *data)
     (void)data;
 
     obj_container = lv_page_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_container, 460, 250);
-    lv_obj_align(obj_container, NULL, LV_ALIGN_CENTER, 0, 20);
+    lv_obj_set_size(obj_container, SETT_CONT_WIDTH, SETT_CONT_HEIGHT);
+    lv_obj_align(obj_container, NULL, LV_ALIGN_CENTER, SETT_CONT_X_OFFSET, SETT_CONT_Y_OFFSET);
     lv_page_set_scrl_layout(obj_container, LV_LAYOUT_PRETTY_TOP);
-    lv_page_set_scrl_height(obj_container, 250);
+    lv_page_set_scrl_height(obj_container, SETT_CONT_HEIGHT);
     lv_page_set_scrlbar_mode(obj_container, LV_SCRLBAR_MODE_AUTO);
 
     obj_slider_dose_coffee_short = lv_slider_create(obj_container, NULL);
-    lv_obj_set_width(obj_slider_dose_coffee_short, 370);
-    lv_obj_set_height(obj_slider_dose_coffee_short, 10);
-    lv_obj_align(obj_slider_dose_coffee_short, obj_container, LV_ALIGN_IN_TOP_MID, 0, 20);
+    lv_obj_set_width(obj_slider_dose_coffee_short, SETT_SLIDER_WIDTH);
+    lv_obj_set_height(obj_slider_dose_coffee_short, SETT_SLIDER_HEIGHT);
+    lv_obj_align(obj_slider_dose_coffee_short, obj_container, LV_ALIGN_IN_TOP_MID, SETT_SLIDER_X_OFFSET, SETT_SLIDER_Y0_OFFSET+0*SETT_SLIDER_YD_OFFSET);
     lv_slider_set_range(obj_slider_dose_coffee_short, 80, 150);
     lv_slider_set_value(obj_slider_dose_coffee_short, 110, LV_ANIM_OFF);
 
     obj_label_dose_coffee_short = lv_label_create(obj_container, NULL);
     lv_label_set_text(obj_label_dose_coffee_short, "Short Coffee dose [pulses]: 110");
     lv_obj_set_auto_realign(obj_label_dose_coffee_short, true);
-    lv_obj_align(obj_label_dose_coffee_short, obj_slider_dose_coffee_short, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_align(obj_label_dose_coffee_short, obj_slider_dose_coffee_short, LV_ALIGN_OUT_BOTTOM_MID, SETT_LABEL_X_OFFSET, SETT_LABEL_Y_OFFSET);
 
     obj_slider_dose_coffee_medium = lv_slider_create(obj_container, NULL);
-    lv_obj_set_width(obj_slider_dose_coffee_medium, 370);
-    lv_obj_set_height(obj_slider_dose_coffee_medium, 10);
-    lv_obj_align(obj_slider_dose_coffee_medium, obj_container, LV_ALIGN_IN_TOP_MID, 0, 80);
+    lv_obj_set_width(obj_slider_dose_coffee_medium, SETT_SLIDER_WIDTH);
+    lv_obj_set_height(obj_slider_dose_coffee_medium, SETT_SLIDER_HEIGHT);
+    lv_obj_align(obj_slider_dose_coffee_medium, obj_container, LV_ALIGN_IN_TOP_MID, SETT_SLIDER_X_OFFSET, SETT_SLIDER_Y0_OFFSET+1*SETT_SLIDER_YD_OFFSET);
     lv_slider_set_range(obj_slider_dose_coffee_medium, 80, 200);
     lv_slider_set_value(obj_slider_dose_coffee_medium, 140, LV_ANIM_OFF);
 
     obj_label_dose_coffee_medium = lv_label_create(obj_container, NULL);
     lv_label_set_text(obj_label_dose_coffee_medium, "Medium Coffee dose [pulses]: 140");
     lv_obj_set_auto_realign(obj_label_dose_coffee_medium, true);
-    lv_obj_align(obj_label_dose_coffee_medium, obj_slider_dose_coffee_medium, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_align(obj_label_dose_coffee_medium, obj_slider_dose_coffee_medium, LV_ALIGN_OUT_BOTTOM_MID, SETT_LABEL_X_OFFSET, SETT_LABEL_Y_OFFSET);
 
     obj_slider_dose_coffee_long = lv_slider_create(obj_container, NULL);
-    lv_obj_set_width(obj_slider_dose_coffee_long, 370);
-    lv_obj_set_height(obj_slider_dose_coffee_long, 10);
-    lv_obj_align(obj_slider_dose_coffee_long, obj_container, LV_ALIGN_IN_TOP_MID, 0, 140);
+    lv_obj_set_width(obj_slider_dose_coffee_long, SETT_SLIDER_WIDTH);
+    lv_obj_set_height(obj_slider_dose_coffee_long, SETT_SLIDER_HEIGHT);
+    lv_obj_align(obj_slider_dose_coffee_long, obj_container, LV_ALIGN_IN_TOP_MID, SETT_SLIDER_X_OFFSET, SETT_SLIDER_Y0_OFFSET+2*SETT_SLIDER_YD_OFFSET);
     lv_slider_set_range(obj_slider_dose_coffee_long, 80, 300);
     lv_slider_set_value(obj_slider_dose_coffee_long, 190, LV_ANIM_OFF);
 
     obj_label_dose_coffee_long = lv_label_create(obj_container, NULL);
     lv_label_set_text(obj_label_dose_coffee_long, "Long Coffee dose [pulses]: 190");
     lv_obj_set_auto_realign(obj_label_dose_coffee_long, true);
-    lv_obj_align(obj_label_dose_coffee_long, obj_slider_dose_coffee_long, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_align(obj_label_dose_coffee_long, obj_slider_dose_coffee_long, LV_ALIGN_OUT_BOTTOM_MID, SETT_LABEL_X_OFFSET, SETT_LABEL_Y_OFFSET);
 
     obj_slider_dose_cappuccino = lv_slider_create(obj_container, NULL);
-    lv_obj_set_width(obj_slider_dose_cappuccino, 370);
-    lv_obj_set_height(obj_slider_dose_cappuccino, 10);
-    lv_obj_align(obj_slider_dose_cappuccino, obj_container, LV_ALIGN_IN_TOP_MID, 0, 200);
+    lv_obj_set_width(obj_slider_dose_cappuccino, SETT_SLIDER_WIDTH);
+    lv_obj_set_height(obj_slider_dose_cappuccino, SETT_SLIDER_HEIGHT);
+    lv_obj_align(obj_slider_dose_cappuccino, obj_container, LV_ALIGN_IN_TOP_MID, SETT_SLIDER_X_OFFSET, SETT_SLIDER_Y0_OFFSET+3*SETT_SLIDER_YD_OFFSET);
     lv_slider_set_range(obj_slider_dose_cappuccino, 50, 150);
     lv_slider_set_value(obj_slider_dose_cappuccino, 100, LV_ANIM_OFF);
 
     obj_label_dose_cappuccino = lv_label_create(obj_container, NULL);
     lv_label_set_text(obj_label_dose_cappuccino, "Cappuccino dose [pulses]: 100");
     lv_obj_set_auto_realign(obj_label_dose_cappuccino, true);
-    lv_obj_align(obj_label_dose_cappuccino, obj_slider_dose_cappuccino, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_align(obj_label_dose_cappuccino, obj_slider_dose_cappuccino, LV_ALIGN_OUT_BOTTOM_MID, SETT_LABEL_X_OFFSET, SETT_LABEL_Y_OFFSET);
 
     obj_slider_standby_time = lv_slider_create(obj_container, NULL);
-    lv_obj_set_width(obj_slider_standby_time, 370);
-    lv_obj_set_height(obj_slider_standby_time, 10);
-    lv_obj_align(obj_slider_standby_time, obj_container, LV_ALIGN_IN_TOP_MID, 0, 260);
+    lv_obj_set_width(obj_slider_standby_time, SETT_SLIDER_WIDTH);
+    lv_obj_set_height(obj_slider_standby_time, SETT_SLIDER_HEIGHT);
+    lv_obj_align(obj_slider_standby_time, obj_container, LV_ALIGN_IN_TOP_MID, SETT_SLIDER_X_OFFSET, SETT_SLIDER_Y0_OFFSET+4*SETT_SLIDER_YD_OFFSET);
     lv_slider_set_range(obj_slider_standby_time, 0, 15);
     lv_slider_set_value(obj_slider_standby_time, 9, LV_ANIM_OFF);
 
     obj_label_standby_time = lv_label_create(obj_container, NULL);
     lv_label_set_text(obj_label_standby_time, "Standby time [min]: 9");
     lv_obj_set_auto_realign(obj_label_standby_time, true);
-    lv_obj_align(obj_label_standby_time, obj_slider_standby_time, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_align(obj_label_standby_time, obj_slider_standby_time, LV_ALIGN_OUT_BOTTOM_MID, SETT_LABEL_X_OFFSET, SETT_LABEL_Y_OFFSET);
 
     lv_obj_set_event_cb(obj_slider_dose_coffee_short, slider_cb);
     lv_obj_set_event_cb(obj_slider_dose_coffee_medium, slider_cb);

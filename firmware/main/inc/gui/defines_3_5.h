@@ -132,4 +132,18 @@ inline lv_font_t pref_button_font = font_en_24;
 #define PREP_IMAGES_X_OFFSET    0
 #define PREP_IMAGES_Y_OFFSET    0
 
+// Settings Page
+#define SETT_CONT_WIDTH         460
+#define SETT_CONT_HEIGHT        250
+#define SETT_TAB_PAD            10
+#define SETT_CONT_X_OFFSET      0
+#define SETT_CONT_Y_OFFSET      20
+#define SETT_SLIDER_WIDTH       370
+#define SETT_SLIDER_HEIGHT      10
+#define SETT_SLIDER_X_OFFSET    0
+#define SETT_SLIDER_Y0_OFFSET   20
+#define SETT_SLIDER_YD_OFFSET   60
+#define SETT_LABEL_X_OFFSET     0
+#define SETT_LABEL_Y_OFFSET     10
+
 #endif /* _DEFINES_H_ */
