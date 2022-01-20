@@ -123,7 +123,7 @@ void ui_wifi_init(void *data)
     lv_obj_set_size(obj_btn_save, 120, 80);
     lv_obj_set_style_local_bg_color(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_value_font(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
+    lv_obj_set_style_local_value_font(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &default_big_font);
     lv_obj_set_style_local_value_color(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_value_str(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_SAVE);
     lv_obj_set_style_local_value_str(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_OK);

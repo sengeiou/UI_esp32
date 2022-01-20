@@ -4,33 +4,35 @@
 #include "lvgl.h"
 #include "sdkconfig.h"
 
-extern lv_font_t font_clock_32;
-extern lv_font_t font_clock_108;
-extern lv_font_t font_en_18;
+// extern lv_font_t font_clock_32;
+// extern lv_font_t font_clock_108;
+// extern lv_font_t font_en_18;
 extern lv_font_t font_en_20;
 extern lv_font_t font_en_24;
 extern lv_font_t font_en_28;
-extern lv_font_t font_en_32;
-extern lv_font_t font_en_36;
-extern lv_font_t font_en_40;
-extern lv_font_t font_en_48;
-extern lv_font_t font_en_bold_16;
-extern lv_font_t font_en_bold_20;
-extern lv_font_t font_en_bold_24;
-extern lv_font_t font_en_bold_28;
-extern lv_font_t font_en_bold_32;
-extern lv_font_t font_en_bold_36;
-extern lv_font_t font_en_bold_48;
+// extern lv_font_t font_en_32;
+// extern lv_font_t font_en_36;
+// extern lv_font_t font_en_40;
+// extern lv_font_t font_en_48;
+// extern lv_font_t font_en_bold_16;
+// extern lv_font_t font_en_bold_20;
+// extern lv_font_t font_en_bold_24;
+// extern lv_font_t font_en_bold_28;
+// extern lv_font_t font_en_bold_32;
+// extern lv_font_t font_en_bold_36;
+// extern lv_font_t font_en_bold_48;
 extern lv_font_t font_en_bold_60;
-extern lv_font_t font_en_bold_72;
-extern lv_font_t font_en_bold_24;
-extern lv_font_t font_en_bold_28;
-extern lv_font_t font_en_bold_48;
-extern lv_font_t font_en_20_compress;
-extern lv_font_t font_kb_24;
-extern lv_font_t font_symbol_28;
-extern lv_font_t font_en_thin_20;
-extern lv_font_t font_bar_symbol;
+// extern lv_font_t font_en_bold_72;
+// extern lv_font_t font_en_20_compress;
+// extern lv_font_t font_kb_24;
+// extern lv_font_t font_symbol_28;
+// extern lv_font_t font_en_thin_20;
+// extern lv_font_t font_bar_symbol;
+
+
+inline lv_font_t default_small_font  = lv_font_montserrat_24;
+inline lv_font_t default_big_font    = lv_font_montserrat_40;
+
 
 // Standby Page
 #define QR_CODE_SIZE    350
@@ -57,7 +59,7 @@ inline lv_font_t desc_button_font = font_en_28;
 // Erogation Page
 inline lv_font_t erog_chart_font  = font_en_20;
 inline lv_font_t erog_label_font  = font_en_24;
-inline lv_font_t erog_button_font = lv_font_montserrat_36;
+inline lv_font_t erog_button_font = lv_font_montserrat_40;
 #define EROG_CHART_WIDTH        760
 #define EROG_CHART_HEIGHT       300
 #define EROG_CHART_RADIUS       7

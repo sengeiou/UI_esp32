@@ -49,7 +49,7 @@ void ui_page_init(void *data)
     lv_obj_set_style_local_border_color(btn_back, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_border_color(btn_back, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);        
     lv_obj_set_style_local_value_str(btn_back, LV_BTN_PART_MAIN,LV_STATE_DEFAULT, LV_SYMBOL_LEFT);
-    lv_obj_set_style_local_value_font(btn_back, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_40);
+    lv_obj_set_style_local_value_font(btn_back, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &default_big_font);
     lv_obj_align(btn_back, NULL, LV_ALIGN_IN_TOP_LEFT, 10, 5);
 
     lv_obj_t* bar_div = lv_bar_create(page, NULL);
@@ -60,7 +60,7 @@ void ui_page_init(void *data)
     /* Create a title for page */
     label_tittle = lv_label_create(page, NULL);
     lv_label_set_text(label_tittle, (const char *)data);
-    lv_obj_set_style_local_text_font(label_tittle, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_32);
+    lv_obj_set_style_local_text_font(label_tittle, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &default_big_font);
     lv_obj_align(label_tittle, btn_back, LV_ALIGN_OUT_RIGHT_MID, 15, 3);
 }
 
