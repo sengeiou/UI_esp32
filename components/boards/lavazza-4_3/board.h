@@ -44,6 +44,8 @@ typedef enum {
 /**< Screen inrerface pins */
 #define BOARD_LCD_I2S_BITWIDTH 16
 #define BOARD_LCD_I2S_PORT_NUM 0
+#define BOARD_LCD_I2S_BL_PIN -1
+#define BOARD_LCD_I2S_RESET_PIN -1
 #define BOARD_LCD_I2S_CS_PIN -1
 #define BOARD_LCD_I2S_WR_PIN 18
 #define BOARD_LCD_I2S_RS_PIN 5
@@ -55,6 +57,7 @@ typedef enum {
 #define BOARD_LCD_I2S_D5_PIN 33
 #define BOARD_LCD_I2S_D6_PIN 32
 #define BOARD_LCD_I2S_D7_PIN 27
+#if (BOARD_LCD_I2S_BITWIDTH == 16)
 #define BOARD_LCD_I2S_D8_PIN 25
 #define BOARD_LCD_I2S_D9_PIN 26
 #define BOARD_LCD_I2S_D10_PIN 12
@@ -63,8 +66,17 @@ typedef enum {
 #define BOARD_LCD_I2S_D13_PIN 15
 #define BOARD_LCD_I2S_D14_PIN 2
 #define BOARD_LCD_I2S_D15_PIN 4
-#define BOARD_LCD_I2S_RESET_PIN -1
-#define BOARD_LCD_I2S_BL_PIN -1
+#else
+#define BOARD_LCD_I2S_D8_PIN -1
+#define BOARD_LCD_I2S_D9_PIN -1
+#define BOARD_LCD_I2S_D10_PIN -1
+#define BOARD_LCD_I2S_D11_PIN -1
+#define BOARD_LCD_I2S_D12_PIN -1
+#define BOARD_LCD_I2S_D13_PIN -1
+#define BOARD_LCD_I2S_D14_PIN -1
+#define BOARD_LCD_I2S_D15_PIN -1
+#endif
+
 
 #define BOARD_LCD_I2C_PORT_NUM 0
 #define BOARD_LCD_I2C_CLOCK_FREQ BOARD_I2C0_SPEED
