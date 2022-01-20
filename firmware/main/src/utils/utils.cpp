@@ -144,6 +144,7 @@ void init_gpio(void)
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D5_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D6_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D7_PIN);
+    #if (BOARD_LCD_I2S_BITWIDTH == 16)
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D8_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D9_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D10_PIN);
@@ -152,6 +153,7 @@ void init_gpio(void)
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D13_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D14_PIN);
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_D15_PIN);    
+    #endif
     #elif (CONFIG_BOARD_LAVAZZA_3_5 == 1)
     gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_MOSI);
     gpio_reset_pin((gpio_num_t)BOARD_IO_SPI2_MISO);
@@ -170,8 +172,8 @@ void init_gpio(void)
     #endif
 
     /* DBG Uart */
-    gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_RXD);
-    gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_TXD);
+    // gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_RXD);
+    // gpio_reset_pin((gpio_num_t)CONFIG_DBG_UART_TXD);
 
     /* Camera Uart */
     // gpio_reset_pin((gpio_num_t)CONFIG_CAM_UART_RXD);
