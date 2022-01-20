@@ -159,6 +159,7 @@ inline lv_font_t pref_button_font = font_en_28;
 
 //Status bar
 inline lv_font_t stsbar_button_font = lv_font_montserrat_40;
+inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define STSBAR_WIDTH                   800
 #define STSBAR_HEIGHT                  90
 #define STSBAR_X_OFFSET                0
@@ -184,5 +185,22 @@ inline lv_font_t stsbar_button_font = lv_font_montserrat_40;
 #define STSBAR_IMG_Y_OFFSET            0
 #define STSBAR_BUTTON_RADIUS           7
 #define STSBAR_BUTTON_BORDER           0
+
+//Wifi Page
+inline lv_font_t wifi_button_font      = font_en_28;
+inline lv_font_t wifi_save_button_font = lv_font_montserrat_40;
+#define WIFI_RADIUS                     5
+#define WIFI_SSID_AREA_WIDTH            365
+#define WIFI_SSID_AREA_HEIGHT           105
+#define WIFI_SSID_AREA_X_OFFSET         7
+#define WIFI_SSID_AREA_Y_OFFSET         105
+#define WIFI_PASS_AREA_WIDTH            365
+#define WIFI_PASS_AREA_HEIGHT           105
+#define WIFI_PASS_AREA_X_OFFSET         -7
+#define WIFI_PASS_AREA_Y_OFFSET         105
+#define WIFI_BUTTON_WIDTH               200
+#define WIFI_BUTTON_HEIGHT              105
+#define WIFI_BUTTON_X_OFFSET            0
+#define WIFI_BUTTON_Y_OFFSET            -75
 
 #endif /* _DEFINES_H_ */

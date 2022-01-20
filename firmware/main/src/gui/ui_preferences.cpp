@@ -200,7 +200,7 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
             ESP_LOGI(LOG_TAG, "FACTORY RESET");
             static const char* btns[] = { "CANCEL", "CONFIRM", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &pref_button_font);
             lv_msgbox_set_text(msgbox, "Factory reset?");
             lv_msgbox_add_btns(msgbox, btns);
             lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -211,7 +211,7 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
             ESP_LOGI(LOG_TAG, "WIFI RESET");
             static const char* btns[] = { "CANCEL", "CONFIRM", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &pref_button_font);
             lv_msgbox_set_text(msgbox, "Wifi reset?");
             lv_msgbox_add_btns(msgbox, btns);
             lv_obj_set_event_cb(msgbox, wifi_reset_cb);

@@ -85,7 +85,7 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &wifi_button_font);
                 lv_msgbox_set_text(msgbox, "Please reset wifi\n    from settings");
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -103,31 +103,31 @@ void ui_wifi_init(void *data)
     (void)data;
 
     obj_ssid_area = lv_textarea_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_ssid_area, 220, 70);
+    lv_obj_set_size(obj_ssid_area, WIFI_SSID_AREA_WIDTH, WIFI_SSID_AREA_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_ssid_area, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_bg_color(obj_ssid_area, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
-    lv_obj_set_style_local_radius(obj_ssid_area, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 5);
-    lv_obj_align(obj_ssid_area, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 80);
+    lv_obj_set_style_local_radius(obj_ssid_area, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, WIFI_RADIUS);
+    lv_obj_align(obj_ssid_area, NULL, LV_ALIGN_IN_TOP_LEFT, WIFI_SSID_AREA_X_OFFSET, WIFI_SSID_AREA_Y_OFFSET);
     lv_textarea_set_text(obj_ssid_area, "ssid");
 
     obj_password_area = lv_textarea_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_password_area, 220, 70);
+    lv_obj_set_size(obj_password_area, WIFI_PASS_AREA_WIDTH, WIFI_PASS_AREA_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_password_area, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_bg_color(obj_password_area, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
-    lv_obj_set_style_local_radius(obj_password_area, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 5);
-    lv_obj_align(obj_password_area, NULL, LV_ALIGN_IN_TOP_RIGHT, -5, 80);
+    lv_obj_set_style_local_radius(obj_password_area, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, WIFI_RADIUS);
+    lv_obj_align(obj_password_area, NULL, LV_ALIGN_IN_TOP_RIGHT, WIFI_PASS_AREA_X_OFFSET, WIFI_PASS_AREA_Y_OFFSET);
     lv_textarea_set_text(obj_password_area, "password");
 
     obj_btn_save = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_style_local_radius(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);
-    lv_obj_set_size(obj_btn_save, 120, 80);
+    lv_obj_set_style_local_radius(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WIFI_RADIUS);
+    lv_obj_set_size(obj_btn_save, WIFI_BUTTON_WIDTH, WIFI_BUTTON_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_value_font(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &default_big_font);
+    lv_obj_set_style_local_value_font(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &wifi_save_button_font);
     lv_obj_set_style_local_value_color(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_value_str(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_SAVE);
     lv_obj_set_style_local_value_str(obj_btn_save, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_OK);
-    lv_obj_align(obj_btn_save, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -50);
+    lv_obj_align(obj_btn_save, NULL, LV_ALIGN_IN_BOTTOM_MID, WIFI_BUTTON_X_OFFSET, WIFI_BUTTON_Y_OFFSET);
     lv_obj_set_event_cb(obj_btn_save, btn_cb);
 
     lv_obj_set_event_cb(obj_ssid_area, ta_event_cb);

@@ -303,7 +303,7 @@ static void btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "START", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
                 lv_msgbox_set_text(msgbox, "A desclaing cycle is needed");
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -315,7 +315,7 @@ static void btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
                 lv_msgbox_set_text(msgbox, "Water is empty");
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -327,7 +327,7 @@ static void btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &font_en_20);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
                 lv_msgbox_set_text(msgbox, "Pod container is full");
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
