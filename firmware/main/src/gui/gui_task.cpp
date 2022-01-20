@@ -24,6 +24,7 @@
     #define LOG_TAG "GUI_TASK"
 #endif
 
+// #define TOUCH_INIT 1
 
 static scr_driver_t g_lcd;
 static touch_panel_driver_t g_touch;
@@ -98,15 +99,7 @@ void init_board(void)
     ESP_LOGI(LOG_TAG, "Screen name:%s | width:%d | height:%d", g_lcd_info.name, g_lcd_info.width, g_lcd_info.height);
 
     #if TOUCH_INIT
-    i2c_config_t i2c_conf = {
-        .mode = BOARD_I2C0_MODE,
-        .sda_io_num = BOARD_TOUCH_I2C_SDA_PIN,
-        .sda_pullup_en = BOARD_I2C0_SDA_PULLUP_EN,
-        .scl_io_num = BOARD_TOUCH_I2C_SCL_PIN,
-        .scl_pullup_en = BOARD_I2C0_SCL_PULLUP_EN,
-        .master.clk_speed = BOARD_I2C0_SPEED,
-    };
-    i2c_bus_handle_t i2c_bus = i2c_bus_create(I2C_NUM_0, &i2c_conf);
+    i2c_bus_handle_t i2c_bus = iot_board_get_handle(BOARD_I2C0_ID);
 
     touch_panel_config_t touch_cfg = {
         .interface_i2c = {
@@ -115,8 +108,8 @@ void init_board(void)
             .i2c_addr = 0x38,
         },
         .interface_type = TOUCH_PANEL_IFACE_I2C,
-        .pin_num_int = -1,
-        .direction = SCR_DIR_TBRL,
+        .pin_num_int = BOARD_TOUCH_I2C_INT_PIN,
+        .direction = TOUCH_DIR_TBRL,
         .width = BOARD_LCD_WIDTH,
         .height = BOARD_LCD_HEIGHT,
     };
@@ -126,7 +119,7 @@ void init_board(void)
     g_touch.init(&touch_cfg);
 
     /* start to run calibration */
-    // g_touch.calibration_run(&g_lcd, false);
+    g_touch.calibration_run(&g_lcd, false);
     #endif
 
     vTaskDelay(pdMS_TO_TICKS(100));
@@ -135,7 +128,7 @@ void init_board(void)
 void init_board(void)
 {
     esp_err_t ret = ESP_OK;
-    
+
     iot_board_init();
     spi_bus_handle_t spi_bus = iot_board_get_handle(BOARD_SPI2_ID);
 
@@ -179,6 +172,7 @@ void init_board(void)
     g_lcd.get_info(&g_lcd_info);
     ESP_LOGI(TAG, "Screen name:%s | width:%d | height:%d", g_lcd_info.name, g_lcd_info.width, g_lcd_info.height);
 
+    #if TOUCH_INIT
     touch_panel_config_t touch_cfg = {
         .interface_spi = {
             .spi_bus = spi_bus,
@@ -187,7 +181,7 @@ void init_board(void)
         },
         .interface_type = TOUCH_PANEL_IFACE_SPI,
         .pin_num_int = BOARD_TOUCH_IRQ_TOUCH_PIN,
-        .direction = SCR_DIR_TBRL,
+        .direction = TOUCH_DIR_TBRL,
         .width = BOARD_LCD_WIDTH,
         .height = BOARD_LCD_HEIGHT,
     };
@@ -197,8 +191,9 @@ void init_board(void)
     g_touch.init(&touch_cfg);
 
     /* start to run calibration */
-    // g_touch.calibration_run(&g_lcd, false);
-    
+    g_touch.calibration_run(&g_lcd, false);
+    #endif
+
     vTaskDelay(pdMS_TO_TICKS(100));
 }
 #else   //Board custom
@@ -211,7 +206,11 @@ void gui_task(void* data)
     init_board();
 
     /* Initialize LittlevGL GUI */
+    #if TOUCH_INIT
+    lvgl_init(&g_lcd, &g_touch);
+    #else
     lvgl_init(&g_lcd, nullptr);
+    #endif
 
     /* Init LVGL file system API */
     lv_port_fs_init();
@@ -225,7 +224,7 @@ void gui_task(void* data)
         bits = xEventGroupWaitBits(xGuiEvents, GUI_POWER_BIT | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
                                                GUI_NEW_EROGATION_DATA_BIT | GUI_STOP_EROGATION_BIT | GUI_ENABLE_CAPPUCCINO_BIT |
                                                GUI_WARNINGS_BIT | GUI_MACHINE_FAULT_BIT | GUI_CLOUD_REQUEST_BIT | GUI_NEW_CLEANING_DATA_BIT, 
-                                               pdFALSE, pdFALSE, 2000/portTICK_PERIOD_MS);
+                                               pdFALSE, pdFALSE, 1000/portTICK_PERIOD_MS);
 
         if(bits & GUI_POWER_BIT)
         {
@@ -289,6 +288,35 @@ void gui_task(void* data)
             ui_preparations_set_desired(guiInternalState.cloudReq.coffeeType);
         }
 
+        static uint8_t counter = 0;
+        switch(counter)
+        {
+            case 0:
+            {
+                ui_preparations_set_power(0);
+                counter++;
+                break;
+            }
+            case 1:
+            {
+                ui_preparations_set_power(1);
+                counter++;
+                break;
+            }
+            case 4:
+            {
+                ui_status_bar_set_descaling_warning(guiInternalState.warnings.descaling);
+                ui_status_bar_set_water_empty_warning(guiInternalState.warnings.waterEmpty);
+                ui_status_bar_set_pod_warning(guiInternalState.warnings.podFull);
+                counter = 0;
+                break;
+            }
+            default:
+            {
+                counter++;
+                break;
+            }
+        }
         #if LOG_MEM_INFO
         static char buffer[128];    /* Make sure buffer is enough for `sprintf` */
         sprintf(buffer, "   Biggest /     Free /    Total\n"
