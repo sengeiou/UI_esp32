@@ -30,8 +30,8 @@ static const char *TAG = "lvgl adapter";
 static scr_driver_t lcd_obj;
 static touch_panel_driver_t touch_obj;
 
-static uint16_t g_screen_width = 240;
-static uint16_t g_screen_height = 320;
+static uint16_t g_screen_width;
+static uint16_t g_screen_height;
 
 /*Write the internal buffer (VDB) to the display. 'lv_flush_ready()' has to be called when finished*/
 static void ex_disp_flush(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *color_map)
@@ -43,10 +43,10 @@ static void ex_disp_flush(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t 
     lv_disp_flush_ready(drv);
 }
 
-#define DISP_BUF_SIZE  (g_screen_width * 64)
+#define DISP_BUF_SIZE  2048*8
 #define SIZE_TO_PIXEL(v) ((v) / sizeof(lv_color_t))
 #define PIXEL_TO_SIZE(v) ((v) * sizeof(lv_color_t))
-#define BUFFER_NUMBER (2)
+#define BUFFER_NUMBER (1)
 
 esp_err_t lvgl_display_init(scr_driver_t *driver)
 {
@@ -74,12 +74,12 @@ esp_err_t lvgl_display_init(scr_driver_t *driver)
     if (((BUFFER_NUMBER * PIXEL_TO_SIZE(alloc_pixel)) + remain_size) > free_size) {
         size_t allow_size = (free_size - remain_size) & 0xfffffffc;
         alloc_pixel = SIZE_TO_PIXEL(allow_size / BUFFER_NUMBER);
-        ESP_LOGW(TAG, "Exceeded max free size, force shrink to %u Byte", allow_size);
+        ESP_LOGW(TAG, "Exceeded max free size (%u), force shrink to %u Byte", free_size, allow_size);
     }
 
     lv_color_t *buf1 = heap_caps_malloc(PIXEL_TO_SIZE(alloc_pixel), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
     if (NULL == buf1) {
-        ESP_LOGE(TAG, "Display buffer memory not enough");
+        ESP_LOGE(TAG, "Display buffer memory not enough %u", PIXEL_TO_SIZE(alloc_pixel));
         return ESP_ERR_NO_MEM;
     }
 #if (BUFFER_NUMBER == 2)
