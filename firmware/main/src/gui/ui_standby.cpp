@@ -36,7 +36,7 @@ void ui_standby_init(void *data)
     lv_obj_align(obj_button, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_event_cb(obj_button, btn_cb);
    
-    img_qr = lv_qrcode_create(lv_scr_act(), QR_CODE_SIZE, LV_COLOR_BLACK, LV_COLOR_WHITE);
+    img_qr = lv_qrcode_create(lv_scr_act(), QR_CODE_SIZE, LV_COLOR_WHITE, LV_COLOR_BLACK);
     lv_obj_align(img_qr, NULL, LV_ALIGN_CENTER, 0, 0);
 }
 
