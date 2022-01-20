@@ -86,16 +86,6 @@ esp_err_t iot_board_init(void)
     }
     int ret;
 
-    gpio_reset_pin((gpio_num_t)0);
-    gpio_reset_pin((gpio_num_t)2);
-    gpio_reset_pin((gpio_num_t)4);
-    gpio_reset_pin((gpio_num_t)5);
-    gpio_reset_pin((gpio_num_t)12);
-    gpio_reset_pin((gpio_num_t)15);
-
-    gpio_reset_pin((gpio_num_t)16);
-    gpio_reset_pin((gpio_num_t)17);
-
     ret = board_i2c_bus_init();
     BOARD_CHECK(ret == ESP_OK, "i2c init failed", ret);
 
