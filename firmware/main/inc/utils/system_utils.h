@@ -12,12 +12,20 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-#include "soc/efuse_reg.h"
-#include "esp_efuse.h"
 #include "esp_spi_flash.h"
 #include "esp_partition.h"
 #include "esp_flash_encrypt.h"
+
+#if CONFIG_IDF_TARGET_ESP32 == 1
+#include "soc/efuse_reg.h"
 #include "esp_efuse_table.h"
+#include "esp_efuse.h"
+#elif CONFIG_IDF_TARGET_ESP32S2 == 1
+
+#elif CONFIG_IDF_TARGET_ESP32S3 == 1
+
+#endif
+
 
 #include "types.h"
 
