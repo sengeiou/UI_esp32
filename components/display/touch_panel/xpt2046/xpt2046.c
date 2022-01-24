@@ -92,9 +92,6 @@ esp_err_t xpt2046_init(const touch_panel_config_t *config)
     if (config->pin_num_int >= 0) {
         gpio_pad_select_gpio(config->pin_num_int);
         gpio_set_direction(config->pin_num_int, GPIO_MODE_INPUT);
-        // gpio_intr_enable(config->pin_num_int);
-        // gpio_pullup_dis(config->pin_num_int);
-        // gpio_pulldown_dis(config->pin_num_int);
     }
 
     spi_device_config_t devcfg = {
@@ -268,9 +265,6 @@ esp_err_t xpt2046_sample(touch_panel_points_t *info)
     info->cury[0] = y;
     info->event = state ? TOUCH_EVT_PRESS : TOUCH_EVT_RELEASE;
     info->point_num = 1;
-
-    printf("x: %d, y: %d\n", x, y);
-
     return ESP_OK;
 }
 

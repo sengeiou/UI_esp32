@@ -11,12 +11,6 @@ menu "Touch Screen Driver"
             default n
     endmenu
 
-    config TOUCH_PANEL_INTERRUPT_ENABLE
-        bool "Enable touch interrupt"
-        default true
-        help 
-            Check touch pressure trought interrupt.
-    
     config TOUCH_PANEL_MAX_CALIBRATE_ERROR
         int "Calibrate Max Error"
         range 10 1000
