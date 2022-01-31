@@ -8,7 +8,6 @@
 /*ENABLE Initialization Process in _board_init(void)*/
 #define _ENABLE 1
 #define _DISABLE 0
-#define _UNDEFINE
 typedef void* board_res_handle_t;
 
 /*Definations of Board*/
@@ -17,7 +16,6 @@ typedef void* board_res_handle_t;
 #define BOARD_URL "null"
 
 #define CONFIG_BOARD_SPI2_INIT 0
-#define CONFIG_BOARD_I2C0_INIT 1
 
 /**
  * Resource ID on Board,
@@ -29,8 +27,15 @@ typedef enum {
     BOARD_SPI2_ID,
 }board_res_id_t;
 
-#define BOARD_IO_I2C0_SCL 16
-#define BOARD_IO_I2C0_SDA 17
+#if CONFIG_IDF_TARGET_ESP32
+#define CONFIG_BOARD_I2C0_INIT 0
+#define BOARD_IO_I2C0_SCL 48
+#define BOARD_IO_I2C0_SDA 45
+#elif CONFIG_IDF_TARGET_ESP32S3
+#define CONFIG_BOARD_I2C0_INIT 1
+#define BOARD_IO_I2C0_SCL 41
+#define BOARD_IO_I2C0_SDA 42
+#endif
 
 #define BOARD_LCD_WIDTH     480
 #define BOARD_LCD_HEIGHT    800
@@ -47,6 +52,8 @@ typedef enum {
 #define BOARD_LCD_I2S_BL_PIN -1
 #define BOARD_LCD_I2S_RESET_PIN -1
 #define BOARD_LCD_I2S_CS_PIN -1
+
+#if CONFIG_IDF_TARGET_ESP32
 #define BOARD_LCD_I2S_WR_PIN 18
 #define BOARD_LCD_I2S_RS_PIN 5
 #define BOARD_LCD_I2S_D0_PIN 19
@@ -77,6 +84,37 @@ typedef enum {
 #define BOARD_LCD_I2S_D15_PIN -1
 #endif
 
+#elif CONFIG_IDF_TARGET_ESP32S3
+#define BOARD_LCD_I2S_WR_PIN 37
+#define BOARD_LCD_I2S_RS_PIN 36
+#define BOARD_LCD_I2S_D0_PIN 38
+#define BOARD_LCD_I2S_D1_PIN 40
+#define BOARD_LCD_I2S_D2_PIN 48
+#define BOARD_LCD_I2S_D3_PIN 2
+#define BOARD_LCD_I2S_D4_PIN 1
+#define BOARD_LCD_I2S_D5_PIN 17
+#define BOARD_LCD_I2S_D6_PIN 16
+#define BOARD_LCD_I2S_D7_PIN 20
+#if (BOARD_LCD_I2S_BITWIDTH == 16)
+#define BOARD_LCD_I2S_D8_PIN 18
+#define BOARD_LCD_I2S_D9_PIN 8
+#define BOARD_LCD_I2S_D10_PIN 9
+#define BOARD_LCD_I2S_D11_PIN 11
+#define BOARD_LCD_I2S_D12_PIN 46
+#define BOARD_LCD_I2S_D13_PIN 21
+#define BOARD_LCD_I2S_D14_PIN 47
+#define BOARD_LCD_I2S_D15_PIN 45
+#else
+#define BOARD_LCD_I2S_D8_PIN -1
+#define BOARD_LCD_I2S_D9_PIN -1
+#define BOARD_LCD_I2S_D10_PIN -1
+#define BOARD_LCD_I2S_D11_PIN -1
+#define BOARD_LCD_I2S_D12_PIN -1
+#define BOARD_LCD_I2S_D13_PIN -1
+#define BOARD_LCD_I2S_D14_PIN -1
+#define BOARD_LCD_I2S_D15_PIN -1
+#endif
+#endif
 
 #define BOARD_LCD_I2C_PORT_NUM 0
 #define BOARD_LCD_I2C_CLOCK_FREQ BOARD_I2C0_SPEED
@@ -92,7 +130,11 @@ typedef enum {
 #define BOARD_TOUCH_I2C_PORT_NUM 0
 #define BOARD_TOUCH_I2C_SCL_PIN BOARD_IO_I2C0_SCL
 #define BOARD_TOUCH_I2C_SDA_PIN BOARD_IO_I2C0_SDA
-#define BOARD_TOUCH_I2C_INT_PIN 34
+#if CONFIG_IDF_TARGET_ESP32
+#define BOARD_TOUCH_I2C_INT_PIN 9
+#elif CONFIG_IDF_TARGET_ESP32S3
+#define BOARD_TOUCH_I2C_INT_PIN 39
+#endif
 #define BOARD_TOUCH_I2C_CLOCK_FREQ BOARD_I2C0_SPEED
 
 #ifdef __cplusplus
