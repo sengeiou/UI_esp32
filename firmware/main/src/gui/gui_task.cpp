@@ -24,8 +24,6 @@
     #define LOG_TAG "GUI_TASK"
 #endif
 
-// #define TOUCH_INIT 1
-
 static scr_driver_t g_lcd;
 static touch_panel_driver_t g_touch;
 
@@ -98,7 +96,6 @@ void init_board(void)
     g_lcd.get_info(&g_lcd_info);
     ESP_LOGI(LOG_TAG, "Screen name:%s | width:%d | height:%d", g_lcd_info.name, g_lcd_info.width, g_lcd_info.height);
 
-    #if TOUCH_INIT
     i2c_bus_handle_t i2c_bus = iot_board_get_handle(BOARD_I2C0_ID);
 
     touch_panel_config_t touch_cfg = {
@@ -109,7 +106,7 @@ void init_board(void)
         },
         .interface_type = TOUCH_PANEL_IFACE_I2C,
         .pin_num_int = BOARD_TOUCH_I2C_INT_PIN,
-        .direction = TOUCH_DIR_TBRL,
+        .direction = TOUCH_DIR_BTLR,
         .width = BOARD_LCD_WIDTH,
         .height = BOARD_LCD_HEIGHT,
     };
@@ -119,8 +116,7 @@ void init_board(void)
     g_touch.init(&touch_cfg);
 
     /* start to run calibration */
-    g_touch.calibration_run(&g_lcd, false);
-    #endif
+    // g_touch.calibration_run(&g_lcd, false);
 
     vTaskDelay(pdMS_TO_TICKS(100));
 }
@@ -145,7 +141,7 @@ void init_board(void)
     ret = scr_find_driver(SCREEN_CONTROLLER_ILI9486, &g_lcd);
     if (ESP_OK != ret) {
         return;
-        ESP_LOGE(TAG, "screen find failed");
+        ESP_LOGE(LOG_TAG, "screen find failed");
     }
 
     scr_controller_config_t lcd_cfg = {
@@ -165,14 +161,13 @@ void init_board(void)
     if(ESP_OK != ret)
     {
         return;
-        ESP_LOGE(TAG, "screen initialize failed");
+        ESP_LOGE(LOG_TAG, "screen initialize failed");
     }
 
     scr_info_t g_lcd_info;
     g_lcd.get_info(&g_lcd_info);
-    ESP_LOGI(TAG, "Screen name:%s | width:%d | height:%d", g_lcd_info.name, g_lcd_info.width, g_lcd_info.height);
+    ESP_LOGI(LOG_TAG, "Screen name:%s | width:%d | height:%d", g_lcd_info.name, g_lcd_info.width, g_lcd_info.height);
 
-    #if TOUCH_INIT
     touch_panel_config_t touch_cfg = {
         .interface_spi = {
             .spi_bus = spi_bus,
@@ -191,8 +186,7 @@ void init_board(void)
     g_touch.init(&touch_cfg);
 
     /* start to run calibration */
-    g_touch.calibration_run(&g_lcd, false);
-    #endif
+    //g_touch.calibration_run(&g_lcd, false);
 
     vTaskDelay(pdMS_TO_TICKS(100));
 }
@@ -203,14 +197,12 @@ void init_board(void)
 void gui_task(void* data)
 {
     /* Initialize Board */
+    iot_board_init();
     init_board();
 
     /* Initialize LittlevGL GUI */
-    #if TOUCH_INIT
     lvgl_init(&g_lcd, &g_touch);
-    #else
-    lvgl_init(&g_lcd, nullptr);
-    #endif
+
 
     /* Init LVGL file system API */
     lv_port_fs_init();
@@ -219,6 +211,7 @@ void gui_task(void* data)
     ui_main();
 
     EventBits_t bits;
+    ui_preparations_enable_cappuccino(true);
     while(true)
     {
         bits = xEventGroupWaitBits(xGuiEvents, GUI_POWER_BIT | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
@@ -288,6 +281,7 @@ void gui_task(void* data)
             ui_preparations_set_desired(guiInternalState.cloudReq.coffeeType);
         }
 
+        #if 0
         static uint8_t counter = 0;
         switch(counter)
         {
@@ -317,6 +311,7 @@ void gui_task(void* data)
                 break;
             }
         }
+        #endif
         #if LOG_MEM_INFO
         static char buffer[128];    /* Make sure buffer is enough for `sprintf` */
         sprintf(buffer, "   Biggest /     Free /    Total\n"
