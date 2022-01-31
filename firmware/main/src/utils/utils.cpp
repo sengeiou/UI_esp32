@@ -129,9 +129,9 @@ void init_gpio(void)
 {
     #if (CONFIG_BOARD_LAVAZZA_4_3 == 1)
     /* Touch controller (I2C) */
-    // gpio_reset_pin((gpio_num_t)BOARD_IO_I2C0_SCL);
-    // gpio_reset_pin((gpio_num_t)BOARD_IO_I2C0_SDA);
-    // gpio_reset_pin((gpio_num_t)BOARD_TOUCH_I2C_INT_PIN);
+    gpio_reset_pin((gpio_num_t)BOARD_IO_I2C0_SCL);
+    gpio_reset_pin((gpio_num_t)BOARD_IO_I2C0_SDA);
+    gpio_reset_pin((gpio_num_t)BOARD_TOUCH_I2C_INT_PIN);
 
     /* TFT display (I2S) */
     gpio_reset_pin((gpio_num_t)BOARD_LCD_I2S_WR_PIN);
