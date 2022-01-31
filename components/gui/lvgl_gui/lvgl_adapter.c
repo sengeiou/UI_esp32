@@ -43,7 +43,8 @@ static void ex_disp_flush(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t 
     lv_disp_flush_ready(drv);
 }
 
-#define DISP_BUF_SIZE  2048*8
+// #define DISP_BUF_SIZE  2*800*48//(sizeof(lv_color_t)*(BOARD_LCD_WIDTH*BOARD_LCD_HEIGHT))/10       // color bytes (16bit) * size / 15
+#define DISP_BUF_SIZE  1024*16
 #define SIZE_TO_PIXEL(v) ((v) / sizeof(lv_color_t))
 #define PIXEL_TO_SIZE(v) ((v) * sizeof(lv_color_t))
 #define BUFFER_NUMBER (1)
@@ -121,10 +122,10 @@ static bool ex_tp_read(struct _lv_indev_drv_t *indev_drv, lv_indev_data_t *data)
         data->point.x = x;
         data->point.y = y;
         data->state = LV_INDEV_STATE_PR;
-        printf("Pressed\n");
+        ESP_LOGI(TAG, "PRESSURE: x: %d, y: %d", points.curx[0], points.cury[0]);
     }
 
-    printf("x: %d, y: %d\n", points.curx[0], points.cury[0]);
+    ESP_LOGD(TAG, "x: %d, y: %d", points.curx[0], points.cury[0]);
     return false;
 }
 
