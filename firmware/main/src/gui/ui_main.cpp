@@ -69,6 +69,7 @@ void ui_main(void)
         while(1)
         {
             /* Stop at here if system check not pass */
+            ESP_LOGE(LOG_TAG, "Failed to init system");
             vTaskDelay(pdMS_TO_TICKS(1000));
         }
     }
@@ -86,12 +87,12 @@ void ui_main(void)
     lv_bar_set_value(bar, 1, LV_ANIM_ON);
 
     lv_obj_t* label_loading_hint = lv_label_create(lv_scr_act(), NULL);
-    lv_label_set_text_static(label_loading_hint, " ");
+    // lv_label_set_text_static(label_loading_hint, " ");
     lv_obj_set_style_local_text_font(label_loading_hint, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &default_small_font);
     lv_obj_set_style_local_text_color(label_loading_hint, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_NAVY);
     lv_obj_align(label_loading_hint, bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
 
-    /* Load resource from SD card to PSARM */
+    /* Load resource from SD card to PSRAM */
     TickType_t tick = xTaskGetTickCount();
     for(size_t i = 0; i < sizeof(img_fetch_list) / sizeof(ui_data_fetch_t); i++)
     {
@@ -104,9 +105,11 @@ void ui_main(void)
             /* If any of file was missing, block the task */
             while(1)
             {
+                ESP_LOGE(LOG_TAG, "File missed");
                 vTaskDelay(1000);
             }
         }
+        ESP_LOGI(LOG_TAG, "Load image %s", img_fetch_list[i].path);
 
         ui_laod_resource(img_fetch_list[i].path, img_fetch_list[i].data);
 

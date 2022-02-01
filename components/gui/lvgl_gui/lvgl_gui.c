@@ -42,7 +42,7 @@ static void lv_tick_timercb(void *timer)
  * If you wish to call *any* lvgl function from other threads/tasks
  * you should lock on the very same semaphore! */
 static SemaphoreHandle_t xGuiSemaphore = NULL;
-static void gui_task(void *args)
+static void lvgl_gui_task(void *args)
 {
     esp_err_t ret;
     lvgl_drv_t *lvgl_driver = (lvgl_drv_t *)args;
@@ -106,7 +106,7 @@ esp_err_t lvgl_init(scr_driver_t *lcd_drv, touch_panel_driver_t *touch_drv)
     lvgl_driver.lcd_drv = lcd_drv;
     lvgl_driver.touch_drv = touch_drv;
 
-    xTaskCreatePinnedToCore(gui_task, "lv gui", 1024 * 8, &lvgl_driver, 5, NULL, chip_info.cores - 1);
+    xTaskCreatePinnedToCore(lvgl_gui_task, "lv gui", 1024 * 16, &lvgl_driver, 5, NULL, chip_info.cores - 1);
 
     uint16_t timeout = 20;
     while (NULL == xGuiSemaphore) {

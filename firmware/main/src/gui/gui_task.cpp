@@ -203,7 +203,6 @@ void gui_task(void* data)
     /* Initialize LittlevGL GUI */
     lvgl_init(&g_lcd, &g_touch);
 
-
     /* Init LVGL file system API */
     lv_port_fs_init();
 
