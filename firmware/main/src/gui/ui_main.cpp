@@ -114,7 +114,7 @@ void ui_main(void)
         ui_laod_resource(img_fetch_list[i].path, img_fetch_list[i].data);
 
         /* Yeah, it's only because that makes ui more flexible */
-        vTaskDelayUntil(&tick, pdMS_TO_TICKS(50));
+        vTaskDelayUntil(&tick, pdMS_TO_TICKS(170));
     }
 
     vTaskDelay(pdMS_TO_TICKS(500));

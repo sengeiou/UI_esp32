@@ -176,11 +176,11 @@ void init_firmware()
 
 void start_tasks()
 {
-    // utils::system::start_thread(&memory_check_task, nullptr, "memory_task", 1024*4, 4);
+    utils::system::start_thread(&memory_check_task, nullptr, "memory_task", 1024*4, 4);
 
-    // utils::system::start_thread_core(&dbg_task, &xHandleDbg, "dbg_task", 1024*2, 4, 0);
+    utils::system::start_thread_core(&dbg_task, &xHandleDbg, "dbg_task", 1024*2, 4, 0);
     #if ENABLE_CAPS_RECOGNITION_MODULE == 1
-    // utils::system::start_thread_core(&cam_task, &xHandleCam, "cam_task", 1024*2, 4, 0);
+    utils::system::start_thread_core(&cam_task, &xHandleCam, "cam_task", 1024*2, 4, 0);
     #endif
     utils::system::start_thread_core(&gui_task, &xHandleGui, "gui_task", 1024*16, 4, 1);
 

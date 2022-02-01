@@ -43,7 +43,7 @@ static void ex_disp_flush(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t 
     lv_disp_flush_ready(drv);
 }
 
-// #define DISP_BUF_SIZE  2*800*48//(sizeof(lv_color_t)*(BOARD_LCD_WIDTH*BOARD_LCD_HEIGHT))/10       // color bytes (16bit) * size / 15
+// #define DISP_BUF_SIZE  (2*800*480/15) //(sizeof(lv_color_t)*(BOARD_LCD_WIDTH*BOARD_LCD_HEIGHT))/10  
 #define DISP_BUF_SIZE  1024*16
 #define SIZE_TO_PIXEL(v) ((v) / sizeof(lv_color_t))
 #define PIXEL_TO_SIZE(v) ((v) * sizeof(lv_color_t))
