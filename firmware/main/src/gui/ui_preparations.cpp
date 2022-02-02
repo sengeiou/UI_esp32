@@ -91,16 +91,20 @@ static bool check_blocking_warnings()
     isBlockingWarnings |= preparation.warnings.pod_full;
     isBlockingWarnings |= preparation.warnings.pod_extracted;   //Not handled now
 
-    if(false == popup_open)
+    if(true == isBlockingWarnings)
     {
-        static const char* btns[] = { "OK", "" };
-        lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-        lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
-        lv_msgbox_set_text(msgbox, "Blocking warning detected. Please check warnings!!");
-        lv_msgbox_add_btns(msgbox, btns);
-        lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
-        lv_obj_set_event_cb(msgbox, basic_popup_cb);
-        popup_open = true;
+        if(false == popup_open)
+        {
+            static const char* btns[] = { "OK", "" };
+            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+            lv_msgbox_set_text(msgbox, "Blocking warning detected. Please check warnings!!");
+            lv_msgbox_add_btns(msgbox, btns);
+            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+            lv_obj_set_event_cb(msgbox, basic_popup_cb);
+            popup_open = true;
+        }
+        printf("WARNINGS: (%d) | %d | %d |%d\n", preparation.warnings.descaling, preparation.warnings.water_empty, preparation.warnings.pod_full, preparation.warnings.pod_extracted);
     }
 
     return isBlockingWarnings;
