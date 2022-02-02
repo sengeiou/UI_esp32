@@ -52,6 +52,8 @@ static void btn_warning_cb(lv_obj_t *obj, lv_event_t event);
 static void descaling_popup_cb(lv_obj_t *obj, lv_event_t event);
 static void basic_popup_cb(lv_obj_t* obj, lv_event_t event);
 
+extern ui_preparation_t preparation;
+
 void ui_status_bar_set_descaling_warning(bool warning)
 {
     if(isWarningDescaling != warning)
@@ -60,6 +62,8 @@ void ui_status_bar_set_descaling_warning(bool warning)
         isWarningDescaling = warning;
         lv_obj_set_hidden(btn_descaling, !isWarningDescaling);
         lv_obj_set_style_local_image_recolor(img_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningDescaling ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
+
+        preparation.warnings.descaling = isWarningDescaling;
     }
 }
 
@@ -71,6 +75,8 @@ void ui_status_bar_set_pod_warning(bool warning)
         isWarningPod = warning;
         lv_obj_set_hidden(btn_pod, !isWarningPod);
         lv_obj_set_style_local_image_recolor(img_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningPod ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
+
+        preparation.warnings.pod_full = isWarningPod;
     }
 }
 
@@ -82,6 +88,8 @@ void ui_status_bar_set_water_empty_warning(bool warning)
         isWarningWater = warning;
         lv_obj_set_hidden(btn_water, !isWarningWater);
         lv_obj_set_style_local_image_recolor(img_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningWater ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
+
+        preparation.warnings.water_empty = isWarningWater;
     }
 }
 

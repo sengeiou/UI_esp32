@@ -68,8 +68,45 @@ static void btn_coffee_cb(lv_obj_t* obj, lv_event_t event);
 static void btn_cappuccino_cb(lv_obj_t* obj, lv_event_t event);
 static void tabview_cb(lv_obj_t* obj, lv_event_t event);
 
+static bool popup_open = false;
 
-void configure_button_style(lv_obj_t* obj)
+static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
+{
+    if(LV_EVENT_VALUE_CHANGED == event)
+    {
+        if(0 == lv_msgbox_get_active_btn(obj))
+        {
+            ESP_LOGI(LOG_TAG, "Popup closed");
+            lv_obj_del(obj);
+            popup_open = false;
+        }
+    }
+}
+
+static bool check_blocking_warnings()
+{
+    bool isBlockingWarnings = false;
+    // isBlockingWarnings |= preparation.warnings.descaling; //Not blocking
+    isBlockingWarnings |= preparation.warnings.water_empty;
+    isBlockingWarnings |= preparation.warnings.pod_full;
+    isBlockingWarnings |= preparation.warnings.pod_extracted;   //Not handled now
+
+    if(false == popup_open)
+    {
+        static const char* btns[] = { "OK", "" };
+        lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+        lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+        lv_msgbox_set_text(msgbox, "Blocking warning detected. Please check warnings!!");
+        lv_msgbox_add_btns(msgbox, btns);
+        lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_set_event_cb(msgbox, basic_popup_cb);
+        popup_open = true;
+    }
+
+    return isBlockingWarnings;
+}
+
+static void configure_button_style(lv_obj_t* obj)
 {
     lv_obj_set_size(obj, PREP_BUTTON_WIDTH, PREP_BUTTON_HEIGHT);
     lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
@@ -81,7 +118,7 @@ void configure_button_style(lv_obj_t* obj)
     lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 }
 
-void configure_image_style(lv_obj_t* obj, const void* src)
+static void configure_image_style(lv_obj_t* obj, const void* src)
 {
     lv_img_set_src(obj, src);
     lv_img_set_zoom(obj, PREP_IMAGE_ZOOM);
@@ -302,8 +339,8 @@ void ui_preparations_hide(void *data)
 void ui_preparations_set_desired(coffee_type_t prep)
 {
     preparation.desired_prep = prep;
-    preparation.isError = false;
-    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+    if(false == check_blocking_warnings())
+        ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
 }   
 
 static void tabview_cb(lv_obj_t* obj, lv_event_t event)
@@ -352,32 +389,32 @@ static void btn_coffee_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "COFFEE SHORT CLICK");
             preparation.desired_prep = COFFEE_SHORT;
-            preparation.isError = false;
-            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj_coffee_medium == obj)
         {
             ESP_LOGI(LOG_TAG, "COFFEE MEDIUM CLICK");
             preparation.desired_prep = COFFEE_MEDIUM;
-            preparation.isError = false;
-            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj_coffee_long == obj)
         {
             ESP_LOGI(LOG_TAG, "COFFEE LONG CLICK");
             preparation.desired_prep = COFFEE_LONG;
-            preparation.isError = false;
-            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj_coffee_free == obj)
         {
             ESP_LOGI(LOG_TAG, "COFFEE FREE CLICK");
             preparation.desired_prep = COFFEE_FREE;
-            preparation.isError = false;
-            ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
     }
 }
@@ -407,7 +444,8 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
             if(obj_milk_hot == obj)
             {
                 lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_RED);
-                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
+                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_HOVERED | LV_STATE_PRESSED, LV_COLOR_RED);
+
                 hotWater = true;
             }
         }
@@ -418,24 +456,24 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
             {
                 ESP_LOGI(LOG_TAG, "CAPPUCCINO SHORT CLICK");
                 preparation.desired_prep = CAPPUCCINO_SHORT;
-                preparation.isError = false;
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+                if(false == check_blocking_warnings())
+                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
 
             if(obj_cappuccino_medium == obj)
             {
                 ESP_LOGI(LOG_TAG, "CAPPUCCINO MEDIUM CLICK");
                 preparation.desired_prep = CAPPUCCINO_MEDIUM;
-                preparation.isError = false;
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+                if(false == check_blocking_warnings())
+                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
 
             if(obj_cappuccino_double == obj)
             {
                 ESP_LOGI(LOG_TAG, "CAPPUCCINO DOUBLE CLICK");
                 preparation.desired_prep = CAPPUCCINO_DOUBLE;
-                preparation.isError = false;
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+                if(false == check_blocking_warnings())
+                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
 
             if(obj_milk_hot == obj)
@@ -452,8 +490,8 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
                     preparation.desired_prep = HOT_WATER;
                 }
                 hotWater = false;
-                preparation.isError = false;
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+                if(false == check_blocking_warnings())
+                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
             }
         }
     }

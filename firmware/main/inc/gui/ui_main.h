@@ -72,8 +72,15 @@ typedef struct {
 
 
 typedef struct {
+    bool descaling;
+    bool water_empty;
+    bool pod_extracted;
+    bool pod_full;
+} ui_warning_t;
+
+typedef struct {
     coffee_type_t desired_prep;
-    bool isError;
+    ui_warning_t  warnings;
 } ui_preparation_t;
 
 /**

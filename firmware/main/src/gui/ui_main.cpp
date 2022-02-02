@@ -132,8 +132,6 @@ void ui_main(void)
     ui_status_bar_init();
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);
-    // ui_preparations_show(NULL);
-    // ui_call_stack_push(&ui_preparations_func);
 
     enable_livedata();
 }
