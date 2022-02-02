@@ -185,7 +185,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         if(obj == obj_stop_btn)
         {
             special_function(DBG_ON_OFF);
-            ui_show(&ui_preferences_func, UI_SHOW_OVERRIDE);
+            ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
         }
     }
 }
