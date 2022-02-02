@@ -31,6 +31,9 @@ static int oldProgress = 0;
 
 void ui_cleaning_fast_update(uint8_t current_step, uint8_t total_step)
 {
+    if(NULL == obj_stop_btn)
+        return;
+    
     progress = 100*(current_step + 1)/total_step;
     ESP_LOGI(LOG_TAG, "UPDATE: %d/%d %d", current_step+1, total_step, progress);
 
