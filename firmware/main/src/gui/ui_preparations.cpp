@@ -91,6 +91,43 @@ void configure_image_style(lv_obj_t* obj, const void* src)
     lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 }
 
+void scr_event_cb(lv_obj_t * obj, lv_event_t e)
+{
+    if(e == LV_EVENT_GESTURE)
+    {
+        lv_gesture_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
+
+        switch(dir)
+        {
+            case LV_GESTURE_DIR_TOP:
+            {
+                printf("Scroll: %d (TOP)\n", dir);
+                lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_ON);
+                break;
+            }
+            case LV_GESTURE_DIR_BOTTOM:
+            {
+                printf("Scroll: %d (BOTTOM)\n", dir);
+                if(false == isCappuccinoEnable)
+                    lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
+                else
+                    lv_tabview_set_tab_act(obj_tabview, 1, LV_ANIM_ON);
+                break;
+            }
+            case LV_GESTURE_DIR_LEFT:
+            {
+                printf("Scroll: %d (LEFT)\n", dir);
+                break;
+            }
+            case LV_GESTURE_DIR_RIGHT:
+            {
+                printf("Scroll: %d (RIGHT)\n", dir);
+                break;
+            }
+        }
+    }
+}
+
 void ui_preparations_init(void *data)
 {
     (void)data;
@@ -209,6 +246,9 @@ void ui_preparations_init(void *data)
     lv_obj_set_event_cb(obj_milk_hot, btn_cappuccino_cb);
 
     lv_obj_set_event_cb(obj_tabview, tabview_cb);
+
+    /* Add UI gestures */
+    lv_obj_set_event_cb(lv_scr_act(), scr_event_cb);
 
     ui_preparations_state = ui_state_show;
 }
