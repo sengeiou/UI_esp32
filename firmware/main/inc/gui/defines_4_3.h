@@ -76,11 +76,11 @@ inline lv_font_t erog_button_font = lv_font_montserrat_40;
 #define EROG_BAR_BORDER         3
 #define EROG_BAR_X_OFFSET       0
 #define EROG_BAR_Y_OFFSET       30
-#define EROG_BUTTON_WIDTH       97
+#define EROG_BUTTON_WIDTH       95
 #define EROG_BUTTON_RADIUS      7
 #define EROG_BUTTON_BORDER      0
 #define EROG_BUTTON_X_OFFSET    3
-#define EROG_BUTTON_Y_OFFSET    3
+#define EROG_BUTTON_Y_OFFSET    10
 #define EROG_MSGBOX_X_OFFSET    0
 #define EROG_MSGBOX_Y_OFFSET    0
 
