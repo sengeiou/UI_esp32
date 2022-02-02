@@ -74,7 +74,7 @@ void init_board(void)
         .height = BOARD_LCD_HEIGHT,
         .offset_hor = 0,
         .offset_ver = 0,
-        .rotate = SCR_DIR_TBRL,
+        .rotate = SCR_DIR_BTLR,
     };
 
     ret = scr_find_driver(SCREEN_CONTROLLER_RM68120, &g_lcd);
@@ -106,7 +106,7 @@ void init_board(void)
         },
         .interface_type = TOUCH_PANEL_IFACE_I2C,
         .pin_num_int = BOARD_TOUCH_I2C_INT_PIN,
-        .direction = TOUCH_DIR_BTLR,
+        .direction = TOUCH_DIR_TBRL,
         .width = BOARD_LCD_WIDTH,
         .height = BOARD_LCD_HEIGHT,
     };
