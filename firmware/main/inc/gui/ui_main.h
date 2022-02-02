@@ -3,6 +3,16 @@
 #include "lvgl.h"
 #include "esp_log.h"
 #include "types.h"
+#include "board.h"
+
+#if (CONFIG_BOARD_LAVAZZA_4_3 == 1)
+#include "defines_4_3.h"
+#elif (CONFIG_BOARD_LAVAZZA_3_5 == 1)
+#include "defines_3_5.h"
+#else
+//TODO create your custom define files
+#include "defines_4_3.h"
+#endif
 
 #define COLOR_THEME LV_COLOR_BLACK
 #define COLOR_DEEP  lv_color_make(246, 174, 61)
@@ -62,8 +72,15 @@ typedef struct {
 
 
 typedef struct {
+    bool descaling;
+    bool water_empty;
+    bool pod_extracted;
+    bool pod_full;
+} ui_warning_t;
+
+typedef struct {
     coffee_type_t desired_prep;
-    bool isError;
+    ui_warning_t  warnings;
 } ui_preparation_t;
 
 /**

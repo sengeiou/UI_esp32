@@ -39,6 +39,7 @@ void utils::system::read_mac_address(void)
 
 void utils::system::flash_encryption_status(void)
 {
+    #if CONFIG_IDF_TARGET_ESP32 == 1
     uint32_t flash_crypt_cnt = 0;
     esp_efuse_read_field_blob(ESP_EFUSE_FLASH_CRYPT_CNT, &flash_crypt_cnt, 7);
     ESP_LOGI(SYSTEM_UTILS_TAG, "FLASH_CRYPT_CNT eFuse value is %d", flash_crypt_cnt);
@@ -52,6 +53,11 @@ void utils::system::flash_encryption_status(void)
     {
         ESP_LOGI(SYSTEM_UTILS_TAG, "Flash encryption feature is enabled in %s mode", mode == ESP_FLASH_ENC_MODE_DEVELOPMENT ? "DEVELOPMENT" : "RELEASE");
     }
+    #elif CONFIG_IDF_TARGET_ESP32S2 == 1
+
+    #elif CONFIG_IDF_TARGET_ESP32S3 == 1
+
+    #endif
 }
 
 void remove_all_occurrence(char *str, char ch)

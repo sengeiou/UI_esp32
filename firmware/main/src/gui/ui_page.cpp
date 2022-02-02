@@ -3,7 +3,6 @@ extern "C" {
 #endif
 
 #include "ui_main.h"
-#include "lvgl_port.h"
 
 #ifdef ADVANCED_DEBUG
     #define LOG_TAG LINE_STRING "|" "UI_PAGE"
@@ -29,13 +28,13 @@ void ui_page_init(void *data)
 
     /* Set object's attributes */
     lv_obj_set_click(page, false);
-    lv_obj_set_size(page, 480, 320);
+    lv_obj_set_size(page, GENERAL_WIDTH, GENERAL_HEIGHT);
 
     /* Set object's style */
     lv_obj_set_style_local_radius(page, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 20);
     lv_obj_set_style_local_border_width(page, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_set_style_local_bg_color(page, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_align(page, NULL, LV_ALIGN_CENTER, 0, 25);
+    lv_obj_align(page, NULL, LV_ALIGN_CENTER, GENERAL_X_OFFSET, GENERAL_Y_OFFSET);
 
     /* Create a back button */
     lv_obj_t *btn_back = lv_btn_create(page, NULL);
@@ -50,7 +49,7 @@ void ui_page_init(void *data)
     lv_obj_set_style_local_border_color(btn_back, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_border_color(btn_back, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);        
     lv_obj_set_style_local_value_str(btn_back, LV_BTN_PART_MAIN,LV_STATE_DEFAULT, LV_SYMBOL_LEFT);
-    lv_obj_set_style_local_value_font(btn_back, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_40);
+    lv_obj_set_style_local_value_font(btn_back, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &default_big_font);
     lv_obj_align(btn_back, NULL, LV_ALIGN_IN_TOP_LEFT, 10, 5);
 
     lv_obj_t* bar_div = lv_bar_create(page, NULL);
@@ -58,10 +57,10 @@ void ui_page_init(void *data)
     lv_obj_set_style_local_bg_color(bar_div, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_THEME);
     lv_obj_align(bar_div, NULL, LV_ALIGN_IN_TOP_MID, 0 , 60);
 
-    /* Create a tittle for page */
+    /* Create a title for page */
     label_tittle = lv_label_create(page, NULL);
     lv_label_set_text(label_tittle, (const char *)data);
-    lv_obj_set_style_local_text_font(label_tittle, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &font_en_32);
+    lv_obj_set_style_local_text_font(label_tittle, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &default_big_font);
     lv_obj_align(label_tittle, btn_back, LV_ALIGN_OUT_RIGHT_MID, 15, 3);
 }
 

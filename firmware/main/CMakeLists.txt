@@ -19,7 +19,7 @@ set(incdir 	"inc"
 set(COMPONENT_REQUIRES
     esp-azure
 	lvgl
-	lvgl_esp32_drivers)
+	lvgl_gui)
 
 idf_component_register(SRC_DIRS ${srcs_dirs}
                         INCLUDE_DIRS ${incdir})

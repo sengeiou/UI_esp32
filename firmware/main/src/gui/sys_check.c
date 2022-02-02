@@ -25,6 +25,8 @@
 
 static const char *TAG = "sys_check";
 
+extern lv_font_t default_big_font;
+
 #define LOG_TRACE(...)  ESP_LOGI(TAG, ##__VA_ARGS__)
 #define CHECK(a, str, ret_val) do { \
         if (!(a)) { \
@@ -45,16 +47,14 @@ static lv_obj_t *msg_box = NULL;
  */
 static void err_show(const char *text)
 {
-    //lv_port_sem_take();
     if (NULL == msg_box) {
         msg_box = lv_msgbox_create(lv_scr_act(), NULL);
-        lv_obj_set_style_local_text_font(msg_box, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &lv_font_montserrat_24);
+        lv_obj_set_style_local_text_font(msg_box, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_big_font);
         lv_obj_set_style_local_border_width(msg_box, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, 0);
 
     }
     lv_msgbox_set_text(msg_box, text);
     lv_obj_align(msg_box, NULL, LV_ALIGN_CENTER, 0, 30);
-    //lv_port_sem_give();
 }
 
 esp_err_t sys_check(void)
@@ -62,15 +62,6 @@ esp_err_t sys_check(void)
     CHECK(heap_caps_get_total_size(MALLOC_CAP_SPIRAM) > 1 * 1024 * 1024 + 512 * 1024,
         "Check for PSRAM avaliable size",
         ESP_FAIL);
-
-    /* Files have been stored in SPIFFS, skip SD card check */
-    // CHECK(ESP_OK == lv_fs_get_init_result(),
-    //     "Check for SD card",
-    //     ESP_FAIL);
-
-    // CHECK(ESP_OK == audio_file_check(),
-    //     "Check for PCM audio file in \"Music\" folder",
-    //     ESP_FAIL);
 
     return ESP_OK;
 }

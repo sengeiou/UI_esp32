@@ -12,10 +12,10 @@
 #include "esp_log.h"
 
 /* Littlevgl specific */
+#include "board.h"
 #include "ui_main.h"
-#include "lvgl_port.h"
 #include "lv_port_fs.h"
-
+#include "lvgl_gui.h"
 #include "variables.h"
 
 #ifdef ADVANCED_DEBUG
@@ -24,29 +24,184 @@
     #define LOG_TAG "GUI_TASK"
 #endif
 
-#define LCD_SIZE_BUFF       (LV_HOR_RES_MAX * LV_VER_RES_MAX)
-#define LV_TICK_PERIOD_MS   1
+static scr_driver_t g_lcd;
+static touch_panel_driver_t g_touch;
 
-static void lv_tick_task(void* arg)
+#if (CONFIG_BOARD_LAVAZZA_4_3 == 1)
+void init_board(void)
 {
-    (void) arg;
-    lv_tick_inc(LV_TICK_PERIOD_MS);
+    esp_err_t ret = ESP_OK;
+    
+    i2s_lcd_config_t i2s_lcd_cfg = {
+        .data_width  = BOARD_LCD_I2S_BITWIDTH,
+        .pin_data_num = {
+            BOARD_LCD_I2S_D0_PIN,
+            BOARD_LCD_I2S_D1_PIN,
+            BOARD_LCD_I2S_D2_PIN,
+            BOARD_LCD_I2S_D3_PIN,
+            BOARD_LCD_I2S_D4_PIN,
+            BOARD_LCD_I2S_D5_PIN,
+            BOARD_LCD_I2S_D6_PIN,
+            BOARD_LCD_I2S_D7_PIN,
+            BOARD_LCD_I2S_D8_PIN,
+            BOARD_LCD_I2S_D9_PIN,
+            BOARD_LCD_I2S_D10_PIN,
+            BOARD_LCD_I2S_D11_PIN,
+            BOARD_LCD_I2S_D12_PIN,
+            BOARD_LCD_I2S_D13_PIN,
+            BOARD_LCD_I2S_D14_PIN,
+            BOARD_LCD_I2S_D15_PIN,
+        },
+        .pin_num_cs = BOARD_LCD_I2S_CS_PIN,
+        .pin_num_wr = BOARD_LCD_I2S_WR_PIN,
+        .pin_num_rs = BOARD_LCD_I2S_RS_PIN,
+        .clk_freq = 20000000,
+        .i2s_port = I2S_NUM_0,
+        .swap_data = false,
+        .buffer_size = 64000,
+    };
+
+    scr_interface_driver_t *iface_drv;
+    scr_interface_create(SCREEN_IFACE_8080, &i2s_lcd_cfg, &iface_drv);
+
+    scr_controller_config_t lcd_cfg = {
+        .interface_drv = iface_drv,
+        .pin_num_rst = BOARD_LCD_I2S_RESET_PIN,
+        .pin_num_bckl = BOARD_LCD_I2S_BL_PIN,
+        .rst_active_level = 0,
+        .bckl_active_level = 1,
+        .width = BOARD_LCD_WIDTH,
+        .height = BOARD_LCD_HEIGHT,
+        .offset_hor = 0,
+        .offset_ver = 0,
+        .rotate = SCR_DIR_BTLR,
+    };
+
+    ret = scr_find_driver(SCREEN_CONTROLLER_RM68120, &g_lcd);
+    if(ESP_OK != ret)
+    {
+        return;
+        ESP_LOGE(LOG_TAG, "screen find failed");
+    }
+
+    ret = g_lcd.init(&lcd_cfg);
+
+    if(ESP_OK != ret)
+    {
+        return;
+        ESP_LOGE(LOG_TAG, "screen initialize failed");
+    }
+
+    scr_info_t g_lcd_info;
+    g_lcd.get_info(&g_lcd_info);
+    ESP_LOGI(LOG_TAG, "Screen name:%s | width:%d | height:%d", g_lcd_info.name, g_lcd_info.width, g_lcd_info.height);
+
+    i2c_bus_handle_t i2c_bus = iot_board_get_handle(BOARD_I2C0_ID);
+
+    touch_panel_config_t touch_cfg = {
+        .interface_i2c = {
+            .i2c_bus = i2c_bus,
+            .clk_freq = BOARD_TOUCH_I2C_CLOCK_FREQ,
+            .i2c_addr = 0x38,
+        },
+        .interface_type = TOUCH_PANEL_IFACE_I2C,
+        .pin_num_int = BOARD_TOUCH_I2C_INT_PIN,
+        .direction = TOUCH_DIR_TBRL,
+        .width = BOARD_LCD_WIDTH,
+        .height = BOARD_LCD_HEIGHT,
+    };
+
+    /* Initialize touch panel controller FT5x06 */
+    touch_panel_find_driver(TOUCH_PANEL_CONTROLLER_FT5X06, &g_touch);
+    g_touch.init(&touch_cfg);
+
+    /* start to run calibration */
+    // g_touch.calibration_run(&g_lcd, false);
+
+    vTaskDelay(pdMS_TO_TICKS(100));
 }
+#elif (CONFIG_BOARD_LAVAZZA_3_5 == 1)
+void init_board(void)
+{
+    esp_err_t ret = ESP_OK;
+
+    iot_board_init();
+    spi_bus_handle_t spi_bus = iot_board_get_handle(BOARD_SPI2_ID);
+
+    scr_interface_spi_config_t spi_lcd_cfg = {
+        .spi_bus = spi_bus,
+        .pin_num_cs = BOARD_LCD_SPI_CS_PIN,
+        .pin_num_dc = BOARD_LCD_SPI_DC_PIN,
+        .clk_freq = BOARD_LCD_SPI_CLOCK_FREQ,
+        .swap_data = true,
+    };
+
+    scr_interface_driver_t *iface_drv;
+    scr_interface_create(SCREEN_IFACE_SPI, &spi_lcd_cfg, &iface_drv);
+    ret = scr_find_driver(SCREEN_CONTROLLER_ILI9486, &g_lcd);
+    if (ESP_OK != ret) {
+        return;
+        ESP_LOGE(LOG_TAG, "screen find failed");
+    }
+
+    scr_controller_config_t lcd_cfg = {
+        .interface_drv = iface_drv,
+        .pin_num_rst = BOARD_LCD_SPI_RESET_PIN,
+        .pin_num_bckl = BOARD_LCD_SPI_BL_PIN,
+        .rst_active_level = 0,
+        .bckl_active_level = 1,
+        .width = BOARD_LCD_WIDTH,
+        .height = BOARD_LCD_HEIGHT,
+        .offset_hor = 0,
+        .offset_ver = 0,
+        .rotate = SCR_DIR_TBRL,
+    };
+    ret = g_lcd.init(&lcd_cfg);
+
+    if(ESP_OK != ret)
+    {
+        return;
+        ESP_LOGE(LOG_TAG, "screen initialize failed");
+    }
+
+    scr_info_t g_lcd_info;
+    g_lcd.get_info(&g_lcd_info);
+    ESP_LOGI(LOG_TAG, "Screen name:%s | width:%d | height:%d", g_lcd_info.name, g_lcd_info.width, g_lcd_info.height);
+
+    touch_panel_config_t touch_cfg = {
+        .interface_spi = {
+            .spi_bus = spi_bus,
+            .pin_num_cs = BOARD_TOUCH_SPI_CS_PIN,
+            .clk_freq = BOARD_LCD_SPI_CLOCK_FREQ,
+        },
+        .interface_type = TOUCH_PANEL_IFACE_SPI,
+        .pin_num_int = BOARD_TOUCH_IRQ_TOUCH_PIN,
+        .direction = TOUCH_DIR_TBRL,
+        .width = BOARD_LCD_WIDTH,
+        .height = BOARD_LCD_HEIGHT,
+    };
+
+    /* Initialize touch panel controller XPT2046 */
+    touch_panel_find_driver(TOUCH_PANEL_CONTROLLER_XPT2046, &g_touch);
+    g_touch.init(&touch_cfg);
+
+    /* start to run calibration */
+    //g_touch.calibration_run(&g_lcd, false);
+
+    vTaskDelay(pdMS_TO_TICKS(100));
+}
+#else   //Board custom
+
+#endif
 
 void gui_task(void* data)
 {
-    /* Create and start a periodic timer interrupt to call lv_tick_inc */
-    const esp_timer_create_args_t periodic_timer_args = {
-        .callback = &lv_tick_task,
-        .name = "periodic_gui"
-    };
-    esp_timer_handle_t periodic_timer;
-    ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
-    ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, LV_TICK_PERIOD_MS * 1000));
+    /* Initialize Board */
+    iot_board_init();
+    init_board();
 
-    /* Init LVGL, allocating buffer and create tasks for tick and handler */
-    ESP_ERROR_CHECK(lvgl_init(DISP_BUF_SIZE, MALLOC_CAP_DMA));
-
+    /* Initialize LittlevGL GUI */
+    lvgl_init(&g_lcd, &g_touch);
 
     /* Init LVGL file system API */
     lv_port_fs_init();
@@ -55,12 +210,13 @@ void gui_task(void* data)
     ui_main();
 
     EventBits_t bits;
+    ui_preparations_enable_cappuccino(true);
     while(true)
     {
         bits = xEventGroupWaitBits(xGuiEvents, GUI_POWER_BIT | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
                                                GUI_NEW_EROGATION_DATA_BIT | GUI_STOP_EROGATION_BIT | GUI_ENABLE_CAPPUCCINO_BIT |
                                                GUI_WARNINGS_BIT | GUI_MACHINE_FAULT_BIT | GUI_CLOUD_REQUEST_BIT | GUI_NEW_CLEANING_DATA_BIT, 
-                                               pdFALSE, pdFALSE, 2000/portTICK_PERIOD_MS);
+                                               pdFALSE, pdFALSE, 1000/portTICK_PERIOD_MS);
 
         if(bits & GUI_POWER_BIT)
         {
@@ -124,6 +280,37 @@ void gui_task(void* data)
             ui_preparations_set_desired(guiInternalState.cloudReq.coffeeType);
         }
 
+        #if 0
+        static uint8_t counter = 0;
+        switch(counter)
+        {
+            case 0:
+            {
+                ui_preparations_set_power(0);
+                counter++;
+                break;
+            }
+            case 1:
+            {
+                ui_preparations_set_power(1);
+                counter++;
+                break;
+            }
+            case 4:
+            {
+                ui_status_bar_set_descaling_warning(guiInternalState.warnings.descaling);
+                ui_status_bar_set_water_empty_warning(guiInternalState.warnings.waterEmpty);
+                ui_status_bar_set_pod_warning(guiInternalState.warnings.podFull);
+                counter = 0;
+                break;
+            }
+            default:
+            {
+                counter++;
+                break;
+            }
+        }
+        #endif
         #if LOG_MEM_INFO
         static char buffer[128];    /* Make sure buffer is enough for `sprintf` */
         sprintf(buffer, "   Biggest /     Free /    Total\n"
