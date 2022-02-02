@@ -122,16 +122,22 @@ void memory_check_task(void* p)
 {
     UBaseType_t uxHighWaterMark;
 
-    static uint32_t freeheap;
+    static uint32_t freeheap_internal, freeheap_external;
     while(true)
     {
-        freeheap = esp_get_free_heap_size();
-        if(freeheap > 20000)
-            ESP_LOGI(MEMORY_CHECK_TAG, "Free heap memory: %u", freeheap);
-        else if(freeheap > 10000)
-            ESP_LOGW(MEMORY_CHECK_TAG, "Free heap memory: %u", freeheap);
+        freeheap_internal = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+        freeheap_external = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+        if(freeheap_internal > 20000 && freeheap_external > 20000)
+            ESP_LOGI(MEMORY_CHECK_TAG, "Free heap memory: internal %u | external %u", freeheap_internal, freeheap_external);
+        else if(freeheap_internal > 10000  && freeheap_external > 20000)
+            ESP_LOGW(MEMORY_CHECK_TAG, "Free heap memory: internal %u | external %u", freeheap_internal, freeheap_external);
+        else if(freeheap_internal > 20000  && freeheap_external > 10000)
+            ESP_LOGW(MEMORY_CHECK_TAG, "Free heap memory: internal %u | external %u", freeheap_internal, freeheap_external);
         else
-            ESP_LOGE(MEMORY_CHECK_TAG, "Free heap memory: %u", freeheap);
+            ESP_LOGE(MEMORY_CHECK_TAG, "Free heap memory: internal %u | external %u", freeheap_internal, freeheap_external);
+
+        if(nullptr != xHandleMainTask)
+            ESP_LOGD(MEMORY_CHECK_TAG, "%s -> %d", "main_task", uxTaskGetStackHighWaterMark(xHandleMainTask));
 
         if(nullptr != xHandleWiFi)
             ESP_LOGD(MEMORY_CHECK_TAG, "%s -> %d", "wifi_task", uxTaskGetStackHighWaterMark(xHandleWiFi));
@@ -141,6 +147,12 @@ void memory_check_task(void* p)
         
         if(nullptr != xHandleAzureTx)
             ESP_LOGD(MEMORY_CHECK_TAG, "%s -> %d", "azure_tx_task", uxTaskGetStackHighWaterMark(xHandleAzureTx));
+
+        if(nullptr != xHandleGui)
+            ESP_LOGD(MEMORY_CHECK_TAG, "%s -> %d", "gui_task", uxTaskGetStackHighWaterMark(xHandleGui));
+
+        if(nullptr != xHandleOta)
+            ESP_LOGD(MEMORY_CHECK_TAG, "%s -> %d", "ota_task", uxTaskGetStackHighWaterMark(xHandleOta));
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -176,7 +188,7 @@ void init_firmware()
 
 void start_tasks()
 {
-    utils::system::start_thread(&memory_check_task, nullptr, "memory_task", 1024*4, 4);
+    // utils::system::start_thread(&memory_check_task, nullptr, "memory_task", 1024*4, 4);
 
     utils::system::start_thread_core(&dbg_task, &xHandleDbg, "dbg_task", 1024*2, 4, 0);
     #if ENABLE_CAPS_RECOGNITION_MODULE == 1
