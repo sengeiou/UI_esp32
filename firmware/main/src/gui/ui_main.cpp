@@ -87,7 +87,7 @@ void ui_main(void)
     lv_bar_set_value(bar, 1, LV_ANIM_ON);
 
     lv_obj_t* label_loading_hint = lv_label_create(lv_scr_act(), NULL);
-    // lv_label_set_text_static(label_loading_hint, " ");
+    lv_label_set_text_static(label_loading_hint, " ");
     lv_obj_set_style_local_text_font(label_loading_hint, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &default_small_font);
     lv_obj_set_style_local_text_color(label_loading_hint, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_NAVY);
     lv_obj_align(label_loading_hint, bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
