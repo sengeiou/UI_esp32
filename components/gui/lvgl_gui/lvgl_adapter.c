@@ -44,10 +44,10 @@ static void ex_disp_flush(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t 
 }
 
 // #define DISP_BUF_SIZE  (2*800*480/15) //(sizeof(lv_color_t)*(BOARD_LCD_WIDTH*BOARD_LCD_HEIGHT))/10  
-#define DISP_BUF_SIZE  1024*16
+#define DISP_BUF_SIZE  2*800*480
 #define SIZE_TO_PIXEL(v) ((v) / sizeof(lv_color_t))
 #define PIXEL_TO_SIZE(v) ((v) * sizeof(lv_color_t))
-#define BUFFER_NUMBER (1)
+#define BUFFER_NUMBER (2)
 
 esp_err_t lvgl_display_init(scr_driver_t *driver)
 {
@@ -69,7 +69,7 @@ esp_err_t lvgl_display_init(scr_driver_t *driver)
 
     disp_drv.flush_cb = ex_disp_flush; /*Used in buffered mode (LV_VDB_SIZE != 0  in lv_conf.h)*/
 
-    size_t free_size = heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+    size_t free_size = heap_caps_get_free_size(MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     const size_t remain_size = 60 * 1024; /**< Remain for other functions */
     size_t alloc_pixel = DISP_BUF_SIZE;
     if (((BUFFER_NUMBER * PIXEL_TO_SIZE(alloc_pixel)) + remain_size) > free_size) {
@@ -78,13 +78,13 @@ esp_err_t lvgl_display_init(scr_driver_t *driver)
         ESP_LOGW(TAG, "Exceeded max free size (%u), force shrink to %u Byte", free_size, allow_size);
     }
 
-    lv_color_t *buf1 = heap_caps_malloc(PIXEL_TO_SIZE(alloc_pixel), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+    lv_color_t *buf1 = heap_caps_malloc(PIXEL_TO_SIZE(alloc_pixel), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     if (NULL == buf1) {
         ESP_LOGE(TAG, "Display buffer memory not enough %u", PIXEL_TO_SIZE(alloc_pixel));
         return ESP_ERR_NO_MEM;
     }
 #if (BUFFER_NUMBER == 2)
-    lv_color_t *buf2 = heap_caps_malloc(PIXEL_TO_SIZE(alloc_pixel), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+    lv_color_t *buf2 = heap_caps_malloc(PIXEL_TO_SIZE(alloc_pixel), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     if (NULL == buf2) {
         heap_caps_free(buf1);
         ESP_LOGE(TAG, "Display buffer memory not enough");
@@ -122,7 +122,7 @@ static bool ex_tp_read(struct _lv_indev_drv_t *indev_drv, lv_indev_data_t *data)
         data->point.x = x;
         data->point.y = y;
         data->state = LV_INDEV_STATE_PR;
-        ESP_LOGI(TAG, "PRESSURE: x: %d, y: %d", points.curx[0], points.cury[0]);
+        ESP_LOGD(TAG, "PRESSURE: x: %d, y: %d", points.curx[0], points.cury[0]);
     }
 
     ESP_LOGD(TAG, "x: %d, y: %d", points.curx[0], points.cury[0]);
