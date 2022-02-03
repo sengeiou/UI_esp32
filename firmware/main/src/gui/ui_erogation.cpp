@@ -45,14 +45,6 @@ static void erogation_done_cb(lv_obj_t *obj, lv_event_t event);
 
 static void dismiss_timer_cb(void* arg)
 {
-    printf("Callback timer\n");
-    // lv_chart_clear_serie(obj_graph, obj_temp_series);
-    // lv_chart_clear_serie(obj_graph, obj_pressure_series);
-    // lv_chart_set_series_axis(obj_graph, obj_temp_series, LV_CHART_AXIS_PRIMARY_Y);
-    // lv_chart_set_series_axis(obj_graph, obj_pressure_series, LV_CHART_AXIS_SECONDARY_Y);
-    // ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
-    // lv_obj_set_hidden(msgbox, true);
-
     erogation_done_cb(msgbox, LV_EVENT_VALUE_CHANGED);
 }
 
@@ -62,7 +54,6 @@ static void erogation_done_cb(lv_obj_t *obj, lv_event_t event)
     {
         // if(0 == lv_msgbox_get_active_btn(obj))
         // {
-            printf("Stop timer erogation\n");
             esp_timer_stop(dismiss_timer);
             lv_chart_clear_serie(obj_graph, obj_temp_series);
             lv_chart_clear_serie(obj_graph, obj_pressure_series);

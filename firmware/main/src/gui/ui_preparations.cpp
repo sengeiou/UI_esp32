@@ -112,13 +112,14 @@ static bool check_blocking_warnings()
 
 static void configure_button_style(lv_obj_t* obj)
 {
+    lv_btn_set_checkable(obj, false);
     lv_obj_set_size(obj, PREP_BUTTON_WIDTH, PREP_BUTTON_HEIGHT);
     lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_radius(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, PREP_BUTTON_RADIUS);
     lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, PREP_BUTTON_BORDER);
     lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, 2*PREP_BUTTON_BORDER);
-    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_COLOR_GRAY);
+    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 }
 
@@ -211,7 +212,7 @@ void ui_preparations_init(void *data)
     obj_tabCappuccino = lv_tabview_add_tab(obj_tabview, "M\nI\nL\nK");
     lv_page_set_scroll_propagation(obj_tabCappuccino, false);
 
-    obj_coffee_short = lv_obj_create(obj_tabCoffee, NULL);
+    obj_coffee_short = lv_btn_create(obj_tabCoffee, NULL);
     configure_button_style(obj_coffee_short);
     lv_obj_align(obj_coffee_short, NULL, LV_ALIGN_IN_TOP_LEFT, PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
 
@@ -219,7 +220,7 @@ void ui_preparations_init(void *data)
     configure_image_style(img_coffee_short, data_short_coffee);
     lv_obj_align(img_coffee_short, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_coffee_long = lv_obj_create(obj_tabCoffee, NULL);
+    obj_coffee_long = lv_btn_create(obj_tabCoffee, NULL);
     configure_button_style(obj_coffee_long);
     lv_obj_align(obj_coffee_long, NULL, LV_ALIGN_IN_TOP_RIGHT, -PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
 
@@ -227,7 +228,7 @@ void ui_preparations_init(void *data)
     configure_image_style(img_coffee_long, data_long_coffee);
     lv_obj_align(img_coffee_long, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_coffee_medium = lv_obj_create(obj_tabCoffee, NULL);
+    obj_coffee_medium = lv_btn_create(obj_tabCoffee, NULL);
     configure_button_style(obj_coffee_medium);
     lv_obj_align(obj_coffee_medium, NULL, LV_ALIGN_IN_BOTTOM_LEFT, PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
 
@@ -235,7 +236,7 @@ void ui_preparations_init(void *data)
     configure_image_style(img_coffee_medium, data_medium_coffee);
     lv_obj_align(img_coffee_medium, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_coffee_free = lv_obj_create(obj_tabCoffee, NULL);
+    obj_coffee_free = lv_btn_create(obj_tabCoffee, NULL);
     configure_button_style(obj_coffee_free);
     lv_obj_align(obj_coffee_free, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
 
@@ -244,7 +245,7 @@ void ui_preparations_init(void *data)
     lv_obj_align(img_coffee_free, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
 
-    obj_cappuccino_short = lv_obj_create(obj_tabCappuccino, NULL);
+    obj_cappuccino_short = lv_btn_create(obj_tabCappuccino, NULL);
     configure_button_style(obj_cappuccino_short);
     lv_obj_align(obj_cappuccino_short, NULL, LV_ALIGN_IN_TOP_LEFT, PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
 
@@ -252,7 +253,7 @@ void ui_preparations_init(void *data)
     configure_image_style(img_cappuccino_short, data_short_cappuccino);
     lv_obj_align(img_cappuccino_short, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_cappuccino_double = lv_obj_create(obj_tabCappuccino, NULL);
+    obj_cappuccino_double = lv_btn_create(obj_tabCappuccino, NULL);
     configure_button_style(obj_cappuccino_double);
     lv_obj_align(obj_cappuccino_double, NULL, LV_ALIGN_IN_TOP_RIGHT, -PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
 
@@ -260,7 +261,7 @@ void ui_preparations_init(void *data)
     configure_image_style(img_cappuccino_double, data_double_cappuccino);
     lv_obj_align(img_cappuccino_double, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_cappuccino_medium = lv_obj_create(obj_tabCappuccino, NULL);
+    obj_cappuccino_medium = lv_btn_create(obj_tabCappuccino, NULL);
     configure_button_style(obj_cappuccino_medium);
     lv_obj_align(obj_cappuccino_medium, NULL, LV_ALIGN_IN_BOTTOM_LEFT, PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
 
@@ -268,7 +269,7 @@ void ui_preparations_init(void *data)
     configure_image_style(img_cappuccino_medium, data_medium_cappuccino);
     lv_obj_align(img_cappuccino_medium, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_milk_hot = lv_obj_create(obj_tabCappuccino, NULL);
+    obj_milk_hot = lv_btn_create(obj_tabCappuccino, NULL);
     configure_button_style(obj_milk_hot);
     lv_obj_align(obj_milk_hot, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
 
