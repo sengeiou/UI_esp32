@@ -1,5 +1,6 @@
 #include "ui_main.h"
 #include "dbg_task.h"
+#include "esp_timer.h"
 
 #ifdef ADVANCED_DEBUG
     #define LOG_TAG LINE_STRING "|" "UI_EROG"
@@ -28,7 +29,6 @@ static lv_chart_series_t* obj_pressure_series = NULL;
 
 static uint8_t progress = 0;
 static uint8_t oldProgress = 0;
-static bool stop = false;
 static void set_preparation_parameters(void);
 
 static dbg_special_func_code_t funcCode;
@@ -37,22 +37,40 @@ extern ui_preparation_t preparation;
 static int target_dose;
 bool isErogationPageActive = false;
 
+esp_timer_handle_t dismiss_timer;
+
+#define DISMISS_TIMEOUT_MS  3000
+
+static void erogation_done_cb(lv_obj_t *obj, lv_event_t event);
+
+static void dismiss_timer_cb(void* arg)
+{
+    printf("Callback timer\n");
+    // lv_chart_clear_serie(obj_graph, obj_temp_series);
+    // lv_chart_clear_serie(obj_graph, obj_pressure_series);
+    // lv_chart_set_series_axis(obj_graph, obj_temp_series, LV_CHART_AXIS_PRIMARY_Y);
+    // lv_chart_set_series_axis(obj_graph, obj_pressure_series, LV_CHART_AXIS_SECONDARY_Y);
+    // ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+    // lv_obj_set_hidden(msgbox, true);
+
+    erogation_done_cb(msgbox, LV_EVENT_VALUE_CHANGED);
+}
+
 static void erogation_done_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_VALUE_CHANGED == event)
     {
-        if(0 == lv_msgbox_get_active_btn(obj))
-        {
-            progress = 0;
-            oldProgress = 0;
-            stop = true;
+        // if(0 == lv_msgbox_get_active_btn(obj))
+        // {
+            printf("Stop timer erogation\n");
+            esp_timer_stop(dismiss_timer);
             lv_chart_clear_serie(obj_graph, obj_temp_series);
             lv_chart_clear_serie(obj_graph, obj_pressure_series);
             lv_chart_set_series_axis(obj_graph, obj_temp_series, LV_CHART_AXIS_PRIMARY_Y);
             lv_chart_set_series_axis(obj_graph, obj_pressure_series, LV_CHART_AXIS_SECONDARY_Y);
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
             lv_obj_set_hidden(obj, true);
-        }
+        // }
     }
 }
 
@@ -60,51 +78,8 @@ static void btn_stop_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
-        progress = 0;
-        oldProgress = 0;
-        stop = true;
         special_function(funcCode);
-        lv_obj_set_hidden(msgbox, false);
-        lv_obj_set_click(btn_stop, false);
     }
-}
-
-void simulator_erogation_task(void* data)
-{
-    (void)data;
-
-    uint8_t temperature = 100;
-    float pressure = 5.5;
-    uint16_t current_dose = 0;
-    stop = false;
-    while(false == stop)
-    {
-        if(progress < 100)
-        {
-            if(oldProgress != progress)
-            {
-                temperature += (rand()%4 -2);
-                pressure -= 0.01*(rand()%3);
-            }
-            current_dose += (rand()%70);
-            oldProgress = progress;
-
-            ui_erogation_update(current_dose, temperature, pressure);
-            printf("Stop: %d | Dose: %d | Progress: %d \n", stop, current_dose, progress);
-        }
-        else
-        {
-            vTaskDelay(100);
-            progress = 0;
-            oldProgress = 0;
-            stop = true;
-            lv_obj_set_hidden(msgbox, false);
-        }
-
-        vTaskDelay(8);
-    }
-
-    vTaskDelete(NULL);
 }
 
 void ui_erogation_completed(void)
@@ -112,6 +87,8 @@ void ui_erogation_completed(void)
     lv_bar_set_value(obj_bar, 100, LV_ANIM_ON);
     lv_obj_set_hidden(msgbox, false);
     lv_obj_set_click(btn_stop, false);
+
+    esp_timer_start_once(dismiss_timer, DISMISS_TIMEOUT_MS*1000);
 }
 
 void ui_erogation_set_target_dose(uint16_t dose)
@@ -125,21 +102,18 @@ void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float press
 
     if(progress != oldProgress)
     {
-        if(progress < 100)
-        {
-            lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
+        lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
 
-            for(int8_t i = oldProgress + 1; i <= progress; i++)
-            {
-                obj_temp_series->points[i] = temperature;
-                obj_pressure_series->points[i] = pressure;
-            }
-            lv_chart_refresh(obj_graph);
-            ESP_LOGI(LOG_TAG, "Progress %d | temp: %d | pressure: %.2f", progress, temperature, pressure);
-        }
-        else
+        for(int8_t i = oldProgress + 1; i <= progress; i++)
         {
-            vTaskDelay(10);
+            obj_temp_series->points[i] = temperature;
+            obj_pressure_series->points[i] = pressure;
+        }
+        lv_chart_refresh(obj_graph);
+        ESP_LOGI(LOG_TAG, "Progress %d | temp: %d | pressure: %.2f", progress, temperature, pressure);
+
+        if(progress >= 100)
+        {
             ui_erogation_completed();
         }
     }
@@ -213,6 +187,10 @@ static void set_preparation_parameters(void)
         default:
             break;
     }
+
+    progress = 0;
+    oldProgress = 0;
+
     special_function(funcCode);
     lv_obj_align(obj_label, obj_graph, LV_ALIGN_OUT_TOP_MID, 0, -20);
     // lv_chart_set_point_count(obj_graph, target_dose+1);
@@ -301,6 +279,14 @@ void ui_erogation_init(void *data)
     lv_obj_set_event_cb(msgbox, erogation_done_cb);
 
     lv_obj_set_hidden(msgbox, true);
+
+    const esp_timer_create_args_t dismiss_timer_args = {
+            .callback = &dismiss_timer_cb,
+            /* argument specified here will be passed to timer callback function */
+            .arg = (void*) dismiss_timer,
+            .name = "dismiss_timer"
+    };
+    ESP_ERROR_CHECK(esp_timer_create(&dismiss_timer_args, &dismiss_timer));
 }
 
 void ui_erogation_show(void *data)
@@ -318,6 +304,8 @@ void ui_erogation_show(void *data)
         lv_obj_set_hidden(msgbox, true);
     }
 
+    esp_timer_stop(dismiss_timer);
+
     lv_obj_set_click(btn_stop, true);
     lv_chart_clear_serie(obj_graph, obj_temp_series);
     lv_chart_clear_serie(obj_graph, obj_pressure_series);
@@ -326,13 +314,13 @@ void ui_erogation_show(void *data)
     isErogationPageActive = true;
     funcCode = DBG_NONE;
     set_preparation_parameters();
-
-    //xTaskCreate(simulator_erogation_task, "Erogation Simulator Task", 4*1024, NULL, 5, NULL);
 }
 
 void ui_erogation_hide(void *data)
 {
     (void)data;
+
+    esp_timer_stop(dismiss_timer);
 
     if(NULL != obj_label)
     {

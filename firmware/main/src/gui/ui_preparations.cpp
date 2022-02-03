@@ -118,7 +118,7 @@ static void configure_button_style(lv_obj_t* obj)
     lv_obj_set_style_local_radius(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, PREP_BUTTON_RADIUS);
     lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, PREP_BUTTON_BORDER);
     lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, 2*PREP_BUTTON_BORDER);
-    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_COLOR_GRAY);
     lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 }
 
@@ -312,14 +312,6 @@ void ui_preparations_show(void *data)
         ui_preparations_state = ui_state_show;
     }
 
-    lv_obj_set_style_local_image_recolor(img_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_tabview_set_tab_act(obj_tabview, lastTabActive, LV_ANIM_OFF);
     ui_status_bar_show(true);
 }
@@ -447,7 +439,7 @@ static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
         {
             if(obj_milk_hot == obj)
             {
-                lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_RED);
+                lv_obj_set_style_local_border_color(obj_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_RED);
                 lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_HOVERED | LV_STATE_PRESSED, LV_COLOR_RED);
 
                 hotWater = true;
