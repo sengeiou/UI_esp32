@@ -33,13 +33,14 @@ void ui_cleaning_full_update(uint8_t current_step, uint8_t total_step)
 {
     if(NULL == obj_stop_btn)
         return;
-
-    progress = 100*(current_step + 1)/total_step;
+    
+    progress = 100*(current_step + 1)/(total_step + 1);
+    progress = (progress >= 100) ? 100 : progress;
     ESP_LOGI(LOG_TAG, "UPDATE: %d/%d %d", current_step, total_step, progress);
 
     if(oldProgress != progress)
     {
-        if(current_step == (total_step - 1))    //LAST STEP
+        if(current_step == (total_step))    //LAST STEP
         {
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
@@ -50,14 +51,18 @@ void ui_cleaning_full_update(uint8_t current_step, uint8_t total_step)
             lv_obj_set_click(obj_stop_btn, false);
             lv_label_set_text(obj_label, "Semi-Auto Cleaning done");
         }
-        else
+        else if(current_step < total_step)
         {
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
             lv_obj_set_style_local_bg_color(obj_status_btn, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_GRAY);
             lv_obj_set_click(obj_status_btn, false);
             char buf[64];
-            sprintf(buf, "Semi-Auto Cleaning in progress... (%d/%d)", current_step+1, total_step);
+            sprintf(buf, "Semi-Auto Cleaning in progress... (%d/%d)", current_step + 1, total_step);
             lv_label_set_text(obj_label, buf);
+        }
+        else
+        {
+            //Do nothing
         }
         lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
 
