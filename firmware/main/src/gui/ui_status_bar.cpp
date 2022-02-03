@@ -134,7 +134,7 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_SETTINGS);
     lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_SETTINGS);
-    lv_obj_align(btn_setting, status_bar, LV_ALIGN_IN_RIGHT_MID, 4*STSBAR_BUTTON_SETT_X_OFFSET, STSBAR_BUTTON_Y_OFFSET);
+    lv_obj_align(btn_setting, status_bar, LV_ALIGN_IN_RIGHT_MID, STSBAR_BUTTON_SETT_X_OFFSET, STSBAR_BUTTON_Y_OFFSET);
     lv_obj_set_event_cb(btn_setting, btn_cb);
 
     btn_power = lv_obj_create(status_bar, NULL);
@@ -147,7 +147,7 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_value_color(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
     lv_obj_set_style_local_value_str(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_POWER);
     lv_obj_set_style_local_value_str(btn_power, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_POWER);
-    lv_obj_align(btn_power, status_bar, LV_ALIGN_IN_RIGHT_MID, STSBAR_BUTTON_SETT_X_OFFSET, STSBAR_BUTTON_Y_OFFSET);
+    lv_obj_align(btn_power, status_bar, LV_ALIGN_IN_RIGHT_MID, STSBAR_BUTTON_POWER_X_OFFSET, STSBAR_BUTTON_Y_OFFSET);
     lv_obj_set_event_cb(btn_power, btn_cb);
 
     btn_wifi = lv_obj_create(status_bar, NULL);

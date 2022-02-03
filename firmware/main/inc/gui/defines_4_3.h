@@ -166,9 +166,10 @@ inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define STSBAR_Y_OFFSET                0
 #define STSBAR_RADIUS                  0
 #define STSBAR_BORDER                  0
-#define STSBAR_BUTTON_WIDTH            97
-#define STSBAR_BUTTON_SETT_X_OFFSET    -25
-#define STSBAR_BUTTON_WIFI_X_OFFSET    25
+#define STSBAR_BUTTON_WIDTH            100
+#define STSBAR_BUTTON_SETT_X_OFFSET    -90
+#define STSBAR_BUTTON_WIFI_X_OFFSET    20
+#define STSBAR_BUTTON_POWER_X_OFFSET   -20
 #if CONFIG_ENABLE_CAPS_RECOGNITION_MODULE == 1
 #define STSBAR_BUTTON_DESC_X_OFFSET    -50
 #define STSBAR_BUTTON_POD_X_OFFSET     -160
@@ -183,7 +184,7 @@ inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define STSBAR_IMG_ZOOM                170
 #define STSBAR_IMG_X_OFFSET            0
 #define STSBAR_IMG_Y_OFFSET            0
-#define STSBAR_BUTTON_RADIUS           7
+#define STSBAR_BUTTON_RADIUS           0
 #define STSBAR_BUTTON_BORDER           0
 
 //Wifi Page
