@@ -38,6 +38,9 @@ void ui_standby_init(void *data)
    
     img_qr = lv_qrcode_create(lv_scr_act(), QR_CODE_SIZE, LV_COLOR_WHITE, LV_COLOR_BLACK);
     lv_obj_align(img_qr, NULL, LV_ALIGN_CENTER, 0, 0);
+
+    char qr_text[] = "18000USA_LAVAZZATESTUSA000003";
+    lv_qrcode_update(img_qr, qr_text, strlen(qr_text));
 }
 
 void ui_standby_show(void *data)
@@ -51,9 +54,6 @@ void ui_standby_show(void *data)
         lv_obj_set_hidden(obj_button, false);
         lv_obj_set_hidden(img_qr, false);
     }
-
-    char qr_text[] = "18000USA_LAVAZZATESTUSA000003";
-    lv_qrcode_update(img_qr, qr_text, strlen(qr_text));
 }
 
 void ui_standby_hide(void *data)
