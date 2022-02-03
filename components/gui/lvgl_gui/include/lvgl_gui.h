@@ -26,6 +26,10 @@ extern "C"
  */
 esp_err_t lvgl_init(scr_driver_t *lcd_drv, touch_panel_driver_t *touch_drv);
 
+
+esp_err_t lvgl_sem_take(void);
+esp_err_t lvgl_sem_give(void);
+
 #ifdef __cplusplus
 }
 #endif

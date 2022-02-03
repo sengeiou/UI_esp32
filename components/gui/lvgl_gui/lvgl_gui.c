@@ -27,8 +27,20 @@ typedef struct {
     touch_panel_driver_t *touch_drv;
 } lvgl_drv_t;
 
+static SemaphoreHandle_t xGuiSemaphore = NULL;
+
 // wait for execute lv_task_handler and lv_tick_inc to avoid some widget don't refresh.
 #define LVGL_TICK_MS 1
+
+esp_err_t lvgl_sem_take(void)
+{
+    return !xSemaphoreTake(xGuiSemaphore, portMAX_DELAY);
+}
+
+esp_err_t lvgl_sem_give(void)
+{
+    return !xSemaphoreGive(xGuiSemaphore);
+}
 
 static void lv_tick_timercb(void *timer)
 {
@@ -41,7 +53,6 @@ static void lv_tick_timercb(void *timer)
 /* Creates a semaphore to handle concurrent call to lvgl stuff
  * If you wish to call *any* lvgl function from other threads/tasks
  * you should lock on the very same semaphore! */
-static SemaphoreHandle_t xGuiSemaphore = NULL;
 static void lvgl_gui_task(void *args)
 {
     esp_err_t ret;
@@ -86,9 +97,14 @@ static void lvgl_gui_task(void *args)
         vTaskDelay(pdMS_TO_TICKS(10));
 
         /* Try to take the semaphore, call lvgl related function on success */
-        if (pdTRUE == xSemaphoreTake(xGuiSemaphore, portMAX_DELAY)) {
+        // if (pdTRUE == xSemaphoreTake(xGuiSemaphore, portMAX_DELAY)) {
+        //     lv_task_handler();
+        //     xSemaphoreGive(xGuiSemaphore);
+        // }
+        if(ESP_OK == lvgl_sem_take())
+        {
             lv_task_handler();
-            xSemaphoreGive(xGuiSemaphore);
+            lvgl_sem_give();
         }
     }
 }

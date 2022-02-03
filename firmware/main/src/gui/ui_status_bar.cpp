@@ -1,5 +1,6 @@
 #include "ui_main.h"
 #include "variables.h"
+#include "dbg_task.h"
 
 #ifdef ADVANCED_DEBUG
     #define LOG_TAG LINE_STRING "|" "UI_STATUS"
@@ -11,6 +12,7 @@
 static lv_obj_t* status_bar = NULL;
 static lv_obj_t* btn_wifi = NULL;
 static lv_obj_t* btn_setting = NULL;
+static lv_obj_t* btn_power = NULL;
 static lv_obj_t* btn_pod = NULL;
 static lv_obj_t* btn_descaling = NULL;
 static lv_obj_t* btn_water = NULL;
@@ -132,8 +134,21 @@ void ui_status_bar_init(void)
     lv_obj_set_style_local_value_color(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_SETTINGS);
     lv_obj_set_style_local_value_str(btn_setting, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_SETTINGS);
-    lv_obj_align(btn_setting, status_bar, LV_ALIGN_IN_RIGHT_MID, STSBAR_BUTTON_SETT_X_OFFSET, STSBAR_BUTTON_Y_OFFSET);
+    lv_obj_align(btn_setting, status_bar, LV_ALIGN_IN_RIGHT_MID, 4*STSBAR_BUTTON_SETT_X_OFFSET, STSBAR_BUTTON_Y_OFFSET);
     lv_obj_set_event_cb(btn_setting, btn_cb);
+
+    btn_power = lv_obj_create(status_bar, NULL);
+    lv_obj_set_style_local_radius(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, STSBAR_BUTTON_RADIUS);
+    lv_obj_set_width(btn_power, STSBAR_BUTTON_WIDTH);
+    lv_obj_set_style_local_bg_color(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_width(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, STSBAR_BUTTON_BORDER);
+    lv_obj_set_style_local_value_font(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &stsbar_button_font);
+    lv_obj_set_style_local_value_color(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
+    lv_obj_set_style_local_value_str(btn_power, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_POWER);
+    lv_obj_set_style_local_value_str(btn_power, LV_BTN_PART_MAIN, LV_STATE_PRESSED, LV_SYMBOL_POWER);
+    lv_obj_align(btn_power, status_bar, LV_ALIGN_IN_RIGHT_MID, STSBAR_BUTTON_SETT_X_OFFSET, STSBAR_BUTTON_Y_OFFSET);
+    lv_obj_set_event_cb(btn_power, btn_cb);
 
     btn_wifi = lv_obj_create(status_bar, NULL);
     lv_obj_set_width(btn_wifi, STSBAR_BUTTON_WIDTH);
@@ -272,6 +287,12 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
                     ui_show(&ui_wifi_func, UI_SHOW_OVERRIDE);
                 }
             }
+            return;
+        }
+
+        if(btn_power == obj)
+        {
+            special_function(DBG_ON_OFF);
             return;
         }
 
