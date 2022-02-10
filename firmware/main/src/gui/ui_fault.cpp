@@ -36,7 +36,7 @@ void ui_fault_init(void *data)
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_RED);
     lv_obj_set_size(obj_label, 400, 60);
     lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &default_big_font);
-    lv_obj_align(obj_label, obj_image, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    lv_obj_align(obj_label, obj_image, LV_ALIGN_OUT_BOTTOM_MID, 0, 70);
     lv_label_set_align(obj_label, LV_LABEL_ALIGN_CENTER);
     lv_label_set_text(obj_label, "FAULT");
     lv_obj_set_auto_realign(obj_label, true);
