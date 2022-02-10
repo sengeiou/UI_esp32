@@ -8,6 +8,15 @@
 #include "utils.h"
 #include "ui_main.h"
 
+#define BUILD_FOR_NROCS 1
+#define BUILD_FOR_ELOGY_MILK !BUILD_FOR_NROCS
+
+#if BUILD_FOR_ELOGY_MILK
+#include "ElogyMilk.h"
+#elif BUILD_FOR_NROCS
+#include "NR_OCS.h"
+#endif
+
 static void printUint16(uint8_t msb, uint8_t lsb)
 {
     unsigned char byte;
@@ -172,42 +181,65 @@ namespace lavazza
         */
         void parseLivedata(dbgMsg_stc& msg)
         {
+            // DbgLivedata_t livedata = parseNrOcsLivedata(msg.payload);       
             static uint8_t fsmStatus;
             static uint8_t oldFsmStatus = -1;
             static bool podFull, podOverflow, podRemoved;
             static bool podWarning, waterWarning, descalingWarning, milkPresence;
             static uint8_t recipeId;
-            uint16_t logicValues = BUILD_UINT16(msg.payload[22], msg.payload[21]);
+            uint16_t logicValues;
+            uint16_t dose;
+            uint8_t  temperature;
 
+            #if BUILD_FOR_NROCS
+            logicValues = BUILD_UINT16(msg.payload[22], msg.payload[21]);
             fsmStatus = msg.payload[0];
             milkPresence = ((logicValues >> 0) & 1);
-            podRemoved = ((logicValues >> 1) & 0);
+            podRemoved = ((logicValues >> 1) & 0);  //TODO fix value
             podFull = ((logicValues >> 2) & 1);
             podOverflow = ((logicValues >> 3) & 1);
             podWarning = (podFull | podOverflow | podRemoved);
             waterWarning = ((logicValues >> 4) & 1);
             recipeId = static_cast<uint8_t>(((logicValues >> 12) & 1));
             descalingWarning = ((logicValues >> 15) & 1);   //not implemented on NR_OCS
+            dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
+            temperature = msg.payload[7];    //10 per il latte
+            #endif
+
+            #if BUILD_FOR_ELOGY_MILK
+            static uint16_t uiAlarm = BUILD_UINT16(msg.payload[22], msg.payload[21]);
+            logicValues = msg.payload[13];
+            fsmStatus = msg.payload[0];
+            milkPresence = ((logicValues >> 0) & 1);
+            podRemoved = ((uiAlarm >> 1) & 1);
+            podFull = ((uiAlarm >> 2) & 1);
+            podWarning = (podFull | podRemoved);
+            waterWarning = ((uiAlarm >> 3) & 1);
+            descalingWarning = ((uiAlarm >> 4) & 1);
+            dose = BUILD_UINT16(msg.payload[2], msg.payload[3]);
+            temperature = msg.payload[1];
+            #endif
 
             // printUint16(msg.payload[22], msg.payload[21]);
             //printf("STS %d -> LOGIC VALUES %d (%d | %d | %d | %d | %d | %d)\n", fsmStatus, logicValues, milkPresence, podRemoved, podFull, podOverflow, waterWarning, descalingWarning, recipeId);
-            if(fsmStatus == 0x01)   //standby
+            if(fsmStatus == FSM_STATE_STANDBY)   //standby
             {
                 if((false != guiInternalState.powerOn) || (oldFsmStatus != fsmStatus))
                 {
-                    guiInternalState.powerOn = (fsmStatus != 0x01);
+                    guiInternalState.powerOn = (fsmStatus != FSM_STATE_STANDBY);
                     xEventGroupSetBits(xGuiEvents, GUI_POWER_BIT);
                 }
             }
-            else if(fsmStatus == 0x09)  //fault
+            else if(fsmStatus == FSM_STATE_FAULT)  //fault
             {
                 if((true != guiInternalState.isFault) || (oldFsmStatus != fsmStatus))
                 {
-                    guiInternalState.isFault = (fsmStatus == 0x09);
+                    guiInternalState.isFault = (fsmStatus == FSM_STATE_FAULT);
                     xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
                 }
             }
-            else if(fsmStatus == 0x0B)  //cleaning
+            #if BUILD_FOR_NROCS
+            else if(fsmStatus == FSM_STATE_CLEANING)  //cleaning
             {
                 if(2 == recipeId)
                 {
@@ -222,6 +254,7 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
                 }
             }
+            #endif
             else
             {
                 if(true != guiInternalState.powerOn)
@@ -236,15 +269,15 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
                 }
 
-                if(fsmStatus == 0x07)   //Brewing
+                if(fsmStatus == FSM_STATE_BREWING)   //Brewing
                 {
                     guiInternalState.erogation.dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
                     guiInternalState.erogation.temperature = msg.payload[7];    //10 per il latte
                     xEventGroupSetBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
                 }
-                else if(fsmStatus == 0x03)  //Ready to brew
+                else if(fsmStatus == FSM_STATE_READY_TO_BREW)  //Ready to brew
                 {
-                    if(oldFsmStatus == 0x07 || oldFsmStatus == 0x08)    //from Steaming (0x08) or Brewing (0x07)
+                    if(oldFsmStatus == FSM_STATE_BREWING || oldFsmStatus == FSM_STATE_STEAMING)    //from Steaming (0x08) or Brewing (0x07)
                     {
                         xEventGroupSetBits(xGuiEvents, GUI_STOP_EROGATION_BIT);
                     }
