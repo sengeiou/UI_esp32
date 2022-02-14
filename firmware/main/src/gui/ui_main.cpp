@@ -10,40 +10,56 @@
     #define LOG_TAG "UI_MAIN"
 #endif
 
-void* data_on_off = NULL;
-void* data_short_coffee = NULL;
-void* data_medium_coffee = NULL;
-void* data_long_coffee = NULL;
-void* data_free_coffee = NULL;
-void* data_short_cappuccino = NULL;
-void* data_medium_cappuccino = NULL;
-void* data_double_cappuccino = NULL;
-void* data_hot_milk = NULL;
+void* data_logo = NULL;
+
+void* data_espresso_corto = NULL;
+void* data_espresso = NULL;
+void* data_espresso_lungo = NULL;
+void* data_macchiato = NULL;
+void* data_cappuccino = NULL;
+void* data_latte_macchiato = NULL;
+void* data_dose_libera = NULL;
+void* data_caffe_americano = NULL;
+void* data_acqua_calda = NULL;
+
+void* data_power = NULL;
+void* data_menu = NULL;
+
 void* data_descaling_warning  = NULL;
 void* data_water_warning  = NULL;
 void* data_pod_warning  = NULL;
-void* data_foam_boost  = NULL;
-void* data_temp_boost  = NULL;
-void* data_fault = NULL;
+void* data_generic_warning  = NULL;
 
-void* data_icon_app = NULL;
-void* data_icon_about = NULL;
+void* data_popup = NULL;
+void* data_fault = NULL;
 
 /* Resources loading list */
 static ui_data_fetch_t img_fetch_list[] = {
-    /* Preparation Page */
-    { "S:/coffee/short_coffee.bin", &data_short_coffee },
-    { "S:/coffee/medium_coffee.bin", &data_medium_coffee },
-    { "S:/coffee/long_coffee.bin", &data_long_coffee },
-    { "S:/coffee/free_coffee.bin", &data_free_coffee },
-    { "S:/coffee/short_cappuccino.bin", &data_short_cappuccino },
-    { "S:/coffee/medium_cappuccino.bin", &data_medium_cappuccino },
-    { "S:/coffee/double_cappuccino.bin", &data_double_cappuccino },
-    { "S:/coffee/hot_milk.bin", &data_hot_milk },
-    { "S:/coffee/descaling.bin", &data_descaling_warning },
-    { "S:/coffee/pod.bin", &data_pod_warning },
-    { "S:/coffee/water.bin", &data_water_warning },
-    { "S:/coffee/fault.bin", &data_fault },    
+    /* Preparation Page */    
+    { "S:/icons/EspressoCorto.bin", &data_espresso_corto },
+    { "S:/icons/Espresso.bin", &data_espresso },
+    { "S:/icons/EspressoLungo.bin", &data_espresso_lungo },
+    { "S:/icons/Macchiato.bin", &data_macchiato },
+    { "S:/icons/Cappuccino.bin", &data_cappuccino },
+    { "S:/icons/LatteMacchiato.bin", &data_latte_macchiato },
+    { "S:/icons/DoseLibera.bin", &data_dose_libera },
+    { "S:/icons/CaffeAmericano.bin", &data_caffe_americano },
+    { "S:/icons/AcquaCalda.bin", &data_acqua_calda },
+    /* Standby Page */
+    { "S:/icons/Logo.bin", &data_logo },
+    /* Fault Page */
+    { "S:/icons/Fault.bin", &data_fault },  //TODO get image
+    /* General */
+    { "S:/icons/Popup.bin", &data_popup },
+    /* Menu Bar */
+    { "S:/icons/Menu.bin", &data_menu },     //TODO get image
+    { "S:/icons/Power.bin", &data_power },   //TODO get image
+    /* Warning Bar */
+    { "S:/icons/DescalingWarning.bin", &data_descaling_warning },
+    { "S:/icons/PodWarning.bin", &data_pod_warning },  //TODO get image
+    { "S:/icons/WaterEmptyWarning.bin", &data_water_warning },  
+    { "S:/icons/GenericWarning.bin", &data_generic_warning },
+
 };
 
 static void ui_init_internal(void);
@@ -139,7 +155,6 @@ void ui_main(void)
 
     /* Entering main UI */
     lvgl_sem_take();
-    ui_status_bar_init();
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);
     lvgl_sem_give();

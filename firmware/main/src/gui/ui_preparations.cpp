@@ -2,9 +2,7 @@
 #include <time.h>
 #include "dbg_task.h"
 
-
-#define RAD_X_CENTER    125
-#define RAD_Y_CENTER    0
+#include "string_it.h"
 
 ui_preparation_t    preparation;
 
@@ -25,50 +23,55 @@ ui_func_desc_t ui_preparations_func = {
 static ui_state_t ui_preparations_state = ui_state_dis;
 
 /* LVGL objects defination */
-static lv_obj_t* obj_coffee_short = NULL;
-static lv_obj_t* obj_coffee_medium = NULL;
-static lv_obj_t* obj_coffee_long = NULL;
-static lv_obj_t* obj_coffee_free = NULL;
-static lv_obj_t* obj_cappuccino_short = NULL;
-static lv_obj_t* obj_cappuccino_medium = NULL;
-static lv_obj_t* obj_cappuccino_double = NULL;
-static lv_obj_t* obj_milk_hot = NULL;
+static lv_obj_t* obj_container = NULL;
 
-static lv_obj_t* img_coffee_short = NULL;
-static lv_obj_t* img_coffee_medium = NULL;
-static lv_obj_t* img_coffee_long = NULL;
-static lv_obj_t* img_coffee_free = NULL;
-static lv_obj_t* img_cappuccino_short = NULL;
-static lv_obj_t* img_cappuccino_medium = NULL;
-static lv_obj_t* img_cappuccino_double = NULL;
-static lv_obj_t* img_milk_hot = NULL;
+static lv_obj_t* obj_espresso_corto = NULL;
+static lv_obj_t* obj_espresso = NULL;
+static lv_obj_t* obj_espresso_lungo = NULL;
+static lv_obj_t* obj_macchiato = NULL;
+static lv_obj_t* obj_cappuccino = NULL;
+static lv_obj_t* obj_latte_macchiato = NULL;
+static lv_obj_t* obj_dose_libera = NULL;
+static lv_obj_t* obj_caffe_americano = NULL;
+static lv_obj_t* obj_acqua_calda = NULL;
 
-static lv_obj_t* obj_tabview = NULL;
-static lv_obj_t* obj_tabCoffee = NULL;
-static lv_obj_t* obj_tabCappuccino = NULL;
+static lv_obj_t* img_espresso_corto = NULL;
+static lv_obj_t* img_espresso = NULL;
+static lv_obj_t* img_espresso_lungo = NULL;
+static lv_obj_t* img_macchiato = NULL;
+static lv_obj_t* img_cappuccino = NULL;
+static lv_obj_t* img_latte_macchiato = NULL;
+static lv_obj_t* img_dose_libera = NULL;
+static lv_obj_t* img_caffe_americano = NULL;
+static lv_obj_t* img_acqua_calda = NULL;
 
-
-static bool isCappuccinoEnable = false;
-static bool isMachinePowerOn = false;
-static bool isMachineFault = false;
-static uint8_t lastTabActive = 0;
+static lv_obj_t* label_espresso_corto = NULL;
+static lv_obj_t* label_espresso = NULL;
+static lv_obj_t* label_espresso_lungo = NULL;
+static lv_obj_t* label_macchiato = NULL;
+static lv_obj_t* label_cappuccino = NULL;
+static lv_obj_t* label_latte_macchiato = NULL;
+static lv_obj_t* label_dose_libera = NULL;
+static lv_obj_t* label_caffe_americano = NULL;
+static lv_obj_t* label_acqua_calda = NULL;
 
 /* Extern image variable(s) */
-extern void* data_short_coffee;
-extern void* data_medium_coffee;
-extern void* data_long_coffee;
-extern void* data_free_coffee;
-extern void* data_short_cappuccino;
-extern void* data_medium_cappuccino;
-extern void* data_double_cappuccino;
-extern void* data_hot_milk;
+extern void* data_espresso_corto;
+extern void* data_espresso;
+extern void* data_espresso_lungo;
+extern void* data_macchiato;
+extern void* data_cappuccino;
+extern void* data_latte_macchiato;
+extern void* data_dose_libera;
+extern void* data_caffe_americano;
+extern void* data_acqua_calda;
 
-/* Static function forward declaration */
-static void btn_coffee_cb(lv_obj_t* obj, lv_event_t event);
-static void btn_cappuccino_cb(lv_obj_t* obj, lv_event_t event);
-static void tabview_cb(lv_obj_t* obj, lv_event_t event);
 
 static bool popup_open = false;
+
+
+/* Static function forward declaration */
+static void btn_cb(lv_obj_t* obj, lv_event_t event);
 
 static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
 {
@@ -78,10 +81,14 @@ static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "Popup closed");
             lv_obj_del(obj);
-            popup_open = false;
         }
     }
 }
+
+void ui_preparations_set_desired(coffee_type_t prep)
+{
+    preparation.desired_prep = prep;
+}   
 
 static bool check_blocking_warnings()
 {
@@ -89,6 +96,7 @@ static bool check_blocking_warnings()
     // isBlockingWarnings |= preparation.warnings.descaling; //Not blocking
     isBlockingWarnings |= preparation.warnings.water_empty;
     isBlockingWarnings |= preparation.warnings.pod_full;
+    isBlockingWarnings |= preparation.warnings.generic;         //Not handled now
     isBlockingWarnings |= preparation.warnings.pod_extracted;   //Not handled now
 
     if(true == isBlockingWarnings)
@@ -100,7 +108,7 @@ static bool check_blocking_warnings()
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
             lv_msgbox_set_text(msgbox, "Blocking warning detected. Please check warnings!!");
             lv_msgbox_add_btns(msgbox, btns);
-            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
+            lv_obj_align(msgbox, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
             lv_obj_set_event_cb(msgbox, basic_popup_cb);
             popup_open = true;
         }
@@ -126,11 +134,20 @@ static void configure_button_style(lv_obj_t* obj)
 static void configure_image_style(lv_obj_t* obj, const void* src)
 {
     lv_img_set_src(obj, src);
-    lv_img_set_zoom(obj, PREP_IMAGE_ZOOM);
-    lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_OPA_70);
-    lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_PRESSED, LV_OPA_100);
-    lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+    lv_img_set_zoom(obj, 256);
+    // lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_OPA_70);
+    // lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_COLOR_GRAY);
+    // lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_PRESSED, LV_OPA_100);
+    // lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+}
+
+static void configure_label_style(lv_obj_t* obj, const char* text)
+{
+    lv_label_set_recolor(obj, true);
+    lv_label_set_align(obj, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_text(obj, text);
+    lv_obj_set_size(obj, PREP_LABEL_WIDTH, PREP_LABEL_HEIGHT);
+    lv_obj_align(obj, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);  //TODO check
 }
 
 void scr_event_cb(lv_obj_t * obj, lv_event_t e)
@@ -144,16 +161,11 @@ void scr_event_cb(lv_obj_t * obj, lv_event_t e)
             case LV_GESTURE_DIR_TOP:
             {
                 printf("Scroll: %d (TOP)\n", dir);
-                lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_ON);
                 break;
             }
             case LV_GESTURE_DIR_BOTTOM:
             {
                 printf("Scroll: %d (BOTTOM)\n", dir);
-                if(false == isCappuccinoEnable)
-                    lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
-                else
-                    lv_tabview_set_tab_act(obj_tabview, 1, LV_ANIM_ON);
                 break;
             }
             case LV_GESTURE_DIR_LEFT:
@@ -175,119 +187,120 @@ void ui_preparations_init(void *data)
     (void)data;
 
     /* Preparation page */
-    obj_tabview = lv_tabview_create(lv_scr_act(), NULL);
-    lv_obj_set_size(obj_tabview, PREP_TAB_WIDTH, PREP_TAB_HEIGHT);
-    lv_tabview_set_btns_pos(obj_tabview, LV_TABVIEW_TAB_POS_LEFT);
-    lv_tabview_set_anim_time(obj_tabview, 0);
-	lv_obj_set_style_local_pad_top(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, PREP_TAB_PAD);
-    lv_obj_set_style_local_pad_left(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, PREP_TAB_PAD);
-    lv_obj_set_style_local_pad_right(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, PREP_TAB_PAD);
-	lv_obj_set_style_local_pad_bottom(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, PREP_TAB_PAD);
+    obj_container = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_size(obj_container, PREP_CONT_WIDTH, PREP_CONT_HEIGHT);
+    
+    // First ROW [ Espresso | Espresso Corto | Espresso Lungo]
+    obj_espresso_corto = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_espresso_corto);
+    lv_obj_align(obj_espresso_corto, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
 
-    lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_TAB_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    img_espresso_corto = lv_img_create(obj_espresso_corto, NULL);
+    configure_image_style(img_espresso_corto, data_espresso_corto);
+    lv_obj_align(img_espresso_corto, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_border_width(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, PREP_BUTTON_BORDER);
-    lv_obj_set_style_local_border_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
+    label_espresso_corto = lv_label_create(obj_espresso_corto, NULL);
+    configure_label_style(label_espresso_corto, PREP_LABEL_1);
 
-    lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_CHECKED, LV_COLOR_BLACK);
-    lv_obj_set_style_local_border_width(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_CHECKED, PREP_BUTTON_BORDER);
-    lv_obj_set_style_local_border_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_CHECKED, LV_COLOR_BLACK);
-    lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_CHECKED, LV_COLOR_WHITE);
+    obj_espresso = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_espresso);
+    lv_obj_align(obj_espresso, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
 
-    lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_border_color(obj_tabview, LV_TABVIEW_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_INDIC, LV_STATE_CHECKED, LV_COLOR_WHITE);
-    lv_obj_set_style_local_border_color(obj_tabview, LV_TABVIEW_PART_INDIC, LV_STATE_CHECKED, LV_COLOR_WHITE);
+    img_espresso = lv_img_create(obj_espresso, NULL);
+    configure_image_style(img_espresso, data_espresso);
+    lv_obj_align(img_espresso, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    lv_obj_set_style_local_bg_color(obj_tabview, LV_TABVIEW_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_border_width(obj_tabview, LV_TABVIEW_PART_BG, LV_STATE_DEFAULT, 0);
-    lv_obj_set_style_local_border_color(obj_tabview, LV_TABVIEW_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    label_espresso = lv_label_create(obj_espresso, NULL);
+    configure_label_style(label_espresso, PREP_LABEL_2);
 
-    lv_obj_align(obj_tabview, NULL, LV_ALIGN_CENTER, PREP_TAB_X_OFFSET, PREP_TAB_Y_OFFSET);
+    obj_espresso_lungo = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_espresso_lungo);
+    lv_obj_align(obj_espresso_lungo, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 0);
 
-    obj_tabCoffee = lv_tabview_add_tab(obj_tabview, "C\nO\nF\nF\nE\nE");
-    lv_page_set_scroll_propagation(obj_tabCoffee, false);
-    obj_tabCappuccino = lv_tabview_add_tab(obj_tabview, "M\nI\nL\nK");
-    lv_page_set_scroll_propagation(obj_tabCappuccino, false);
+    img_espresso_lungo = lv_img_create(obj_espresso_lungo, NULL);
+    configure_image_style(img_espresso_lungo, data_espresso_lungo);
+    lv_obj_align(img_espresso_lungo, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_coffee_short = lv_btn_create(obj_tabCoffee, NULL);
-    configure_button_style(obj_coffee_short);
-    lv_obj_align(obj_coffee_short, NULL, LV_ALIGN_IN_TOP_LEFT, PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
+    label_espresso_lungo = lv_label_create(obj_espresso_lungo, NULL);
+    configure_label_style(label_espresso_lungo, PREP_LABEL_3);
 
-    img_coffee_short = lv_img_create(obj_coffee_short, NULL);
-    configure_image_style(img_coffee_short, data_short_coffee);
-    lv_obj_align(img_coffee_short, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    // Second ROW [Macchiato | Cappuccino | Latte macchiato]
+    obj_macchiato = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_macchiato);
+    lv_obj_align(obj_macchiato, NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
 
-    obj_coffee_long = lv_btn_create(obj_tabCoffee, NULL);
-    configure_button_style(obj_coffee_long);
-    lv_obj_align(obj_coffee_long, NULL, LV_ALIGN_IN_TOP_RIGHT, -PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
+    img_macchiato = lv_img_create(obj_macchiato, NULL);
+    configure_image_style(img_macchiato, data_macchiato);
+    lv_obj_align(img_macchiato, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    img_coffee_long = lv_img_create(obj_coffee_long, NULL);
-    configure_image_style(img_coffee_long, data_long_coffee);
-    lv_obj_align(img_coffee_long, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    label_macchiato = lv_label_create(obj_macchiato, NULL);
+    configure_label_style(label_macchiato, PREP_LABEL_4);
 
-    obj_coffee_medium = lv_btn_create(obj_tabCoffee, NULL);
-    configure_button_style(obj_coffee_medium);
-    lv_obj_align(obj_coffee_medium, NULL, LV_ALIGN_IN_BOTTOM_LEFT, PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
+    obj_cappuccino = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_cappuccino);
+    lv_obj_align(obj_cappuccino, NULL, LV_ALIGN_CENTER, 0, 0);
 
-    img_coffee_medium = lv_img_create(obj_coffee_medium, NULL);
-    configure_image_style(img_coffee_medium, data_medium_coffee);
-    lv_obj_align(img_coffee_medium, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    img_cappuccino = lv_img_create(obj_cappuccino, NULL);
+    configure_image_style(img_cappuccino, data_cappuccino);
+    lv_obj_align(img_cappuccino, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_coffee_free = lv_btn_create(obj_tabCoffee, NULL);
-    configure_button_style(obj_coffee_free);
-    lv_obj_align(obj_coffee_free, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
+    label_cappuccino = lv_label_create(obj_cappuccino, NULL);
+    configure_label_style(label_cappuccino, PREP_LABEL_5);
 
-    img_coffee_free = lv_img_create(obj_coffee_free, NULL);
-    configure_image_style(img_coffee_free, data_free_coffee);
-    lv_obj_align(img_coffee_free, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    obj_latte_macchiato = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_latte_macchiato);
+    lv_obj_align(obj_latte_macchiato, NULL, LV_ALIGN_IN_RIGHT_MID, 0, 0);
 
+    img_latte_macchiato = lv_img_create(obj_latte_macchiato, NULL);
+    configure_image_style(img_latte_macchiato, data_latte_macchiato);
+    lv_obj_align(img_latte_macchiato, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_cappuccino_short = lv_btn_create(obj_tabCappuccino, NULL);
-    configure_button_style(obj_cappuccino_short);
-    lv_obj_align(obj_cappuccino_short, NULL, LV_ALIGN_IN_TOP_LEFT, PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
+    label_latte_macchiato = lv_label_create(obj_latte_macchiato, NULL);
+    configure_label_style(label_latte_macchiato, PREP_LABEL_6);
 
-    img_cappuccino_short = lv_img_create(obj_cappuccino_short, NULL);
-    configure_image_style(img_cappuccino_short, data_short_cappuccino);
-    lv_obj_align(img_cappuccino_short, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    // Third ROW [Dose libera | Caffè americano | Acqua calda]
+    obj_dose_libera = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_dose_libera);
+    lv_obj_align(obj_dose_libera, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
 
-    obj_cappuccino_double = lv_btn_create(obj_tabCappuccino, NULL);
-    configure_button_style(obj_cappuccino_double);
-    lv_obj_align(obj_cappuccino_double, NULL, LV_ALIGN_IN_TOP_RIGHT, -PREP_BUTTON_X_OFFSET, PREP_BUTTON_Y_OFFSET);
+    img_dose_libera = lv_img_create(obj_dose_libera, NULL);
+    configure_image_style(img_dose_libera, data_dose_libera);
+    lv_obj_align(img_dose_libera, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    img_cappuccino_double = lv_img_create(obj_cappuccino_double, NULL);
-    configure_image_style(img_cappuccino_double, data_double_cappuccino);
-    lv_obj_align(img_cappuccino_double, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    label_dose_libera = lv_label_create(obj_dose_libera, NULL);
+    configure_label_style(label_dose_libera, PREP_LABEL_7);
 
-    obj_cappuccino_medium = lv_btn_create(obj_tabCappuccino, NULL);
-    configure_button_style(obj_cappuccino_medium);
-    lv_obj_align(obj_cappuccino_medium, NULL, LV_ALIGN_IN_BOTTOM_LEFT, PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
+    obj_caffe_americano = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_caffe_americano);
+    lv_obj_align(obj_caffe_americano, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
 
-    img_cappuccino_medium = lv_img_create(obj_cappuccino_medium, NULL);
-    configure_image_style(img_cappuccino_medium, data_medium_cappuccino);
-    lv_obj_align(img_cappuccino_medium, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    img_caffe_americano = lv_img_create(obj_caffe_americano, NULL);
+    configure_image_style(img_caffe_americano, data_caffe_americano);
+    lv_obj_align(img_caffe_americano, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    obj_milk_hot = lv_btn_create(obj_tabCappuccino, NULL);
-    configure_button_style(obj_milk_hot);
-    lv_obj_align(obj_milk_hot, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -PREP_BUTTON_X_OFFSET, -PREP_BUTTON_Y_OFFSET);
+    label_caffe_americano = lv_label_create(obj_caffe_americano, NULL);
+    configure_label_style(label_caffe_americano, PREP_LABEL_8);
 
-    img_milk_hot = lv_img_create(obj_milk_hot, NULL);
-    configure_image_style(img_milk_hot, data_hot_milk);
-    lv_obj_align(img_milk_hot, NULL, LV_ALIGN_CENTER, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
+    obj_acqua_calda = lv_btn_create(obj_container, NULL);
+    configure_button_style(obj_acqua_calda);
+    lv_obj_align(obj_acqua_calda, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
 
-    lv_obj_set_event_cb(obj_coffee_short, btn_coffee_cb);
-    lv_obj_set_event_cb(obj_coffee_medium, btn_coffee_cb);
-    lv_obj_set_event_cb(obj_coffee_long, btn_coffee_cb);
-    lv_obj_set_event_cb(obj_coffee_free, btn_coffee_cb);
+    img_acqua_calda = lv_img_create(obj_acqua_calda, NULL);
+    configure_image_style(img_acqua_calda, data_acqua_calda);
+    lv_obj_align(img_acqua_calda, NULL, LV_ALIGN_IN_TOP_MID, PREP_IMAGES_X_OFFSET, PREP_IMAGES_Y_OFFSET);
 
-    lv_obj_set_event_cb(obj_cappuccino_short, btn_cappuccino_cb);
-    lv_obj_set_event_cb(obj_cappuccino_double, btn_cappuccino_cb);
-    lv_obj_set_event_cb(obj_cappuccino_medium, btn_cappuccino_cb);
-    lv_obj_set_event_cb(obj_milk_hot, btn_cappuccino_cb);
+    label_acqua_calda = lv_label_create(obj_acqua_calda, NULL);
+    configure_label_style(label_acqua_calda, PREP_LABEL_9);
 
-    lv_obj_set_event_cb(obj_tabview, tabview_cb);
+    lv_obj_set_event_cb(obj_espresso, btn_cb);
+    lv_obj_set_event_cb(obj_espresso_corto, btn_cb);
+    lv_obj_set_event_cb(obj_espresso_lungo, btn_cb);
+    lv_obj_set_event_cb(obj_macchiato, btn_cb);
+    lv_obj_set_event_cb(obj_cappuccino, btn_cb);
+    lv_obj_set_event_cb(obj_latte_macchiato, btn_cb);
+    lv_obj_set_event_cb(obj_dose_libera, btn_cb);
+    lv_obj_set_event_cb(obj_caffe_americano, btn_cb);
+    lv_obj_set_event_cb(obj_acqua_calda, btn_cb);
 
     /* Add UI gestures */
     lv_obj_set_event_cb(lv_scr_act(), scr_event_cb);
@@ -303,235 +316,110 @@ void ui_preparations_show(void *data)
     }
     else
     {
-       if(NULL != obj_tabview)
+        if(NULL != obj_container)
         {
-            lv_obj_set_hidden(obj_tabview, false);
-            lv_obj_set_hidden(obj_tabCoffee, false);
-            lv_obj_set_hidden(obj_tabCappuccino, false);
+            lv_obj_set_hidden(obj_container, false);
         }
 
         ui_preparations_state = ui_state_show;
     }
 
-    lv_tabview_set_tab_act(obj_tabview, lastTabActive, LV_ANIM_OFF);
-    ui_status_bar_show(true);
+    // ui_warning_bar_show(true);
 }
 
 void ui_preparations_hide(void *data)
 {
-    lastTabActive = lv_tabview_get_tab_act(obj_tabview);
     if(ui_state_show == ui_preparations_state)
     {
-        if(NULL != obj_tabview)
+        if(NULL != obj_container)
         {
-            lv_obj_set_hidden(obj_tabview, true);
-            lv_obj_set_hidden(obj_tabCoffee, true);
-            lv_obj_set_hidden(obj_tabCappuccino, true);
+            lv_obj_set_hidden(obj_container, true);
         }
 
         ui_preparations_state = ui_state_hide;
     }
 }
 
-void ui_preparations_set_desired(coffee_type_t prep)
+static void btn_cb(lv_obj_t *obj, lv_event_t event)
 {
-    preparation.desired_prep = prep;
-    if(false == check_blocking_warnings())
-        ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
-}   
-
-static void tabview_cb(lv_obj_t* obj, lv_event_t event)
-{
-    if(LV_EVENT_VALUE_CHANGED == event)
-    {
-        uint16_t id = lv_tabview_get_tab_act(obj_tabview);
-        switch(id)
-        {
-            case 1:
-            {
-                if(false == isCappuccinoEnable)
-                    lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
-                break;
-            }
-            case 0:
-            default:
-            {
-                //Not handled
-                break;
-            }
-        }
-    }
-}
-
-static void btn_coffee_cb(lv_obj_t *obj, lv_event_t event)
-{
-    if(LV_EVENT_FOCUSED == event)
-    {
-        if(obj_coffee_short == obj)
-            lv_obj_set_style_local_image_recolor(img_coffee_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-
-        if(obj_coffee_medium == obj)
-            lv_obj_set_style_local_image_recolor(img_coffee_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-
-        if(obj_coffee_long == obj)
-            lv_obj_set_style_local_image_recolor(img_coffee_long, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-
-        if(obj_coffee_free == obj)
-            lv_obj_set_style_local_image_recolor(img_coffee_free, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    }
-
     if(LV_EVENT_CLICKED == event)
     {
-        if(obj_coffee_short == obj)
+        if(obj_espresso_corto == obj)
         {
-            ESP_LOGI(LOG_TAG, "COFFEE SHORT CLICK");
-            preparation.desired_prep = COFFEE_SHORT;
+            ESP_LOGI(LOG_TAG, "ESPRESSO CORTO clicked");
+            preparation.desired_prep = PREP_ESPRESSO_CORTO;
             if(false == check_blocking_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
-        if(obj_coffee_medium == obj)
+        if(obj_espresso == obj)
         {
-            ESP_LOGI(LOG_TAG, "COFFEE MEDIUM CLICK");
-            preparation.desired_prep = COFFEE_MEDIUM;
+            ESP_LOGI(LOG_TAG, "ESPRESSO clicked");
+            preparation.desired_prep = PREP_ESPRESSO;
             if(false == check_blocking_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
-        if(obj_coffee_long == obj)
+        if(obj_espresso_lungo == obj)
         {
-            ESP_LOGI(LOG_TAG, "COFFEE LONG CLICK");
-            preparation.desired_prep = COFFEE_LONG;
+            ESP_LOGI(LOG_TAG, "ESPRESSO LUNGO clicked");
+            preparation.desired_prep = PREP_ESPRESSO_LUNGO;
             if(false == check_blocking_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
-        if(obj_coffee_free == obj)
+        if(obj_macchiato == obj)
         {
-            ESP_LOGI(LOG_TAG, "COFFEE FREE CLICK");
-            preparation.desired_prep = COFFEE_FREE;
+            ESP_LOGI(LOG_TAG, "MACCHIATO clicked");
+            preparation.desired_prep = PREP_MACCHIATO;
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+        }
+
+        if(obj_cappuccino == obj)
+        {
+            ESP_LOGI(LOG_TAG, "CAPPUCCINO clicked");
+            preparation.desired_prep = PREP_CAPPUCCINO;
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+        }
+
+        if(obj_latte_macchiato == obj)
+        {
+            ESP_LOGI(LOG_TAG, "LATTE MACCHIATO clicked");
+            preparation.desired_prep = PREP_LATTE_MACCHIATO;
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+        }
+
+        if(obj_dose_libera == obj)
+        {
+            ESP_LOGI(LOG_TAG, "DOSE LIBERA clicked");
+            preparation.desired_prep = PREP_DOSE_LIBERA;
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+        }
+
+
+        if(obj_caffe_americano == obj)
+        {
+            ESP_LOGI(LOG_TAG, "CAFFE AMERICANO clicked");
+            preparation.desired_prep = PREP_CAFFE_AMERICANO;
+            if(false == check_blocking_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+        }
+
+        if(obj_acqua_calda == obj)
+        {
+            ESP_LOGI(LOG_TAG, "ACQUA CALDA clicked");
+            preparation.desired_prep = PREP_ACQUA_CALDA;
             if(false == check_blocking_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
     }
 }
 
-static void btn_cappuccino_cb(lv_obj_t *obj, lv_event_t event)
+void ui_preparations_enable_milk_preparations(bool enable)
 {
-    static bool hotWater = false;
-    if(true == isCappuccinoEnable)
-    {
-        if(LV_EVENT_FOCUSED == event)
-        {
-            if(obj_cappuccino_short == obj)
-                lv_obj_set_style_local_image_recolor(img_cappuccino_short, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-
-            if(obj_cappuccino_medium == obj)
-                lv_obj_set_style_local_image_recolor(img_cappuccino_medium, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-
-            if(obj_cappuccino_double == obj)
-                lv_obj_set_style_local_image_recolor(img_cappuccino_double, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-
-            if(obj_milk_hot == obj)
-                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-        }
-
-        if(LV_EVENT_LONG_PRESSED == event)
-        {
-            if(obj_milk_hot == obj)
-            {
-                lv_obj_set_style_local_border_color(obj_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_RED);
-                lv_obj_set_style_local_image_recolor(img_milk_hot, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_HOVERED | LV_STATE_PRESSED, LV_COLOR_RED);
-
-                hotWater = true;
-            }
-        }
-
-        if(LV_EVENT_CLICKED == event)
-        {
-            if(obj_cappuccino_short == obj)
-            {
-                ESP_LOGI(LOG_TAG, "CAPPUCCINO SHORT CLICK");
-                preparation.desired_prep = CAPPUCCINO_SHORT;
-                if(false == check_blocking_warnings())
-                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
-            }
-
-            if(obj_cappuccino_medium == obj)
-            {
-                ESP_LOGI(LOG_TAG, "CAPPUCCINO MEDIUM CLICK");
-                preparation.desired_prep = CAPPUCCINO_MEDIUM;
-                if(false == check_blocking_warnings())
-                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
-            }
-
-            if(obj_cappuccino_double == obj)
-            {
-                ESP_LOGI(LOG_TAG, "CAPPUCCINO DOUBLE CLICK");
-                preparation.desired_prep = CAPPUCCINO_DOUBLE;
-                if(false == check_blocking_warnings())
-                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
-            }
-
-            if(obj_milk_hot == obj)
-            {
-                lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
-                if(false == hotWater)
-                {
-                    ESP_LOGI(LOG_TAG, "MILK HOT CLICK");
-                    preparation.desired_prep = HOT_MILK;
-                }
-                else
-                {
-                    ESP_LOGI(LOG_TAG, "HOT WATER CLICK");
-                    preparation.desired_prep = HOT_WATER;
-                }
-                hotWater = false;
-                if(false == check_blocking_warnings())
-                    ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
-            }
-        }
-    }
-}
-
-void ui_preparations_enable_cappuccino(bool enable)
-{
-    if(isCappuccinoEnable != enable)
-    {
-        isCappuccinoEnable = enable;
-        
-        if(NULL != obj_tabview)
-        {
-            lv_obj_set_style_local_text_color(obj_tabview, LV_TABVIEW_PART_TAB_BTN, LV_STATE_DEFAULT, isCappuccinoEnable ? LV_COLOR_GRAY : LV_COLOR_BLACK);
-            if(false == isCappuccinoEnable)
-                lv_tabview_set_tab_act(obj_tabview, 0, LV_ANIM_OFF);
-        }
-    }
-}
-
-void ui_preparations_set_power(bool on)
-{
-    if(isMachinePowerOn != on)
-    {
-        isMachinePowerOn = on;
-        ui_status_bar_show(isMachinePowerOn);
-
-        if(false == isMachinePowerOn)
-            ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
-        else
-            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
-    }
-}
-
-void ui_preparations_set_fault(bool fault)
-{
-    if(isMachineFault != fault)
-    {
-        isMachineFault = fault;
-
-        if(true == isMachineFault)
-            ui_show(&ui_fault_func, UI_SHOW_OVERRIDE);
-        else
-            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
-    }
+    //TODO
 }

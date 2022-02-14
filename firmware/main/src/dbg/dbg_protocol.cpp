@@ -162,7 +162,7 @@ namespace lavazza
             if(parId >= 300)    //Statistics
             {
                 printf("Received statistic parameter %d, value %d\n", parId, parVal);
-                ui_statistics_update_data(parId, parVal);
+                // ui_statistics_update_data(parId, parVal);
             }
             else if(parId >= 110 && parId <= 115)   //Doses 
             {
@@ -224,10 +224,9 @@ namespace lavazza
             //printf("STS %d -> LOGIC VALUES %d (%d | %d | %d | %d | %d | %d)\n", fsmStatus, logicValues, milkPresence, podRemoved, podFull, podOverflow, waterWarning, descalingWarning, recipeId);
             if(fsmStatus == FSM_STATE_STANDBY)   //standby
             {
-                if((false != guiInternalState.powerOn) || (oldFsmStatus != fsmStatus))
+                if(oldFsmStatus != fsmStatus)
                 {
-                    guiInternalState.powerOn = (fsmStatus != FSM_STATE_STANDBY);
-                    xEventGroupSetBits(xGuiEvents, GUI_POWER_BIT);
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_OFF);
                 }
             }
             else if(fsmStatus == FSM_STATE_FAULT)  //fault
@@ -238,7 +237,6 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
                 }
             }
-            #if BUILD_FOR_NROCS
             else if(fsmStatus == FSM_STATE_CLEANING)  //cleaning
             {
                 if(2 == recipeId)
@@ -254,15 +252,13 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
                 }
             }
-            #endif
             else
-            {
-                if(true != guiInternalState.powerOn)
+            {                
+                if(oldFsmStatus != fsmStatus)
                 {
-                    guiInternalState.powerOn = true;
-                    xEventGroupSetBits(xGuiEvents, GUI_POWER_BIT);
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_ON);
                 }
-                
+
                 if(false != guiInternalState.isFault)
                 {
                     guiInternalState.isFault = false;
@@ -297,7 +293,7 @@ namespace lavazza
             if(guiInternalState.milkHeadPresence != milkPresence)
             {
                 guiInternalState.milkHeadPresence = milkPresence;
-                xEventGroupSetBits(xGuiEvents, GUI_ENABLE_CAPPUCCINO_BIT);
+                xEventGroupSetBits(xGuiEvents, GUI_ENABLE_MILK_BIT);
             }
 
             oldFsmStatus = fsmStatus;
