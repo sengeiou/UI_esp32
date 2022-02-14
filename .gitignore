@@ -1,5 +1,6 @@
 firmware/build
 firmware/main/src/complete_ui
+firmware/main/not_used
 firmware/sdkconfig
 firmware/sdkconfig.old
 esp-idf*
