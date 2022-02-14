@@ -56,17 +56,17 @@ static const char* cloud_command_string[] = {
     FOREACH_CLOUD_COMMAND(GENERATE_STRING)
 };
 
-#define FOREACH_COFFEE_TYPE(COFFEE_TYPE) \
-        COFFEE_TYPE(COFFEE_NONE)        \
-		COFFEE_TYPE(COFFEE_SHORT)       \
-        COFFEE_TYPE(COFFEE_MEDIUM)      \
-        COFFEE_TYPE(COFFEE_LONG)        \
-        COFFEE_TYPE(COFFEE_FREE)        \
-        COFFEE_TYPE(CAPPUCCINO_SHORT)   \
-        COFFEE_TYPE(CAPPUCCINO_MEDIUM)  \
-        COFFEE_TYPE(CAPPUCCINO_DOUBLE)  \
-        COFFEE_TYPE(HOT_MILK)           \
-        COFFEE_TYPE(HOT_WATER)
+#define FOREACH_COFFEE_TYPE(COFFEE_TYPE)    \
+        COFFEE_TYPE(PREP_NONE)              \
+        COFFEE_TYPE(PREP_ESPRESSO_CORTO)    \
+		COFFEE_TYPE(PREP_ESPRESSO)          \
+        COFFEE_TYPE(PREP_ESPRESSO_LUNGO)    \
+        COFFEE_TYPE(PREP_MACCHIATO)         \
+        COFFEE_TYPE(PREP_CAPPUCCINO)        \
+        COFFEE_TYPE(PREP_LATTE_MACCHIATO)   \
+        COFFEE_TYPE(PREP_DOSE_LIBERA)       \
+        COFFEE_TYPE(PREP_CAFFE_AMERICANO)   \
+        COFFEE_TYPE(PREP_ACQUA_CALDA)
 
 
 enum coffee_type_t {
@@ -225,7 +225,6 @@ typedef enum
 
 typedef struct
 {
-    bool powerOn;
     bool isFault;
     bool milkHeadPresence;
 
