@@ -26,16 +26,17 @@
 #define WIFI_NEW_OTA_RETRY              (1 << 4)
 
 
-#define GUI_POWER_BIT                   (1 << 0)
-#define GUI_STATISTICS_DATA_BIT         (1 << 1)
-#define GUI_SETTINGS_DATA_BIT           (1 << 2)
-#define GUI_NEW_EROGATION_DATA_BIT      (1 << 3)
-#define GUI_STOP_EROGATION_BIT          (1 << 4)
-#define GUI_ENABLE_CAPPUCCINO_BIT       (1 << 5)
-#define GUI_WARNINGS_BIT                (1 << 6)
-#define GUI_MACHINE_FAULT_BIT           (1 << 7)
-#define GUI_CLOUD_REQUEST_BIT           (1 << 8)
-#define GUI_NEW_CLEANING_DATA_BIT       (1 << 9)
+#define GUI_MACHINE_ON                  (1 << 0)
+#define GUI_MACHINE_OFF                 (1 << 1)
+#define GUI_STATISTICS_DATA_BIT         (1 << 2)
+#define GUI_SETTINGS_DATA_BIT           (1 << 3)
+#define GUI_NEW_EROGATION_DATA_BIT      (1 << 4)
+#define GUI_STOP_EROGATION_BIT          (1 << 5)
+#define GUI_ENABLE_MILK_BIT       (1 << 6)
+#define GUI_WARNINGS_BIT                (1 << 7)
+#define GUI_MACHINE_FAULT_BIT           (1 << 8)
+#define GUI_CLOUD_REQUEST_BIT           (1 << 9)
+#define GUI_NEW_CLEANING_DATA_BIT       (1 << 10)
 
 
 
