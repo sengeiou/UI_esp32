@@ -85,7 +85,7 @@ void special_function(dbg_special_func_code_t cmd)
     // uint8_t data[] = {0xA5, 0x36, 0x01, 0x00, 0x96, 0xC7}
     // uint8_t data[] = {0xA5, 0x36, 0x01, 0x01, 0x86, 0xE6}
     
-    printf("Special function 0.%2X\n", cmd);
+    printf("Special function 0x%.2X\n", cmd);
     switch(cmd)
     {
         case DBG_ON_OFF:
