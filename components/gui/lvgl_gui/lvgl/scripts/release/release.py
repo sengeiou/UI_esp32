@@ -94,8 +94,6 @@ def lv_examples_release(ver):
     com.push('origin master')
     com.push('origin --tags')
 
-    update_release_branch(release_br)
-    
     os.chdir("../")
 
 def lv_drivers_release(ver):

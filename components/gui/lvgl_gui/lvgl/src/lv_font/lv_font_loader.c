@@ -16,7 +16,6 @@
 
 #if LV_USE_FILESYSTEM
 
-
 /**********************
  *      TYPEDEFS
  **********************/
@@ -61,7 +60,6 @@ typedef struct cmap_table_bin {
     uint8_t padding;
 } cmap_table_bin_t;
 
-
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -71,7 +69,6 @@ int32_t load_kern(lv_fs_file_t * fp, lv_font_fmt_txt_dsc_t * font_dsc, uint8_t f
 
 static int read_bits_signed(bit_iterator_t * it, int n_bits, lv_fs_res_t * res);
 static int read_bits(bit_iterator_t * it, int n_bits, lv_fs_res_t * res);
-
 
 /**********************
  *      MACROS
@@ -115,7 +112,6 @@ lv_font_t * lv_font_load(const char * font_name)
 
     return font;
 }
-
 
 /**
  * Frees the memory allocated by the `lv_font_load()` function
@@ -185,7 +181,6 @@ void lv_font_free(lv_font_t * font)
     }
 }
 
-
 /**********************
  *   STATIC FUNCTIONS
  **********************/
@@ -225,7 +220,7 @@ static int read_bits_signed(bit_iterator_t * it, int n_bits, lv_fs_res_t * res)
 {
     int value = read_bits(it, n_bits, res);
     if(value & (1 << (n_bits - 1))) {
-        for(int bit = n_bits; bit < 8; ++bit) {
+        for(int bit = n_bits; bit < 16; ++bit) {
             value |= (1 << bit);
         }
     }
@@ -512,7 +507,7 @@ static bool lvgl_load_font(lv_fs_file_t * fp, lv_font_t * font)
     font->line_height = font_header.ascent - font_header.descent;
     font->get_glyph_dsc = lv_font_get_glyph_dsc_fmt_txt;
     font->get_glyph_bitmap = lv_font_get_bitmap_fmt_txt;
-    font->subpx = LV_FONT_SUBPX_NONE;
+    font->subpx = font_header.subpixels_mode;
 
     font_dsc->bpp = font_header.bits_per_pixel;
     font_dsc->kern_scale = font_header.kerning_scale;
@@ -691,4 +686,3 @@ int32_t load_kern(lv_fs_file_t * fp, lv_font_fmt_txt_dsc_t * font_dsc, uint8_t f
 }
 
 #endif /*LV_USE_FILESYSTEM*/
-
