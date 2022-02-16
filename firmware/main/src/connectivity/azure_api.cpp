@@ -229,8 +229,6 @@ void azure_iothub_connection_status(IOTHUB_CLIENT_CONNECTION_STATUS result, IOTH
         ESP_LOGI(AZURE_IOTHUB_TAG, "Connection Status result: %s", MU_ENUM_TO_STRING(IOTHUB_CLIENT_CONNECTION_STATUS, result));
         ESP_LOGI(AZURE_IOTHUB_TAG, "Connection Status reason: %s", MU_ENUM_TO_STRING(IOTHUB_CLIENT_CONNECTION_STATUS_REASON, reason));
 
-        setWifiLed(LED_ON, ON_LED_PERIOD, 100);
-
         if(NULL != xHandleAzureTx)
             vTaskResume(xHandleAzureTx);
     }

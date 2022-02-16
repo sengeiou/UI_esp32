@@ -209,8 +209,6 @@ void azure_task(void *pvParameter)
 {
     ESP_LOGI(AZURE_MAIN_TAG, "Starting...");
     
-    setWifiLed(LED_BLINKING, WIFI_AZURE_CONNECTION_LED_PERIOD, 50);
-
     int azure_initialized = azure_init();
 
     if(0 == azure_initialized)

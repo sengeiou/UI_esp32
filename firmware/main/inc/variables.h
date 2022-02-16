@@ -24,6 +24,7 @@
 #define WIFI_CONFIGURATION_BIT          (1 << 2)
 #define WIFI_NEW_FIRMWARE_AVAILABLE     (1 << 3)
 #define WIFI_NEW_OTA_RETRY              (1 << 4)
+#define WIFI_RESET_BIT                  (1 << 5)
 
 
 #define GUI_MACHINE_ON                  (1 << 0)

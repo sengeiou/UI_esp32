@@ -162,19 +162,6 @@ typedef struct
     char password[64];
 } machine_connectivity_t;
 
-#define FOREACH_UI_LED_MODE(UI_LED_MODE) \
-		UI_LED_MODE(LED_OFF)   \
-        UI_LED_MODE(LED_ON)   \
-        UI_LED_MODE(LED_BLINKING)  
-
-enum ui_led_mode_t {
-    FOREACH_UI_LED_MODE(GENERATE_ENUM)
-};
-
-static const char* ui_led_mode_string[] = {
-    FOREACH_UI_LED_MODE(GENERATE_STRING)
-};
-
 typedef enum
 {
 	EROGATION_PROGRESS

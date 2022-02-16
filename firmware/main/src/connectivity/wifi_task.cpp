@@ -98,16 +98,18 @@ void wifi_init(void)
     {
         case WIFI_NOT_CONFIGURED:
         {
-            setWifiLed(LED_BLINKING, WIFI_AP_LED_PERIOD, 20);
-            wifi_ap_init();
-            ESP_LOGI(TAG_WIFI, "WiFi not provisioned. Stating in AccessPoint mode");
+            wifi_sta_init();
             break;
         }
+        // {
+        //     wifi_ap_init();
+        //     ESP_LOGI(TAG_WIFI, "WiFi not provisioned. Stating in AccessPoint mode");
+        //     break;
+        // }
         case WIFI_CONFIGURED:
         case WIFI_CONNECTED:
         case WIFI_LAVAZZA_CONNECTED:
         {
-            setWifiLed(LED_BLINKING, WIFI_STA_CONNECTION_LED_PERIOD, 50);
             wifi_sta_init();
             ESP_LOGI(TAG_WIFI, "WiFi provisioned. Stating in Station mode. Trying to connect to network: %s with password %s", machineConnectivity.ssid, machineConnectivity.password);
 
@@ -242,7 +244,7 @@ void wifi_task(void *pvParameter)
         netifCfg = nullptr;
     }
 
-    machineConnectivity.wifiEnabled = true;
+    machineConnectivity.wifiEnabled = true; //TODO remove??
     
     if(true == machineConnectivity.wifiEnabled)
     {
@@ -263,15 +265,13 @@ void wifi_task(void *pvParameter)
     
         while(true == machineConnectivity.wifiEnabled)
         {
-            bits = xEventGroupWaitBits(xWifiEvents, WIFI_CONNECTED_BIT | WIFI_DISCONNECTED_BIT | WIFI_CONFIGURATION_BIT, pdFALSE, pdFALSE, WIFI_CONNECTION_REFRESH_PERIOD_MS/portTICK_PERIOD_MS);
+            bits = xEventGroupWaitBits(xWifiEvents, WIFI_CONNECTED_BIT | WIFI_RESET_BIT | WIFI_DISCONNECTED_BIT | WIFI_CONFIGURATION_BIT, pdFALSE, pdFALSE, WIFI_CONNECTION_REFRESH_PERIOD_MS/portTICK_PERIOD_MS);
 
             if(bits & WIFI_CONNECTED_BIT)
             {
                 xEventGroupClearBits(xWifiEvents, WIFI_CONNECTED_BIT);
                 machineConnectivity.status = WIFI_CONNECTED;
                 ESP_LOGI(TAG_WIFI, "Connected to ap SSID:%s password:%s", machineConnectivity.ssid, machineConnectivity.password);
-
-                setWifiLed(LED_BLINKING, WIFI_AZURE_CONNECTION_LED_PERIOD, 50);
 
                 get_time_from_sntp(syncTime);
 
@@ -303,6 +303,18 @@ void wifi_task(void *pvParameter)
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 wifi_init();
             }
+
+            if(bits & WIFI_RESET_BIT)
+            {
+                xEventGroupClearBits(xWifiEvents, WIFI_RESET_BIT);
+                machineConnectivity.status = WIFI_NOT_CONFIGURED;
+                save_firmware_connectivity(true);
+
+                wifi_deinit();
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                wifi_init();
+            }
+            
         }
 
         azure_deinit();
@@ -322,6 +334,5 @@ void wifi_task(void *pvParameter)
         ESP_LOGI(TAG_WIFI, "Wifi disabled");
     }
 
-    setWifiLed(LED_OFF, OFF_LED_PERIOD, 100);
     vTaskDelete(nullptr);
 }

@@ -113,6 +113,8 @@ _UI_FUNC_DEF_(preparations);
 _UI_FUNC_DEF_(erogation);
 _UI_FUNC_DEF_(standby);
 _UI_FUNC_DEF_(fault);
+_UI_FUNC_DEF_(menu);
+_UI_FUNC_DEF_(wifi);
 
 /**
  * @brief Init menu bar.

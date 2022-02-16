@@ -273,7 +273,7 @@ namespace lavazza
                 if(oldFsmStatus == FSM_STATE_STEAMING)
                 {
                     xEventGroupSetBits(xGuiEvents, GUI_STOP_MILK_EROGATION_BIT);
-                }                
+                }
 
                 if(oldFsmStatus == FSM_STATE_STANDBY)
                 {
@@ -310,7 +310,11 @@ namespace lavazza
                 xEventGroupSetBits(xGuiEvents, GUI_ENABLE_MILK_BIT);
             }
 
-            oldFsmStatus = fsmStatus;
+            if(oldFsmStatus != fsmStatus)
+            {
+                printf("New Status %d | Old Status %d\n", fsmStatus, oldFsmStatus);
+                oldFsmStatus = fsmStatus;
+            }
         }
     }
 }

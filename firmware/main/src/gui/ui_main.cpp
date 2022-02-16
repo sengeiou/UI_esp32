@@ -162,7 +162,11 @@ void ui_main(void)
     ui_preparations_hide(NULL);
     ui_erogation_init(NULL);
     ui_erogation_hide(NULL);
-    
+    ui_menu_init(NULL);
+    ui_menu_hide(NULL);
+    ui_wifi_init(NULL);
+    ui_wifi_hide(NULL);
+
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);
     

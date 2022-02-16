@@ -90,7 +90,7 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define EROG_LABEL_WIDTH        600
 #define EROG_LABEL_HEIGHT       100
 #define EROG_BAR_WIDTH          600
-#define EROG_BAR_HEIGHT         50
+#define EROG_BAR_HEIGHT         30
 #define EROG_BAR_BORDER         5
 #define EROG_COFF_BAR_Y_OFFSET  -20
 #define EROG_MILK_BAR_Y_OFFSET  -80
@@ -98,6 +98,31 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define EROG_BUTTON_HEIGHT      300
 #define EROG_MSGBOX_X_OFFSET    0
 #define EROG_MSGBOX_Y_OFFSET    0
+
+// Menu Page
+#define MENU_CONT_WIDTH             800
+#define MENU_CONT_HEIGHT            480
+#define MENU_BUTTON_WIDTH           60
+#define MENU_BUTTON_HEIGHT          60
+#define MENU_BUTTON_X_OFFSET        20
+#define MENU_BUTTON_Y_OFFSET        60
+#define MENU_LIST_WIDTH             680
+#define MENU_LIST_HEIGHT            440
+#define MENU_LIST_X_OFFSET          100
+
+//Wifi Page
+// inline lv_font_t wifi_button_font      = font_en_28;
+// inline lv_font_t wifi_save_button_font = lv_font_montserrat_40;
+#define WIFI_PASS_AREA_WIDTH            400
+#define WIFI_PASS_AREA_HEIGHT           50
+#define WIFI_SCAN_LIST_WIDTH            400
+#define WIFI_SCAN_LIST_HEIGHT           50
+#define WIFI_SCAN_BUTTON_WIDTH          250
+#define WIFI_SCAN_BUTTON_HEIGHT         50
+#define WIFI_SCAN_BUTTON_X_OFFSET       0
+#define WIFI_SCAN_BUTTON_Y_OFFSET       30
+#define WIFI_SCAN_LIST_Y_OFFSET         20
+#define WIFI_PASS_AREA_Y_OFFSET         20
 
 
 // Descaling Page
@@ -175,22 +200,5 @@ inline lv_font_t pref_button_font = font_en_28;
 #define STAT_CONT_Y_OFFSET      30
 #define STAT_COL1_WIDTH         430
 #define STAT_COL2_WIDTH         160
-
-//Wifi Page
-inline lv_font_t wifi_button_font      = font_en_28;
-inline lv_font_t wifi_save_button_font = lv_font_montserrat_40;
-#define WIFI_RADIUS                     5
-#define WIFI_SSID_AREA_WIDTH            365
-#define WIFI_SSID_AREA_HEIGHT           105
-#define WIFI_SSID_AREA_X_OFFSET         7
-#define WIFI_SSID_AREA_Y_OFFSET         105
-#define WIFI_PASS_AREA_WIDTH            365
-#define WIFI_PASS_AREA_HEIGHT           105
-#define WIFI_PASS_AREA_X_OFFSET         -7
-#define WIFI_PASS_AREA_Y_OFFSET         105
-#define WIFI_BUTTON_WIDTH               200
-#define WIFI_BUTTON_HEIGHT              105
-#define WIFI_BUTTON_X_OFFSET            0
-#define WIFI_BUTTON_Y_OFFSET            -75
 
 #endif /* _DEFINES_H_ */
