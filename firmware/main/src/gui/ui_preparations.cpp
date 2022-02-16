@@ -68,10 +68,10 @@ extern void* data_acqua_calda;
 
 
 static bool popup_open = false;
-
+static bool milkEnable = false;
 
 /* Static function forward declaration */
-static void btn_cb(lv_obj_t* obj, lv_event_t event);
+static void preparation_btn_cb(lv_obj_t* obj, lv_event_t event);
 
 static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
 {
@@ -81,6 +81,7 @@ static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "Popup closed");
             lv_obj_del(obj);
+            popup_open = false;
         }
     }
 }
@@ -90,14 +91,14 @@ void ui_preparations_set_desired(coffee_type_t prep)
     preparation.desired_prep = prep;
 }   
 
-static bool check_blocking_warnings()
+static bool check_coffee_warnings()
 {
     bool isBlockingWarnings = false;
     // isBlockingWarnings |= preparation.warnings.descaling; //Not blocking
     isBlockingWarnings |= preparation.warnings.water_empty;
     isBlockingWarnings |= preparation.warnings.pod_full;
-    isBlockingWarnings |= preparation.warnings.generic;         //Not handled now
     isBlockingWarnings |= preparation.warnings.pod_extracted;   //Not handled now
+    isBlockingWarnings |= preparation.warnings.generic;         //Not handled now
 
     if(true == isBlockingWarnings)
     {
@@ -106,13 +107,78 @@ static bool check_blocking_warnings()
             static const char* btns[] = { "OK", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
             lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
-            lv_msgbox_set_text(msgbox, "Blocking warning detected. Please check warnings!!");
+            char buff[128];
+            sprintf(buff, "%s ( %s %s %s %s)", "Can't erogate coffee\n", 
+                preparation.warnings.water_empty ? "WATER_EMPTY" : "", 
+                preparation.warnings.pod_full ? "POD_FULL" : "", 
+                preparation.warnings.pod_extracted ? "POD_REMOVED" : "", 
+                preparation.warnings.generic ? "GENERIC" : "");
+            lv_msgbox_set_text(msgbox, buff);
             lv_msgbox_add_btns(msgbox, btns);
             lv_obj_align(msgbox, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
             lv_obj_set_event_cb(msgbox, basic_popup_cb);
             popup_open = true;
         }
-        printf("WARNINGS: (%d) | %d | %d |%d\n", preparation.warnings.descaling, preparation.warnings.water_empty, preparation.warnings.pod_full, preparation.warnings.pod_extracted);
+    }
+
+    return isBlockingWarnings;
+}
+
+static bool check_milk_warnings()
+{
+    bool isBlockingWarnings = false;
+    // isBlockingWarnings |= preparation.warnings.descaling; //Not blocking
+    isBlockingWarnings |= preparation.warnings.water_empty;
+    isBlockingWarnings |= preparation.warnings.pod_extracted;   //Not handled now
+    isBlockingWarnings |= preparation.warnings.generic;         //Not handled now
+
+    if(true == isBlockingWarnings)
+    {
+        if(false == popup_open)
+        {
+            static const char* btns[] = { "OK", "" };
+            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+            char buff[128];
+            sprintf(buff, "%s ( %s %s %s)", "Can't erogate milk\n", 
+                preparation.warnings.water_empty ? "WATER_EMPTY" : "", 
+                preparation.warnings.pod_extracted ? "POD_REMOVED" : "", 
+                preparation.warnings.generic ? "GENERIC" : "");
+            lv_msgbox_set_text(msgbox, buff);
+            lv_msgbox_add_btns(msgbox, btns);
+            lv_obj_align(msgbox, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
+            lv_obj_set_event_cb(msgbox, basic_popup_cb);
+            popup_open = true;
+        }
+    }
+
+    return isBlockingWarnings;
+}
+
+static bool check_water_warnings()
+{
+    bool isBlockingWarnings = false;
+    // isBlockingWarnings |= preparation.warnings.descaling; //Not blocking
+    isBlockingWarnings |= preparation.warnings.water_empty;
+    isBlockingWarnings |= preparation.warnings.generic;         //Not handled now
+
+    if(true == isBlockingWarnings)
+    {
+        if(false == popup_open)
+        {
+            static const char* btns[] = { "OK", "" };
+            lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+            char buff[128];
+            sprintf(buff, "%s ( %s %s)", "Can't erogate milk\n", 
+                preparation.warnings.pod_extracted ? "POD_REMOVED" : "", 
+                preparation.warnings.generic ? "GENERIC" : "");
+            lv_msgbox_set_text(msgbox, buff);
+            lv_msgbox_add_btns(msgbox, btns);
+            lv_obj_align(msgbox, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
+            lv_obj_set_event_cb(msgbox, basic_popup_cb);
+            popup_open = true;
+        }
     }
 
     return isBlockingWarnings;
@@ -123,11 +189,13 @@ static void configure_button_style(lv_obj_t* obj)
     lv_btn_set_checkable(obj, false);
     lv_obj_set_size(obj, PREP_BUTTON_WIDTH, PREP_BUTTON_HEIGHT);
     lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_radius(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, PREP_BUTTON_RADIUS);
-    lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, PREP_BUTTON_BORDER);
-    lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, 2*PREP_BUTTON_BORDER);
-    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0*PREP_BUTTON_BORDER);
+    lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+
+    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
+    lv_obj_set_style_local_radius(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, PREP_BUTTON_RADIUS);
+    lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, PREP_BUTTON_BORDER);
     lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 }
 
@@ -135,19 +203,32 @@ static void configure_image_style(lv_obj_t* obj, const void* src)
 {
     lv_img_set_src(obj, src);
     lv_img_set_zoom(obj, 256);
-    // lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_OPA_70);
-    // lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_CHECKED | LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_HOVERED, LV_COLOR_GRAY);
-    // lv_obj_set_style_local_image_recolor_opa(obj, LV_IMG_PART_MAIN, LV_STATE_PRESSED, LV_OPA_100);
-    // lv_obj_set_style_local_image_recolor(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 }
 
 static void configure_label_style(lv_obj_t* obj, const char* text)
 {
     lv_label_set_recolor(obj, true);
     lv_label_set_align(obj, LV_LABEL_ALIGN_CENTER);
+    lv_obj_set_style_local_text_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_label_set_text(obj, text);
     lv_obj_set_size(obj, PREP_LABEL_WIDTH, PREP_LABEL_HEIGHT);
-    lv_obj_align(obj, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);  //TODO check
+    lv_obj_align(obj, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, PREP_LABEL_Y_OFFSET);
+}
+
+static void enable_disable_preparation(bool available, lv_obj_t* obj_btn, lv_obj_t* obj_img, lv_obj_t* obj_label)
+{
+    if(true == available)
+    {
+        lv_btn_set_checkable(obj_btn, true);
+        lv_obj_set_style_local_image_recolor_opa(obj_img, LV_IMG_PART_MAIN, LV_STATE_ALL, LV_OPA_100);
+        lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    }
+    else
+    {
+        lv_btn_set_checkable(obj_btn, false);
+        lv_obj_set_style_local_image_recolor_opa(obj_img, LV_IMG_PART_MAIN, LV_STATE_ALL, LV_OPA_10);
+        lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    }
 }
 
 void scr_event_cb(lv_obj_t * obj, lv_event_t e)
@@ -186,14 +267,21 @@ void ui_preparations_init(void *data)
 {
     (void)data;
 
+    lvgl_sem_take();
+
     /* Preparation page */
     obj_container = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_size(obj_container, PREP_CONT_WIDTH, PREP_CONT_HEIGHT);
-    
+    lv_obj_set_style_local_bg_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_width(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
+
+    lv_obj_align(obj_container, NULL, LV_ALIGN_CENTER, 0, 0);
+
     // First ROW [ Espresso | Espresso Corto | Espresso Lungo]
     obj_espresso_corto = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_espresso_corto);
-    lv_obj_align(obj_espresso_corto, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+    lv_obj_align(obj_espresso_corto, NULL, LV_ALIGN_IN_TOP_LEFT, 0, PREP_BUTTON_Y_OFFSET);
 
     img_espresso_corto = lv_img_create(obj_espresso_corto, NULL);
     configure_image_style(img_espresso_corto, data_espresso_corto);
@@ -204,7 +292,7 @@ void ui_preparations_init(void *data)
 
     obj_espresso = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_espresso);
-    lv_obj_align(obj_espresso, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
+    lv_obj_align(obj_espresso, NULL, LV_ALIGN_IN_TOP_MID, 0, PREP_BUTTON_Y_OFFSET);
 
     img_espresso = lv_img_create(obj_espresso, NULL);
     configure_image_style(img_espresso, data_espresso);
@@ -215,7 +303,7 @@ void ui_preparations_init(void *data)
 
     obj_espresso_lungo = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_espresso_lungo);
-    lv_obj_align(obj_espresso_lungo, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 0);
+    lv_obj_align(obj_espresso_lungo, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, PREP_BUTTON_Y_OFFSET);
 
     img_espresso_lungo = lv_img_create(obj_espresso_lungo, NULL);
     configure_image_style(img_espresso_lungo, data_espresso_lungo);
@@ -227,7 +315,7 @@ void ui_preparations_init(void *data)
     // Second ROW [Macchiato | Cappuccino | Latte macchiato]
     obj_macchiato = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_macchiato);
-    lv_obj_align(obj_macchiato, NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
+    lv_obj_align(obj_macchiato, NULL, LV_ALIGN_IN_LEFT_MID, 0, PREP_BUTTON_Y_OFFSET);
 
     img_macchiato = lv_img_create(obj_macchiato, NULL);
     configure_image_style(img_macchiato, data_macchiato);
@@ -238,7 +326,7 @@ void ui_preparations_init(void *data)
 
     obj_cappuccino = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_cappuccino);
-    lv_obj_align(obj_cappuccino, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align(obj_cappuccino, NULL, LV_ALIGN_CENTER, 0, PREP_BUTTON_Y_OFFSET);
 
     img_cappuccino = lv_img_create(obj_cappuccino, NULL);
     configure_image_style(img_cappuccino, data_cappuccino);
@@ -249,7 +337,7 @@ void ui_preparations_init(void *data)
 
     obj_latte_macchiato = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_latte_macchiato);
-    lv_obj_align(obj_latte_macchiato, NULL, LV_ALIGN_IN_RIGHT_MID, 0, 0);
+    lv_obj_align(obj_latte_macchiato, NULL, LV_ALIGN_IN_RIGHT_MID, 0, PREP_BUTTON_Y_OFFSET);
 
     img_latte_macchiato = lv_img_create(obj_latte_macchiato, NULL);
     configure_image_style(img_latte_macchiato, data_latte_macchiato);
@@ -261,7 +349,7 @@ void ui_preparations_init(void *data)
     // Third ROW [Dose libera | Caffè americano | Acqua calda]
     obj_dose_libera = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_dose_libera);
-    lv_obj_align(obj_dose_libera, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
+    lv_obj_align(obj_dose_libera, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, PREP_BUTTON_Y_OFFSET);
 
     img_dose_libera = lv_img_create(obj_dose_libera, NULL);
     configure_image_style(img_dose_libera, data_dose_libera);
@@ -272,7 +360,7 @@ void ui_preparations_init(void *data)
 
     obj_caffe_americano = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_caffe_americano);
-    lv_obj_align(obj_caffe_americano, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    lv_obj_align(obj_caffe_americano, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, PREP_BUTTON_Y_OFFSET);
 
     img_caffe_americano = lv_img_create(obj_caffe_americano, NULL);
     configure_image_style(img_caffe_americano, data_caffe_americano);
@@ -283,7 +371,7 @@ void ui_preparations_init(void *data)
 
     obj_acqua_calda = lv_btn_create(obj_container, NULL);
     configure_button_style(obj_acqua_calda);
-    lv_obj_align(obj_acqua_calda, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
+    lv_obj_align(obj_acqua_calda, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, PREP_BUTTON_Y_OFFSET);
 
     img_acqua_calda = lv_img_create(obj_acqua_calda, NULL);
     configure_image_style(img_acqua_calda, data_acqua_calda);
@@ -292,18 +380,20 @@ void ui_preparations_init(void *data)
     label_acqua_calda = lv_label_create(obj_acqua_calda, NULL);
     configure_label_style(label_acqua_calda, PREP_LABEL_9);
 
-    lv_obj_set_event_cb(obj_espresso, btn_cb);
-    lv_obj_set_event_cb(obj_espresso_corto, btn_cb);
-    lv_obj_set_event_cb(obj_espresso_lungo, btn_cb);
-    lv_obj_set_event_cb(obj_macchiato, btn_cb);
-    lv_obj_set_event_cb(obj_cappuccino, btn_cb);
-    lv_obj_set_event_cb(obj_latte_macchiato, btn_cb);
-    lv_obj_set_event_cb(obj_dose_libera, btn_cb);
-    lv_obj_set_event_cb(obj_caffe_americano, btn_cb);
-    lv_obj_set_event_cb(obj_acqua_calda, btn_cb);
+    lv_obj_set_event_cb(obj_espresso, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_espresso_corto, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_espresso_lungo, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_macchiato, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_cappuccino, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_latte_macchiato, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_dose_libera, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_caffe_americano, preparation_btn_cb);
+    lv_obj_set_event_cb(obj_acqua_calda, preparation_btn_cb);
 
     /* Add UI gestures */
     lv_obj_set_event_cb(lv_scr_act(), scr_event_cb);
+
+    lvgl_sem_give();
 
     ui_preparations_state = ui_state_show;
 }
@@ -319,12 +409,16 @@ void ui_preparations_show(void *data)
         if(NULL != obj_container)
         {
             lv_obj_set_hidden(obj_container, false);
+            ui_preparations_enable_milk_preparations(milkEnable);
         }
 
         ui_preparations_state = ui_state_show;
     }
 
-    // ui_warning_bar_show(true);
+    ui_warning_bar_show(true);
+    ui_menu_bar_show(true);
+
+    ESP_LOGI(LOG_TAG, "Show");
 }
 
 void ui_preparations_hide(void *data)
@@ -338,9 +432,11 @@ void ui_preparations_hide(void *data)
 
         ui_preparations_state = ui_state_hide;
     }
+
+    ESP_LOGI(LOG_TAG, "Hide");
 }
 
-static void btn_cb(lv_obj_t *obj, lv_event_t event)
+static void preparation_btn_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
@@ -348,7 +444,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "ESPRESSO CORTO clicked");
             preparation.desired_prep = PREP_ESPRESSO_CORTO;
-            if(false == check_blocking_warnings())
+            if(false == check_coffee_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -356,7 +452,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "ESPRESSO clicked");
             preparation.desired_prep = PREP_ESPRESSO;
-            if(false == check_blocking_warnings())
+            if(false == check_coffee_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -364,7 +460,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "ESPRESSO LUNGO clicked");
             preparation.desired_prep = PREP_ESPRESSO_LUNGO;
-            if(false == check_blocking_warnings())
+            if(false == check_coffee_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -372,7 +468,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "MACCHIATO clicked");
             preparation.desired_prep = PREP_MACCHIATO;
-            if(false == check_blocking_warnings())
+            if(false == check_milk_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -380,7 +476,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "CAPPUCCINO clicked");
             preparation.desired_prep = PREP_CAPPUCCINO;
-            if(false == check_blocking_warnings())
+            if(false == check_milk_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -388,7 +484,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "LATTE MACCHIATO clicked");
             preparation.desired_prep = PREP_LATTE_MACCHIATO;
-            if(false == check_blocking_warnings())
+            if(false == check_milk_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -396,7 +492,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "DOSE LIBERA clicked");
             preparation.desired_prep = PREP_DOSE_LIBERA;
-            if(false == check_blocking_warnings())
+            if(false == check_coffee_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -405,7 +501,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "CAFFE AMERICANO clicked");
             preparation.desired_prep = PREP_CAFFE_AMERICANO;
-            if(false == check_blocking_warnings())
+            if(false == check_milk_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
 
@@ -413,7 +509,7 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
         {
             ESP_LOGI(LOG_TAG, "ACQUA CALDA clicked");
             preparation.desired_prep = PREP_ACQUA_CALDA;
-            if(false == check_blocking_warnings())
+            if(false == check_water_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
         }
     }
@@ -421,5 +517,14 @@ static void btn_cb(lv_obj_t *obj, lv_event_t event)
 
 void ui_preparations_enable_milk_preparations(bool enable)
 {
-    //TODO
+    milkEnable = enable;
+    ESP_LOGI(LOG_TAG, "Milk preparations are %s", milkEnable ? "AVAILABLE" : "DISABLED");
+    if(NULL != obj_container)
+    {
+        ESP_LOGI(LOG_TAG, "%s Milk preparations", milkEnable ? "Enable" : "Disable");
+        enable_disable_preparation(enable, obj_macchiato, img_macchiato, label_macchiato);
+        enable_disable_preparation(enable, obj_latte_macchiato, img_latte_macchiato, label_latte_macchiato);
+        enable_disable_preparation(enable, obj_cappuccino, img_cappuccino, label_cappuccino);
+        enable_disable_preparation(enable, obj_caffe_americano, img_caffe_americano, label_caffe_americano);
+    }
 }

@@ -4,6 +4,7 @@
 #include "esp_log.h"
 #include "types.h"
 #include "board.h"
+#include "lvgl_gui.h"
 
 #if (CONFIG_BOARD_LAVAZZA_4_3 == 1)
 #include "defines_4_3.h"
@@ -163,13 +164,16 @@ void ui_cleaning_full_update(uint8_t current_step, uint8_t total_step);
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.
  * 
  */
-void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float pressure);
+void ui_erogation_update(uint16_t current_dose);
+void ui_milk_erogation_update(uint8_t steaming_percent);
+
 
 /**
  * @brief Complete current preparation information of preparations page. Call it when preparation is done.
  * 
  */
 void ui_erogation_completed(void);
+void ui_erogation_milk_completed(void);
 
 /**
  * @brief Update milk preparations information.

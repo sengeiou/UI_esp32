@@ -5,6 +5,9 @@
 #include "board.h"
 #include "sdkconfig.h"
 
+#define LV_STATE_ALL    (LV_STATE_DEFAULT | LV_STATE_PRESSED)
+
+
 // extern lv_font_t font_clock_32;
 // extern lv_font_t font_clock_108;
 // extern lv_font_t font_en_18;
@@ -37,27 +40,30 @@ inline lv_font_t default_big_font    = lv_font_montserrat_40;
 
 // Standby Page
 #define QR_CODE_SIZE            250
+#define STANDBY_CONT_WIDTH      800
+#define STANDBY_CONT_HEIGHT     480
 #define STANDBY_LOGO_WIDTH      500
-#define STANDBY_LOGO_HEIGHT     160
-#define QR_CODE_Y_OFFSET        STANDBY_LOGO_HEIGHT+QR_CODE_SIZE/2 - BOARD_LCD_HEIGHT/2
+#define STANDBY_LOGO_HEIGHT     180
+#define QR_CODE_Y_OFFSET        (STANDBY_LOGO_HEIGHT + QR_CODE_SIZE/2 - STANDBY_CONT_HEIGHT/2)
 #define STANDBY_LABEL_WIDTH     600
-#define STANDBY_LABEL_HEIGHT    70
+#define STANDBY_LABEL_HEIGHT    50
 
 //Warning bar
 inline lv_font_t stsbar_button_font = lv_font_montserrat_40;
 inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define WARNBAR_WIDTH                   70
 #define WARNBAR_HEIGHT                  480
-#define WARNBAR_BUTTON_WIDTH            80
-#define WARNBAR_BUTTON_HEIGHT           80
+#define WARNBAR_BUTTON_WIDTH            60
+#define WARNBAR_BUTTON_HEIGHT           60
 #define WARNBAR_BUTTON_RADIUS           0
 #define WARNBAR_BUTTON_BORDER           0
 
 //Menu bar
 #define MENUBAR_WIDTH                   70
 #define MENUBAR_HEIGHT                  480
-#define MENUBAR_BUTTON_WIDTH            80
-#define MENUBAR_BUTTON_HEIGHT           80
+#define MENUBAR_BUTTON_WIDTH            68
+#define MENUBAR_BUTTON_HEIGHT           68
+#define MENUBAR_BUTTON_OFFSET           75
 #define MENUBAR_BUTTON_RADIUS           0
 #define MENUBAR_BUTTON_BORDER           0
 
@@ -69,9 +75,11 @@ inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define PREP_BUTTON_WIDTH       220
 #define PREP_BUTTON_HEIGHT      160
 #define PREP_BUTTON_RADIUS      0
-#define PREP_BUTTON_BORDER      5   //TODO must be 0
+#define PREP_BUTTON_BORDER      2
+#define PREP_BUTTON_Y_OFFSET    -20
 #define PREP_LABEL_WIDTH        220
 #define PREP_LABEL_HEIGHT       25
+#define PREP_LABEL_Y_OFFSET     -50
 #define PREP_IMAGES_X_OFFSET    0
 #define PREP_IMAGES_Y_OFFSET    0
 
@@ -84,6 +92,8 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define EROG_BAR_WIDTH          600
 #define EROG_BAR_HEIGHT         50
 #define EROG_BAR_BORDER         5
+#define EROG_COFF_BAR_Y_OFFSET  -20
+#define EROG_MILK_BAR_Y_OFFSET  -80
 #define EROG_BUTTON_WIDTH       300
 #define EROG_BUTTON_HEIGHT      300
 #define EROG_MSGBOX_X_OFFSET    0

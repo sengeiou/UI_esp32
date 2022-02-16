@@ -23,16 +23,30 @@ static ui_state_t ui_erogation_state = ui_state_dis;
 // /* LVGL objects defination */
 static lv_obj_t* obj_container = NULL;
 static lv_obj_t* obj_label = NULL;
-static lv_obj_t* obj_bar = NULL;
+static lv_obj_t* obj_bar_coffee = NULL;
+static lv_obj_t* obj_bar_milk = NULL;
 static lv_obj_t* btn_stop = NULL;
-
+static lv_obj_t* img_stop_btn = NULL;
 
 static lv_obj_t* msgbox = NULL;
 static const char* btns[] = { "OK", "" };
 
+/* Extern image variable(s) */
+extern void* data_espresso_corto;
+extern void* data_espresso;
+extern void* data_espresso_lungo;
+extern void* data_macchiato;
+extern void* data_cappuccino;
+extern void* data_latte_macchiato;
+extern void* data_dose_libera;
+extern void* data_caffe_americano;
+extern void* data_acqua_calda;
 
-static uint8_t progress = 0;
-static uint8_t oldProgress = 0;
+static uint8_t progressCoffee = 0;
+static uint8_t oldProgressCoffee = 0;
+static uint8_t progressMilk = 0;
+static uint8_t oldProgressMilk = 0;
+
 static void set_preparation_parameters(void);
 
 static dbg_special_func_code_t funcCode;
@@ -55,12 +69,10 @@ static void erogation_done_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_VALUE_CHANGED == event)
     {
-        // if(0 == lv_msgbox_get_active_btn(obj))
-        // {
-            esp_timer_stop(dismiss_timer);
-            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
-            lv_obj_set_hidden(obj, true);
-        // }
+        esp_timer_stop(dismiss_timer);
+        ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+
+        lv_obj_set_hidden(obj, true);
     }
 }
 
@@ -68,17 +80,69 @@ static void btn_stop_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
-        special_function(funcCode);
+        if(obj == btn_stop)
+        {
+            special_function(funcCode);
+        }
     }
 }
 
 void ui_erogation_completed(void)
 {
-    lv_bar_set_value(obj_bar, 100, LV_ANIM_ON);
-    lv_obj_set_hidden(msgbox, false);
-    lv_obj_set_click(btn_stop, false);
+    switch(preparation.desired_prep)
+    {
+        case PREP_ESPRESSO_CORTO:
+        case PREP_ESPRESSO:
+        case PREP_ESPRESSO_LUNGO:
+        case PREP_DOSE_LIBERA:
+        case PREP_ACQUA_CALDA:
+        {
+            lv_bar_set_value(obj_bar_coffee, 100, LV_ANIM_ON);
+            lv_obj_set_hidden(msgbox, false);
+            lv_obj_set_click(btn_stop, false);
 
-    esp_timer_start_once(dismiss_timer, DISMISS_TIMEOUT_MS*1000);
+            esp_timer_start_once(dismiss_timer, DISMISS_TIMEOUT_MS*1000);
+            break;
+        }
+        case PREP_MACCHIATO:
+        case PREP_CAPPUCCINO:
+        case PREP_LATTE_MACCHIATO:
+        case PREP_CAFFE_AMERICANO:
+        case PREP_NONE:
+        default:
+        {
+            break;
+        }
+    }
+}
+
+void ui_erogation_milk_completed(void)
+{
+    switch(preparation.desired_prep)
+    {
+        case PREP_ESPRESSO_CORTO:
+        case PREP_ESPRESSO:
+        case PREP_ESPRESSO_LUNGO:
+        case PREP_DOSE_LIBERA:
+        case PREP_ACQUA_CALDA:
+        case PREP_NONE:
+        default:
+        {
+            break;
+        }
+        case PREP_MACCHIATO:
+        case PREP_CAPPUCCINO:
+        case PREP_LATTE_MACCHIATO:
+        case PREP_CAFFE_AMERICANO:
+        {
+            lv_bar_set_value(obj_bar_milk, 100, LV_ANIM_ON);
+            lv_obj_set_hidden(msgbox, false);
+            lv_obj_set_click(btn_stop, false);
+
+            esp_timer_start_once(dismiss_timer, DISMISS_TIMEOUT_MS*1000);
+            break;
+        }
+    }
 }
 
 void ui_erogation_set_target_dose(uint16_t dose)
@@ -86,26 +150,43 @@ void ui_erogation_set_target_dose(uint16_t dose)
     target_dose = dose;
 }
 
-void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float pressure)
+void ui_erogation_update(uint16_t current_dose)
 {
-    progress = 100*current_dose/target_dose;
+    progressCoffee = 100*current_dose/target_dose;
 
-    if(progress != oldProgress)
+    if(progressCoffee != oldProgressCoffee)
     {
-        lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
-        ESP_LOGI(LOG_TAG, "Progress %d | temp: %d | pressure: %.2f", progress, temperature, pressure);
+        lv_bar_set_value(obj_bar_coffee, progressCoffee, LV_ANIM_ON);
+        ESP_LOGI(LOG_TAG, "Progress %d", progressCoffee);
 
-        if(progress >= 100)
+        if(progressCoffee >= 100)
         {
             ui_erogation_completed();
         }
     }
     else
     {
-        ESP_LOGD(LOG_TAG, "%d -> %d", oldProgress, progress);
+        ESP_LOGD(LOG_TAG, "%d -> %d", oldProgressCoffee, progressCoffee);
     }
 
-    oldProgress = progress;
+    oldProgressCoffee = progressCoffee;
+}
+
+void ui_milk_erogation_update(uint8_t steaming_percent)
+{
+    progressMilk = steaming_percent;
+
+    if(progressMilk != oldProgressMilk)
+    {
+        lv_bar_set_value(obj_bar_milk, progressMilk, LV_ANIM_ON);
+        ESP_LOGI(LOG_TAG, "Progress %d", progressMilk);
+    }
+    else
+    {
+        ESP_LOGD(LOG_TAG, "%d -> %d", oldProgressMilk, progressMilk);
+    }
+
+    oldProgressMilk = progressMilk;
 }
 
 static void set_preparation_parameters(void)
@@ -113,54 +194,63 @@ static void set_preparation_parameters(void)
     switch(preparation.desired_prep)
     {
         case PREP_ESPRESSO_CORTO:
+            lv_img_set_src(img_stop_btn, data_espresso_corto);
             lv_label_set_text(obj_label, PREP_LABEL_1);
             funcCode = DBG_SHORT_COFFEE;
             target_dose = 4650;
             get_parameter(110, 2);
             break;
         case PREP_ESPRESSO:
+            lv_img_set_src(img_stop_btn, data_espresso);
             lv_label_set_text(obj_label, PREP_LABEL_2);
             funcCode = DBG_MEDIUM_COFFEE;
             target_dose = 6000;
             get_parameter(111, 2);
             break;
         case PREP_ESPRESSO_LUNGO:
+            lv_img_set_src(img_stop_btn, data_espresso_lungo);
             lv_label_set_text(obj_label, PREP_LABEL_3);
             funcCode = DBG_LONG_COFFEE;
             target_dose = 8500;
             get_parameter(112, 2);
             break;
         case PREP_MACCHIATO:
+            lv_img_set_src(img_stop_btn, data_macchiato);
             lv_label_set_text(obj_label, PREP_LABEL_4);
             funcCode = DBG_SHORT_CAPPUCCINO;
             target_dose = 15000;
             get_parameter(113, 2);
             break;
         case PREP_CAPPUCCINO:
+            lv_img_set_src(img_stop_btn, data_cappuccino);
             lv_label_set_text(obj_label, PREP_LABEL_5);
             funcCode = DBG_MEDIUM_CAPPUCCINO;
             target_dose = 6500;
             get_parameter(114, 2);
             break;
         case PREP_LATTE_MACCHIATO:
+            lv_img_set_src(img_stop_btn, data_latte_macchiato);
             lv_label_set_text(obj_label, PREP_LABEL_6);
             funcCode = DBG_DOUBLE_CAPPUCCINO;
             target_dose = 6500;
             get_parameter(114, 2);
             break;
         case PREP_DOSE_LIBERA:
+            lv_img_set_src(img_stop_btn, data_dose_libera);
             lv_label_set_text(obj_label, PREP_LABEL_7);
             funcCode = DBG_FREE_COFFEE;
             target_dose = 6500;
             get_parameter(114, 2);
             break;
         case PREP_CAFFE_AMERICANO:
+            lv_img_set_src(img_stop_btn, data_caffe_americano);
             lv_label_set_text(obj_label, PREP_LABEL_8);
             funcCode = DBG_HOT_MILK;
             target_dose = 8500;
             get_parameter(115, 2);
             break;
         case PREP_ACQUA_CALDA:
+            lv_img_set_src(img_stop_btn, data_acqua_calda);
             lv_label_set_text(obj_label, PREP_LABEL_9);
             funcCode = DBG_HOT_WATER;
             target_dose = 8500;
@@ -171,8 +261,13 @@ static void set_preparation_parameters(void)
             break;
     }
 
-    progress = 0;
-    oldProgress = 0;
+    lv_obj_align(img_stop_btn, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align(obj_label, NULL, LV_ALIGN_IN_TOP_MID, 0, EROG_BUTTON_HEIGHT);
+
+    progressCoffee = 0;
+    oldProgressCoffee = 0;
+    progressMilk = 0;
+    oldProgressMilk = 0;
 
     special_function(funcCode);
 }
@@ -181,40 +276,62 @@ void ui_erogation_init(void *data)
 {
     (void)data;
 
+    lvgl_sem_take();
+    
     obj_container = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_size(obj_container, EROG_CONT_WIDTH, EROG_CONT_HEIGHT);
+    lv_obj_set_style_local_bg_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_width(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
 
     btn_stop = lv_obj_create(obj_container, NULL);
     lv_obj_set_size(btn_stop, EROG_BUTTON_WIDTH, EROG_BUTTON_HEIGHT);
-    lv_obj_set_style_local_radius(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_set_style_local_bg_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_MAROON);
-    lv_obj_set_style_local_border_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_border_width(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_radius(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 20);
+    lv_obj_set_style_local_bg_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    lv_obj_set_style_local_border_width(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);
     lv_obj_align(btn_stop, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
     lv_obj_set_event_cb(btn_stop, btn_stop_cb);
 
-    //img_stop_btn = lv_obj_create(btn_stop, NULL);
-    //TODO
+    img_stop_btn = lv_img_create(btn_stop, NULL);
+    lv_img_set_zoom(img_stop_btn, 512);
+    lv_obj_set_auto_realign(img_stop_btn, true);
+    lv_obj_align(img_stop_btn, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_label = lv_label_create(obj_container, NULL);
+    lv_label_set_recolor(obj_label, true);
+    lv_label_set_align(obj_label, LV_LABEL_ALIGN_CENTER);
+    lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_48);
     lv_obj_set_style_local_bg_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_label, EROG_LABEL_WIDTH, EROG_LABEL_HEIGHT);
-    lv_obj_set_style_local_value_font(obj_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_32);
+    lv_obj_set_auto_realign(obj_label, true);
     lv_obj_align(obj_label, NULL, LV_ALIGN_IN_TOP_MID, 0, EROG_BUTTON_HEIGHT);
     lv_obj_set_click(obj_label, false);
 
-    obj_bar = lv_bar_create(obj_container, NULL);
-    lv_obj_set_style_local_bg_color(obj_bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_border_color(obj_bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLUE);
-    lv_obj_set_style_local_border_color(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_BLUE);
-    lv_obj_set_style_local_bg_color(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_CYAN);
-    lv_obj_set_style_local_border_width(obj_bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, EROG_BAR_BORDER);
-    lv_obj_set_size(obj_bar, EROG_BAR_WIDTH, EROG_BAR_HEIGHT);
-    lv_bar_set_range(obj_bar, 0, 100);
-    lv_bar_set_value(obj_bar, progress, LV_ANIM_ON);
-    lv_obj_align(obj_bar, NULL, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-    lv_obj_set_click(obj_bar, false);
+    obj_bar_coffee = lv_bar_create(obj_container, NULL);
+    lv_obj_set_style_local_bg_color(obj_bar_coffee, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(obj_bar_coffee, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+    lv_obj_set_style_local_border_color(obj_bar_coffee, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+    lv_obj_set_style_local_bg_color(obj_bar_coffee, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_CYAN);
+    lv_obj_set_style_local_border_width(obj_bar_coffee, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, EROG_BAR_BORDER);
+    lv_obj_set_size(obj_bar_coffee, EROG_BAR_WIDTH, EROG_BAR_HEIGHT);
+    lv_bar_set_range(obj_bar_coffee, 0, 100);
+    lv_bar_set_value(obj_bar_coffee, progressCoffee, LV_ANIM_ON);
+    lv_obj_align(obj_bar_coffee, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, EROG_COFF_BAR_Y_OFFSET);
+    lv_obj_set_click(obj_bar_coffee, false);
+
+    obj_bar_milk = lv_bar_create(obj_container, NULL);
+    lv_obj_set_style_local_bg_color(obj_bar_milk, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(obj_bar_milk, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_MAROON);
+    lv_obj_set_style_local_border_color(obj_bar_milk, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_MAROON);
+    lv_obj_set_style_local_bg_color(obj_bar_milk, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_GREEN);
+    lv_obj_set_style_local_border_width(obj_bar_milk, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, EROG_BAR_BORDER);
+    lv_obj_set_size(obj_bar_milk, EROG_BAR_WIDTH, EROG_BAR_HEIGHT);
+    lv_bar_set_range(obj_bar_milk, 0, 100);
+    lv_bar_set_value(obj_bar_milk, progressMilk, LV_ANIM_ON);
+    lv_obj_align(obj_bar_milk, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, EROG_MILK_BAR_Y_OFFSET);
+    lv_obj_set_click(obj_bar_milk, false);
 
     msgbox = lv_msgbox_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &erog_label_font);
@@ -224,6 +341,8 @@ void ui_erogation_init(void *data)
     lv_obj_set_event_cb(msgbox, erogation_done_cb);
 
     lv_obj_set_hidden(msgbox, true);
+
+    lvgl_sem_give();
 
     const esp_timer_create_args_t dismiss_timer_args = {
             .callback = &dismiss_timer_cb,
@@ -260,6 +379,8 @@ void ui_erogation_show(void *data)
     ui_menu_bar_show(false);
     funcCode = DBG_NONE;
     set_preparation_parameters();
+
+    ESP_LOGI(LOG_TAG, "Show");
 }
 
 void ui_erogation_hide(void *data)
@@ -277,7 +398,12 @@ void ui_erogation_hide(void *data)
     }
 
     esp_timer_stop(dismiss_timer);
-    lv_bar_set_value(obj_bar, 0, LV_ANIM_OFF);
+
+    lv_bar_set_value(obj_bar_coffee, 0, LV_ANIM_OFF);
+    lv_bar_set_value(obj_bar_milk, 0, LV_ANIM_OFF);
+
     ui_warning_bar_show(true);
     ui_menu_bar_show(true);
+
+    ESP_LOGI(LOG_TAG, "Hide");
 }

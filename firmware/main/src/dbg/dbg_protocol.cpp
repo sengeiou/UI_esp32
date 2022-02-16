@@ -252,9 +252,37 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
                 }
             }
+            else if(fsmStatus == FSM_STATE_BREWING)  //erogation
+            {
+                guiInternalState.erogation.dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
+                guiInternalState.erogation.temperature = msg.payload[7];    //10 per il latte
+                xEventGroupSetBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
+            }
+            else if(fsmStatus == FSM_STATE_STEAMING)  //erogation
+            {
+                guiInternalState.steaming.percent = msg.payload[51];
+                xEventGroupSetBits(xGuiEvents, GUI_NEW_MILK_EROGATION_DATA_BIT);
+            }
+            else if(fsmStatus == FSM_STATE_READY_TO_BREW)  //Ready to brew
+            {
+                if(oldFsmStatus == FSM_STATE_BREWING)
+                {
+                    xEventGroupSetBits(xGuiEvents, GUI_STOP_EROGATION_BIT);
+                }
+
+                if(oldFsmStatus == FSM_STATE_STEAMING)
+                {
+                    xEventGroupSetBits(xGuiEvents, GUI_STOP_MILK_EROGATION_BIT);
+                }                
+
+                if(oldFsmStatus == FSM_STATE_STANDBY)
+                {
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_ON);
+                }
+            }
             else
             {                
-                if(oldFsmStatus != fsmStatus)
+                if(oldFsmStatus == FSM_STATE_STANDBY)
                 {
                     xEventGroupSetBits(xGuiEvents, GUI_MACHINE_ON);
                 }
@@ -263,20 +291,6 @@ namespace lavazza
                 {
                     guiInternalState.isFault = false;
                     xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
-                }
-
-                if(fsmStatus == FSM_STATE_BREWING)   //Brewing
-                {
-                    guiInternalState.erogation.dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
-                    guiInternalState.erogation.temperature = msg.payload[7];    //10 per il latte
-                    xEventGroupSetBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
-                }
-                else if(fsmStatus == FSM_STATE_READY_TO_BREW)  //Ready to brew
-                {
-                    if(oldFsmStatus == FSM_STATE_BREWING || oldFsmStatus == FSM_STATE_STEAMING)    //from Steaming (0x08) or Brewing (0x07)
-                    {
-                        xEventGroupSetBits(xGuiEvents, GUI_STOP_EROGATION_BIT);
-                    }
                 }
             }
 

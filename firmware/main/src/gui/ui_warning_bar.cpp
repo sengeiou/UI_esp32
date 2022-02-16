@@ -55,7 +55,7 @@ void ui_warning_bar_set_descaling_warning(bool warning)
     {
         ESP_LOGI(LOG_TAG, "Descaling Warning UPDATE");
         isWarningDescaling = warning;
-        lv_obj_set_hidden(obj_btn_descaling, !isWarningDescaling);
+        lv_obj_set_click(obj_btn_descaling, isWarningDescaling);
         lv_obj_set_style_local_image_recolor(img_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningDescaling ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
 
         preparation.warnings.descaling = isWarningDescaling;
@@ -68,7 +68,7 @@ void ui_warning_bar_set_pod_warning(bool warning)
     {
         ESP_LOGI(LOG_TAG, "Pod Full Warning UPDATE");
         isWarningPod = warning;
-        lv_obj_set_hidden(obj_btn_pod, !isWarningPod);
+        lv_obj_set_click(obj_btn_pod, isWarningPod);
         lv_obj_set_style_local_image_recolor(img_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningPod ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
 
         preparation.warnings.pod_full = isWarningPod;
@@ -81,7 +81,7 @@ void ui_warning_bar_set_water_empty_warning(bool warning)
     {
         ESP_LOGI(LOG_TAG, "Water Empty Warning UPDATE");
         isWarningWater = warning;
-        lv_obj_set_hidden(obj_btn_water, !isWarningWater);
+        lv_obj_set_click(obj_btn_water, isWarningWater);
         lv_obj_set_style_local_image_recolor(img_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningWater ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
 
         preparation.warnings.water_empty = isWarningWater;
@@ -94,7 +94,7 @@ void ui_warning_bar_set_generic_warning(bool warning)
     {
         ESP_LOGI(LOG_TAG, "Generic Warning UPDATE");
         isWarningGeneric = warning;
-        lv_obj_set_hidden(obj_btn_generic, !isWarningGeneric);
+        lv_obj_set_click(obj_btn_generic, isWarningGeneric);
         lv_obj_set_style_local_image_recolor(img_generic_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningGeneric ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
 
         preparation.warnings.generic = isWarningGeneric;
@@ -110,8 +110,9 @@ void ui_warning_bar_update_recognition_status(void)
 
 void ui_warning_bar_init(void)
 {
+    lvgl_sem_take();
+
     obj_warning_bar = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_hidden(obj_warning_bar, true);
     lv_obj_set_size(obj_warning_bar, WARNBAR_WIDTH, WARNBAR_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_warning_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_radius(obj_warning_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
@@ -124,12 +125,12 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_descaling, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -0*WARNBAR_BUTTON_HEIGHT);
+    lv_obj_align(obj_btn_descaling, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -0*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_descaling, obj_btn_warning_cb);
 
     img_descaling_warn = lv_img_create(obj_btn_descaling, NULL);
     lv_img_set_src(img_descaling_warn, data_descaling_warning);
-    lv_img_set_zoom(img_descaling_warn, 256);
+    lv_img_set_zoom(img_descaling_warn, 140);
     lv_obj_set_style_local_image_recolor_opa(img_descaling_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
     lv_obj_align(img_descaling_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
@@ -139,12 +140,12 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_pod, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -1*WARNBAR_BUTTON_HEIGHT);
+    lv_obj_align(obj_btn_pod, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -1*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_pod, obj_btn_warning_cb);
     
     img_pod_warn = lv_img_create(obj_btn_pod, NULL);
     lv_img_set_src(img_pod_warn, data_pod_warning);
-    lv_img_set_zoom(img_pod_warn, 256);
+    lv_img_set_zoom(img_pod_warn, 400);
     lv_obj_set_style_local_image_recolor_opa(img_pod_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
     lv_obj_align(img_pod_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
@@ -154,12 +155,12 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_water, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -2*WARNBAR_BUTTON_HEIGHT);
+    lv_obj_align(obj_btn_water, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -2*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_water, obj_btn_warning_cb);
 
     img_water_warn = lv_img_create(obj_btn_water, NULL);
     lv_img_set_src(img_water_warn, data_water_warning);
-    lv_img_set_zoom(img_water_warn, 256);
+    lv_img_set_zoom(img_water_warn, 140);
     lv_obj_set_style_local_image_recolor_opa(img_water_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
     lv_obj_align(img_water_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
@@ -169,12 +170,12 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_generic, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_generic, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_generic, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_generic, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -3*WARNBAR_BUTTON_HEIGHT);
+    lv_obj_align(obj_btn_generic, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -3*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_generic, obj_btn_warning_cb);
 
     img_generic_warn = lv_img_create(obj_btn_generic, NULL);
     lv_img_set_src(img_generic_warn, data_generic_warning);
-    lv_img_set_zoom(img_generic_warn, 256);
+    lv_img_set_zoom(img_generic_warn, 110);
     lv_obj_set_style_local_image_recolor_opa(img_generic_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
     lv_obj_align(img_generic_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
@@ -188,20 +189,16 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_value_font(obj_btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &stsbar_button_font);
     lv_obj_set_style_local_value_color(obj_btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_value_str(obj_btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_EYE_OPEN);
-    lv_obj_align(obj_btn_recognition, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -4*WARNBAR_BUTTON_HEIGHT);
+    lv_obj_align(obj_btn_recognition, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -4*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_recognition, obj_btn_cb);
     #endif
 
-    lv_obj_set_style_local_image_recolor(img_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-    lv_obj_set_style_local_image_recolor(img_generic_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_set_click(obj_btn_descaling, isWarningDescaling);
+    lv_obj_set_click(obj_btn_water, isWarningWater);
+    lv_obj_set_click(obj_btn_pod, isWarningPod);
+    lv_obj_set_click(obj_btn_generic, isWarningGeneric);
 
-    lv_obj_set_hidden(obj_btn_descaling, !isWarningDescaling);
-    lv_obj_set_hidden(obj_btn_pod, !isWarningPod);
-    lv_obj_set_hidden(obj_btn_water, !isWarningWater);
-    lv_obj_set_hidden(obj_btn_generic, !isWarningGeneric);
-    ui_warning_bar_show(false);
+    lvgl_sem_give();
 }
 
 void ui_warning_bar_show(bool show)
@@ -209,6 +206,13 @@ void ui_warning_bar_show(bool show)
     if(NULL != obj_warning_bar)
     {
         lv_obj_set_hidden(obj_warning_bar, !show);
+
+        ui_warning_bar_set_descaling_warning(isWarningDescaling);
+        ui_warning_bar_set_pod_warning(isWarningPod);
+        ui_warning_bar_set_water_empty_warning(isWarningWater);
+        ui_warning_bar_set_generic_warning(isWarningGeneric);
+        
+        ESP_LOGI(LOG_TAG, "%s", show ? "Show" : "Hide");
     }
 }
 

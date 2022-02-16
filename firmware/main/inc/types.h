@@ -240,8 +240,12 @@ typedef struct
         uint8_t totalSteps;
         uint8_t currentSteps;
     } cleaning;
-    
 
+    struct
+    {
+        uint8_t percent;
+    } steaming;
+    
     struct
     {
         bool descaling;

@@ -56,7 +56,7 @@ static ui_data_fetch_t img_fetch_list[] = {
     { "S:/icons/Power.bin", &data_power },   //TODO get image
     /* Warning Bar */
     { "S:/icons/DescalingWarning.bin", &data_descaling_warning },
-    { "S:/icons/PodWarning.bin", &data_pod_warning },  //TODO get image
+    { "S:/icons/Pod.bin", &data_pod_warning },  //TODO get image
     { "S:/icons/WaterEmptyWarning.bin", &data_water_warning },  
     { "S:/icons/GenericWarning.bin", &data_generic_warning },
 
@@ -95,7 +95,7 @@ void ui_main(void)
 
     /* Create a bar to update loading progress */
     lvgl_sem_take();
-    lv_obj_t *bar = lv_bar_create(lv_scr_act(), NULL);
+    lv_obj_t* bar = lv_bar_create(lv_scr_act(), NULL);
     lv_obj_set_style_local_bg_color(bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, COLOR_BG);
     lv_obj_set_style_local_border_color(bar, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_BLUE);
     lv_obj_set_style_local_border_color(bar, LV_BAR_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_BLUE);
@@ -154,10 +154,17 @@ void ui_main(void)
     ui_init_internal();
 
     /* Entering main UI */
-    lvgl_sem_take();
+    ui_menu_bar_init();
+    ui_warning_bar_init();
+
+    /* Init most used pages */
+    ui_preparations_init(NULL);
+    ui_preparations_hide(NULL);
+    ui_erogation_init(NULL);
+    ui_erogation_hide(NULL);
+    
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);
-    lvgl_sem_give();
     
     enable_livedata();
 }

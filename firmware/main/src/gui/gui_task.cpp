@@ -210,21 +210,24 @@ void gui_task(void* data)
     ui_main();
 
     EventBits_t bits;
+    ui_preparations_enable_milk_preparations(guiInternalState.milkHeadPresence);
     while(true)
     {
         bits = xEventGroupWaitBits(xGuiEvents, GUI_MACHINE_ON | GUI_MACHINE_OFF | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
-                                               GUI_NEW_EROGATION_DATA_BIT | GUI_STOP_EROGATION_BIT | GUI_ENABLE_MILK_BIT |
+                                               GUI_NEW_EROGATION_DATA_BIT | GUI_NEW_MILK_EROGATION_DATA_BIT | GUI_STOP_EROGATION_BIT | GUI_STOP_MILK_EROGATION_BIT | GUI_ENABLE_MILK_BIT |
                                                GUI_WARNINGS_BIT | GUI_MACHINE_FAULT_BIT | GUI_CLOUD_REQUEST_BIT | GUI_NEW_CLEANING_DATA_BIT, 
                                                pdFALSE, pdFALSE, 1000/portTICK_PERIOD_MS);
 
         if(bits & GUI_MACHINE_ON)
         {
+            printf("Machine on\n");
             xEventGroupClearBits(xGuiEvents, GUI_MACHINE_ON);
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
         }
 
         if(bits & GUI_MACHINE_OFF)
         {
+            printf("Machine off\n");
             xEventGroupClearBits(xGuiEvents, GUI_MACHINE_OFF);
             ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
         }
@@ -232,7 +235,13 @@ void gui_task(void* data)
         if(bits & GUI_NEW_EROGATION_DATA_BIT)
         {
             xEventGroupClearBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
-            ui_erogation_update(guiInternalState.erogation.dose, guiInternalState.erogation.temperature, 5.0f);
+            ui_erogation_update(guiInternalState.erogation.dose);
+        }
+
+        if(bits & GUI_NEW_MILK_EROGATION_DATA_BIT)
+        {
+            xEventGroupClearBits(xGuiEvents, GUI_NEW_MILK_EROGATION_DATA_BIT);
+            ui_milk_erogation_update(guiInternalState.steaming.percent);
         }
 
         if(bits & GUI_NEW_CLEANING_DATA_BIT)
@@ -259,8 +268,17 @@ void gui_task(void* data)
             ui_erogation_completed();
         }
 
+        if(bits & GUI_STOP_MILK_EROGATION_BIT)
+        {
+            xEventGroupClearBits(xGuiEvents, GUI_STOP_MILK_EROGATION_BIT);
+            ui_erogation_milk_completed();
+        }
+
+        
+
         if(bits & GUI_ENABLE_MILK_BIT)
         {
+            printf("Milk detection\n");
             xEventGroupClearBits(xGuiEvents, GUI_ENABLE_MILK_BIT);
             ui_preparations_enable_milk_preparations(guiInternalState.milkHeadPresence);
         }

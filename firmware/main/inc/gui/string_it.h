@@ -10,7 +10,7 @@
 #define PREP_LABEL_5            "CAPPUCCINO"
 #define PREP_LABEL_6            "LATTE MACCHIATO"
 #define PREP_LABEL_7            "DOSE LIBERA"
-#define PREP_LABEL_8            "CAFFE AMERICANO"
+#define PREP_LABEL_8            "LATTE CALDO"//"CAFFE AMERICANO"
 #define PREP_LABEL_9            "ACQUA CALDA"
 
 #define EROG_DRINK_READY        "Bevanda pronta.\nRitirare"
