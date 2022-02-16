@@ -158,11 +158,6 @@ void ui_erogation_update(uint16_t current_dose)
     {
         lv_bar_set_value(obj_bar_coffee, progressCoffee, LV_ANIM_ON);
         ESP_LOGI(LOG_TAG, "Progress %d", progressCoffee);
-
-        if(progressCoffee >= 100)
-        {
-            ui_erogation_completed();
-        }
     }
     else
     {
@@ -197,63 +192,63 @@ static void set_preparation_parameters(void)
             lv_img_set_src(img_stop_btn, data_espresso_corto);
             lv_label_set_text(obj_label, PREP_LABEL_1);
             funcCode = DBG_SHORT_COFFEE;
-            target_dose = 4650;
+            target_dose = 3300;
             get_parameter(110, 2);
             break;
         case PREP_ESPRESSO:
             lv_img_set_src(img_stop_btn, data_espresso);
             lv_label_set_text(obj_label, PREP_LABEL_2);
             funcCode = DBG_MEDIUM_COFFEE;
-            target_dose = 6000;
+            target_dose = 4000;
             get_parameter(111, 2);
             break;
         case PREP_ESPRESSO_LUNGO:
             lv_img_set_src(img_stop_btn, data_espresso_lungo);
             lv_label_set_text(obj_label, PREP_LABEL_3);
             funcCode = DBG_LONG_COFFEE;
-            target_dose = 8500;
+            target_dose = 5500;
             get_parameter(112, 2);
             break;
         case PREP_MACCHIATO:
             lv_img_set_src(img_stop_btn, data_macchiato);
             lv_label_set_text(obj_label, PREP_LABEL_4);
             funcCode = DBG_SHORT_CAPPUCCINO;
-            target_dose = 15000;
+            target_dose = 3300;
             get_parameter(113, 2);
             break;
         case PREP_CAPPUCCINO:
             lv_img_set_src(img_stop_btn, data_cappuccino);
             lv_label_set_text(obj_label, PREP_LABEL_5);
             funcCode = DBG_MEDIUM_CAPPUCCINO;
-            target_dose = 6500;
+            target_dose = 3000;
             get_parameter(114, 2);
             break;
         case PREP_LATTE_MACCHIATO:
             lv_img_set_src(img_stop_btn, data_latte_macchiato);
             lv_label_set_text(obj_label, PREP_LABEL_6);
             funcCode = DBG_DOUBLE_CAPPUCCINO;
-            target_dose = 6500;
+            target_dose = 3300;
             get_parameter(114, 2);
             break;
         case PREP_DOSE_LIBERA:
             lv_img_set_src(img_stop_btn, data_dose_libera);
             lv_label_set_text(obj_label, PREP_LABEL_7);
             funcCode = DBG_FREE_COFFEE;
-            target_dose = 6500;
+            target_dose = 9000;
             get_parameter(114, 2);
             break;
         case PREP_CAFFE_AMERICANO:
             lv_img_set_src(img_stop_btn, data_caffe_americano);
             lv_label_set_text(obj_label, PREP_LABEL_8);
             funcCode = DBG_HOT_MILK;
-            target_dose = 8500;
+            target_dose = 7500;
             get_parameter(115, 2);
             break;
         case PREP_ACQUA_CALDA:
             lv_img_set_src(img_stop_btn, data_acqua_calda);
             lv_label_set_text(obj_label, PREP_LABEL_9);
             funcCode = DBG_HOT_WATER;
-            target_dose = 8500;
+            target_dose = 7500;
             get_parameter(115, 2);
             break;
         case PREP_NONE:
@@ -269,6 +264,9 @@ static void set_preparation_parameters(void)
     progressMilk = 0;
     oldProgressMilk = 0;
 
+    lv_bar_set_value(obj_bar_coffee, progressCoffee, LV_ANIM_OFF);
+    lv_bar_set_value(obj_bar_milk, progressMilk, LV_ANIM_OFF);
+
     special_function(funcCode);
 }
 
@@ -279,6 +277,7 @@ void ui_erogation_init(void *data)
     lvgl_sem_take();
     
     obj_container = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_hidden(obj_container, true);
     lv_obj_set_size(obj_container, EROG_CONT_WIDTH, EROG_CONT_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
@@ -286,7 +285,7 @@ void ui_erogation_init(void *data)
 
     btn_stop = lv_obj_create(obj_container, NULL);
     lv_obj_set_size(btn_stop, EROG_BUTTON_WIDTH, EROG_BUTTON_HEIGHT);
-    lv_obj_set_style_local_radius(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 20);
+    lv_obj_set_style_local_radius(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 40);
     lv_obj_set_style_local_bg_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_border_width(btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 5);

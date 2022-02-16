@@ -32,6 +32,7 @@ void ui_menu_bar_init(void)
     lvgl_sem_take();
     
     obj_menu_bar = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_hidden(obj_menu_bar, true);
     lv_obj_set_size(obj_menu_bar, MENUBAR_WIDTH, MENUBAR_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_menu_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_radius(obj_menu_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
@@ -97,7 +98,7 @@ static void menubar_btn_cb(lv_obj_t *obj, lv_event_t event)
         if(obj_btn_menu == obj) 
         {
             ESP_LOGI(LOG_TAG, "Button menu clicked");
-            //TODO implement menu
+            ui_show(&ui_menu_func, UI_SHOW_OVERRIDE);
             return;
         }
     }

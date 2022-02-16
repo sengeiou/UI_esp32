@@ -113,6 +113,7 @@ void ui_warning_bar_init(void)
     lvgl_sem_take();
 
     obj_warning_bar = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_hidden(obj_warning_bar, true);
     lv_obj_set_size(obj_warning_bar, WARNBAR_WIDTH, WARNBAR_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_warning_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_radius(obj_warning_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);

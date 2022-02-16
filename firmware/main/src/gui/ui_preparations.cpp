@@ -73,6 +73,11 @@ static bool milkEnable = false;
 /* Static function forward declaration */
 static void preparation_btn_cb(lv_obj_t* obj, lv_event_t event);
 
+static bool check_coffee_warnings();
+static bool check_milk_warnings();
+static bool check_water_warnings();
+
+
 static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
 {
     if(LV_EVENT_VALUE_CHANGED == event)
@@ -89,6 +94,39 @@ static void basic_popup_cb(lv_obj_t* obj, lv_event_t event)
 void ui_preparations_set_desired(coffee_type_t prep)
 {
     preparation.desired_prep = prep;
+
+    switch(preparation.desired_prep)
+    {
+        case PREP_ESPRESSO_CORTO:
+		case PREP_ESPRESSO:  
+        case PREP_ESPRESSO_LUNGO:
+        case PREP_DOSE_LIBERA:
+        {
+            if(false == check_coffee_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            break;
+        }
+        case PREP_MACCHIATO:
+        case PREP_CAPPUCCINO:
+        case PREP_LATTE_MACCHIATO:
+        case PREP_CAFFE_AMERICANO:
+        {
+            if(false == check_milk_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            break;
+        }
+        case PREP_ACQUA_CALDA:
+        {
+            if(false == check_water_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            break;
+        }
+        case PREP_NONE:
+        default:
+        {
+            break;
+        }
+    }
 }   
 
 static bool check_coffee_warnings()
@@ -197,6 +235,9 @@ static void configure_button_style(lv_obj_t* obj)
     lv_obj_set_style_local_radius(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, PREP_BUTTON_RADIUS);
     lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, PREP_BUTTON_BORDER);
     lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+
+    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_CHECKED, LV_COLOR_BLACK);
+    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_FOCUSED, LV_COLOR_BLACK);
 }
 
 static void configure_image_style(lv_obj_t* obj, const void* src)
@@ -219,13 +260,13 @@ static void enable_disable_preparation(bool available, lv_obj_t* obj_btn, lv_obj
 {
     if(true == available)
     {
-        lv_btn_set_checkable(obj_btn, true);
+        lv_obj_set_click(obj_btn, true);
         lv_obj_set_style_local_image_recolor_opa(obj_img, LV_IMG_PART_MAIN, LV_STATE_ALL, LV_OPA_100);
         lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     }
     else
     {
-        lv_btn_set_checkable(obj_btn, false);
+        lv_obj_set_click(obj_btn, false);
         lv_obj_set_style_local_image_recolor_opa(obj_img, LV_IMG_PART_MAIN, LV_STATE_ALL, LV_OPA_10);
         lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     }
@@ -271,6 +312,7 @@ void ui_preparations_init(void *data)
 
     /* Preparation page */
     obj_container = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_hidden(obj_container, true);
     lv_obj_set_size(obj_container, PREP_CONT_WIDTH, PREP_CONT_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_container, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
@@ -443,74 +485,56 @@ static void preparation_btn_cb(lv_obj_t *obj, lv_event_t event)
         if(obj_espresso_corto == obj)
         {
             ESP_LOGI(LOG_TAG, "ESPRESSO CORTO clicked");
-            preparation.desired_prep = PREP_ESPRESSO_CORTO;
-            if(false == check_coffee_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_ESPRESSO_CORTO);
         }
 
         if(obj_espresso == obj)
         {
             ESP_LOGI(LOG_TAG, "ESPRESSO clicked");
-            preparation.desired_prep = PREP_ESPRESSO;
-            if(false == check_coffee_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_ESPRESSO);
         }
 
         if(obj_espresso_lungo == obj)
         {
             ESP_LOGI(LOG_TAG, "ESPRESSO LUNGO clicked");
-            preparation.desired_prep = PREP_ESPRESSO_LUNGO;
-            if(false == check_coffee_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_ESPRESSO_LUNGO);
         }
 
         if(obj_macchiato == obj)
         {
             ESP_LOGI(LOG_TAG, "MACCHIATO clicked");
-            preparation.desired_prep = PREP_MACCHIATO;
-            if(false == check_milk_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_MACCHIATO);
         }
 
         if(obj_cappuccino == obj)
         {
             ESP_LOGI(LOG_TAG, "CAPPUCCINO clicked");
-            preparation.desired_prep = PREP_CAPPUCCINO;
-            if(false == check_milk_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_CAPPUCCINO);
         }
 
         if(obj_latte_macchiato == obj)
         {
             ESP_LOGI(LOG_TAG, "LATTE MACCHIATO clicked");
-            preparation.desired_prep = PREP_LATTE_MACCHIATO;
-            if(false == check_milk_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_LATTE_MACCHIATO);
         }
 
         if(obj_dose_libera == obj)
         {
             ESP_LOGI(LOG_TAG, "DOSE LIBERA clicked");
-            preparation.desired_prep = PREP_DOSE_LIBERA;
-            if(false == check_coffee_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_DOSE_LIBERA);
         }
 
 
         if(obj_caffe_americano == obj)
         {
             ESP_LOGI(LOG_TAG, "CAFFE AMERICANO clicked");
-            preparation.desired_prep = PREP_CAFFE_AMERICANO;
-            if(false == check_milk_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_CAFFE_AMERICANO);
         }
 
         if(obj_acqua_calda == obj)
         {
             ESP_LOGI(LOG_TAG, "ACQUA CALDA clicked");
-            preparation.desired_prep = PREP_ACQUA_CALDA;
-            if(false == check_water_warnings())
-                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+            ui_preparations_set_desired(PREP_ACQUA_CALDA);
         }
     }
 }
