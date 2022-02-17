@@ -116,6 +116,7 @@ _UI_FUNC_DEF_(fault);
 _UI_FUNC_DEF_(menu);
 _UI_FUNC_DEF_(wifi);
 _UI_FUNC_DEF_(settings);
+_UI_FUNC_DEF_(statistics);
 
 
 /**
@@ -200,6 +201,14 @@ void ui_warning_bar_set_descaling_warning(bool warning);
 void ui_warning_bar_set_pod_warning(bool warning);
 void ui_warning_bar_set_water_empty_warning(bool warning);
 void ui_warning_bar_set_generic_warning(bool warning);
+
+
+/**
+ * @brief Update machine statistics.
+ * 
+ */
+void ui_statistics_update_data(uint16_t parId, uint32_t value);
+
 
 #if ENABLE_CAPS_RECOGNITION_MODULE == 1
 /**

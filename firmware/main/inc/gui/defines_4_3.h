@@ -126,6 +126,14 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define WIFI_SCAN_LIST_Y_OFFSET         20
 #define WIFI_PASS_AREA_Y_OFFSET         20
 
+// Statistics Page
+#define STAT_TAB_WIDTH          650
+#define STAT_TAB_HEIGHT         450
+#define STAT_TAB_X_OFFSET       130
+#define STAT_TAB_Y_OFFSET       0
+#define STAT_COL1_WIDTH         400
+#define STAT_COL2_WIDTH         100
+
 
 // Descaling Page
 inline lv_font_t desc_label_font  = font_en_bold_60;
@@ -165,42 +173,5 @@ inline lv_font_t clean_button_font = font_en_28;
 #define CLEAN_BUTTON_X_OFFSET    16
 #define CLEAN_BUTTON_Y_OFFSET    60
 
-// General purpose Page
-#define GENERAL_WIDTH        800
-#define GENERAL_HEIGHT       480
-#define GENERAL_X_OFFSET     0
-#define GENERAL_Y_OFFSET     38
-
-// Preferences Page
-inline lv_font_t pref_button_font = font_en_28;
-#define PREF_BUTTON_WIDTH       230
-#define PREF_BUTTON_HEIGHT      165
-#define PREF_BUTTON_RADIUS      15
-#define PREF_BUTTON_BORDER      0
-#define PREF_BUTTON_X_CENTER    260
-#define PREF_BUTTON_Y_CENTER    98
-#define PREF_BUTTON_Y_OFFSET    30
-
-// Settings Page
-#define SETT_CONT_WIDTH         780
-#define SETT_CONT_HEIGHT        375
-#define SETT_TAB_PAD            20
-#define SETT_CONT_X_OFFSET      5
-#define SETT_CONT_Y_OFFSET      30
-#define SETT_SLIDER_WIDTH       610
-#define SETT_SLIDER_HEIGHT      15
-#define SETT_SLIDER_X_OFFSET    0
-#define SETT_SLIDER_Y0_OFFSET   30
-#define SETT_SLIDER_YD_OFFSET   90
-#define SETT_LABEL_X_OFFSET     0
-#define SETT_LABEL_Y_OFFSET     15
-
-// Statistics Page
-#define STAT_CONT_WIDTH         780
-#define STAT_CONT_HEIGHT        375
-#define STAT_CONT_X_OFFSET      0
-#define STAT_CONT_Y_OFFSET      30
-#define STAT_COL1_WIDTH         430
-#define STAT_COL2_WIDTH         160
 
 #endif /* _DEFINES_H_ */

@@ -162,7 +162,7 @@ namespace lavazza
             if(parId >= 300)    //Statistics
             {
                 printf("Received statistic parameter %d, value %d\n", parId, parVal);
-                // ui_statistics_update_data(parId, parVal);
+                ui_statistics_update_data(parId, parVal);
             }
             else if(parId >= 110 && parId <= 115)   //Doses 
             {

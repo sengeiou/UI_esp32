@@ -243,7 +243,7 @@ static void menu_btn_cb(lv_obj_t* obj, lv_event_t event)
                 case STATISTICS_LIST_ITEM:
                 {
                     ESP_LOGI(LOG_TAG, "Open STATISTICS page");
-                    // ui_show(&ui_statistics_func, UI_SHOW_OVERRIDE);
+                    ui_show(&ui_statistics_func, UI_SHOW_OVERRIDE);
                     break;
                 }
                 case CLEANING_1_LIST_ITEM:
@@ -273,24 +273,20 @@ static void menu_btn_cb(lv_obj_t* obj, lv_event_t event)
         
         if(obj == obj_button_back)
         {
-            printf("BACK Button\n");
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_button_up)
         {
             list_index = (list_item_t)((MAX_LIST_ITEM + list_index - 1)%MAX_LIST_ITEM);
-            printf("UP Button (next item %d)\n", list_index);
             update_selected_item_list();
         }
 
         if(obj == obj_button_down)
         {
             list_index = (list_item_t)((MAX_LIST_ITEM + list_index + 1)%MAX_LIST_ITEM);
-            printf("DOWN Button (next item %d)\n", list_index);
             update_selected_item_list();
         }
-
     }
 }
 
@@ -320,7 +316,7 @@ static void list_btn_cb(lv_obj_t* obj, lv_event_t event)
         if(obj == obj_list_statistics)
         {
             ESP_LOGI(LOG_TAG, "Open STATISTICS page");
-            // ui_show(&ui_statistics_func, UI_SHOW_OVERRIDE);
+            ui_show(&ui_statistics_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_list_cleaning_1)
