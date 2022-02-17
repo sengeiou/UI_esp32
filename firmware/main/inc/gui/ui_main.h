@@ -118,6 +118,7 @@ _UI_FUNC_DEF_(wifi);
 _UI_FUNC_DEF_(settings);
 _UI_FUNC_DEF_(statistics);
 _UI_FUNC_DEF_(auto_cleaning);
+_UI_FUNC_DEF_(semiauto_cleaning);
 
 
 /**
@@ -163,8 +164,8 @@ void ui_erogation_set_target_dose(uint16_t dose);
  * @brief Update current cleaning information of cleaning page. Call it when preparation data is updated.
  * 
  */
-void ui_cleaning_fast_update(uint8_t current_step, uint8_t total_step);
-void ui_cleaning_full_update(uint8_t current_step, uint8_t total_step);
+void ui_cleaning_auto_update(uint8_t current_step, uint8_t total_step);
+void ui_cleaning_semiauto_update(uint8_t current_step, uint8_t total_step);
 
 /**
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.

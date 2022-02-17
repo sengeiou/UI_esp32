@@ -249,11 +249,11 @@ void gui_task(void* data)
             xEventGroupClearBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
             if(guiInternalState.cleaning.recipeId == 0)
             {
-                // ui_cleaning_fast_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
+                ui_cleaning_auto_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
             }
             else if(guiInternalState.cleaning.recipeId == 1)
             {
-                // ui_cleaning_full_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
+                ui_cleaning_semiauto_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
             }
             else
             {

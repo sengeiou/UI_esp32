@@ -35,8 +35,15 @@
 #define AUTOCLEANING_TITLE                      "PULIZIA GIORNALIERA AUTOMATICA"
 #define AUTOCLEANING_START_BUTTON               "Avvia"
 #define AUTOCLEANING_STOP_BUTTON                "Annulla"
-#define AUTOCLEANING_MESSAGE_READY              "Pulizia pronta. Premi avvia per cominciare"
+#define AUTOCLEANING_MESSAGE_READY              "Premi avvia per cominciare"
 #define AUTOCLEANING_MESSAGE_PROGRESS           "Pulizia automatica in corso..."
 #define AUTOCLEANING_MESSAGE_DONE               "Pulizia automatica effettuata con successo"
+
+#define SEMIAUTOCLEANING_TITLE                  "PULIZIA SETTIMANALE SEMI-AUTOMATICA"
+#define SEMIAUTOCLEANING_START_BUTTON           "Avvia"
+#define SEMIAUTOCLEANING_STOP_BUTTON            "Annulla"
+#define SEMIAUTOCLEANING_MESSAGE_READY          "Premi avvia per cominciare"
+#define SEMIAUTOCLEANING_MESSAGE_PROGRESS       "Pulizia semi-automatica in corso..."
+#define SEMIAUTOCLEANING_MESSAGE_DONE           "Pulizia semi-automatica effettuata con successo"
 
 #endif /* _STRINGS_IT_H_ */

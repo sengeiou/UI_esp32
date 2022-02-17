@@ -4,21 +4,21 @@
 #include "string_it.h"
 
 #ifdef ADVANCED_DEBUG
-    #define LOG_TAG LINE_STRING "|" "UI_AUTO_CLEAN"
+    #define LOG_TAG LINE_STRING "|" "UI_SEMIAUTO_CLEAN"
 #else
-    #define LOG_TAG "UI_AUTO_CLEAN"
+    #define LOG_TAG "UI_SEMIAUTO_CLEAN"
 #endif
 
 /* UI function declaration */
-ui_func_desc_t ui_auto_cleaning_func = {
-    .name = "ui_auto_cleaning",
-    .init = ui_auto_cleaning_init,
-    .show = ui_auto_cleaning_show,
-    .hide = ui_auto_cleaning_hide,
+ui_func_desc_t ui_semiauto_cleaning_func = {
+    .name = "ui_semiauto_cleaning",
+    .init = ui_semiauto_cleaning_init,
+    .show = ui_semiauto_cleaning_show,
+    .hide = ui_semiauto_cleaning_hide,
 };
 
 
-static ui_state_t ui_auto_cleaning_state = ui_state_dis;
+static ui_state_t ui_semiauto_cleaning_state = ui_state_dis;
 
 
 // /* LVGL objects defination */
@@ -36,7 +36,7 @@ extern void* data_cleaning_page;
 static uint8_t progress = 0;
 static uint8_t oldProgress = 0;
 
-void ui_cleaning_auto_update(uint8_t current_step, uint8_t total_step)
+void ui_cleaning_semiauto_update(uint8_t current_step, uint8_t total_step)
 {    
     progress = 100*(current_step + 1)/(total_step + 1);
     progress = (progress >= 100) ? 100 : progress;
@@ -46,12 +46,12 @@ void ui_cleaning_auto_update(uint8_t current_step, uint8_t total_step)
     {
         if(current_step == (total_step))    //LAST STEP
         {
-            lv_label_set_text(obj_message_label, AUTOCLEANING_MESSAGE_DONE);
+            lv_label_set_text(obj_message_label, SEMIAUTOCLEANING_MESSAGE_DONE);
         }
         else if(current_step < total_step)
         {
             char buf[64];
-            sprintf(buf, "%s (%d/%d)", AUTOCLEANING_MESSAGE_PROGRESS, current_step + 1, total_step + 1);
+            sprintf(buf, "%s (%d/%d)", SEMIAUTOCLEANING_MESSAGE_PROGRESS, current_step + 1, total_step + 1);
             lv_label_set_text(obj_message_label, buf);
         }
         else
@@ -75,12 +75,12 @@ static void btn_cb(lv_obj_t* obj, lv_event_t event)
 
         if(obj == obj_btn_start)
         {
-            special_function(DBG_AUTO_CLEANING);
+            special_function(DBG_SEMIAUTO_CLEANING);
         }
     }
 }
 
-void ui_auto_cleaning_init(void *data)
+void ui_semiauto_cleaning_init(void *data)
 {
     (void)data;
 
@@ -102,7 +102,7 @@ void ui_auto_cleaning_init(void *data)
     lv_obj_set_size(obj_title_label, CLEAN_TITLE_LABEL_WIDTH, CLEAN_TITLE_LABEL_HEIGHT);
     lv_obj_set_auto_realign(obj_title_label, true);
     lv_obj_align(obj_title_label, NULL, LV_ALIGN_IN_TOP_MID, CLEAN_TITLE_LABEL_X_OFFSET, CLEAN_TITLE_LABEL_Y_OFFSET);
-    lv_label_set_text(obj_title_label, AUTOCLEANING_TITLE);
+    lv_label_set_text(obj_title_label, SEMIAUTOCLEANING_TITLE);
     lv_obj_set_click(obj_title_label, false);
 
     obj_btn_stop = lv_obj_create(obj_container, NULL);
@@ -112,7 +112,7 @@ void ui_auto_cleaning_init(void *data)
     lv_obj_set_style_local_border_color(obj_btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_border_width(obj_btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, CLEAN_BUTTON_BORDER);
     lv_obj_set_style_local_text_color(obj_btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_value_str(obj_btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, AUTOCLEANING_STOP_BUTTON);
+    lv_obj_set_style_local_value_str(obj_btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, SEMIAUTOCLEANING_STOP_BUTTON);
     lv_obj_align(obj_btn_stop, NULL, LV_ALIGN_IN_TOP_MID, -CLEAN_BUTTON_X_OFFSET, CLEAN_BUTTON_Y_OFFSET);
     lv_obj_set_event_cb(obj_btn_stop, btn_cb);
 
@@ -129,7 +129,7 @@ void ui_auto_cleaning_init(void *data)
     lv_obj_set_style_local_border_color(obj_btn_start, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_style_local_border_width(obj_btn_start, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, CLEAN_BUTTON_BORDER);
     lv_obj_set_style_local_text_color(obj_btn_start, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_obj_set_style_local_value_str(obj_btn_start, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, AUTOCLEANING_START_BUTTON);
+    lv_obj_set_style_local_value_str(obj_btn_start, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, SEMIAUTOCLEANING_START_BUTTON);
     lv_obj_align(obj_btn_start, NULL, LV_ALIGN_IN_TOP_MID, CLEAN_BUTTON_X_OFFSET, CLEAN_BUTTON_Y_OFFSET);
     lv_obj_set_event_cb(obj_btn_start, btn_cb);
 
@@ -141,7 +141,7 @@ void ui_auto_cleaning_init(void *data)
     lv_obj_set_style_local_text_color(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_message_label, CLEAN_MESS_LABEL_WIDTH, CLEAN_MESS_LABEL_HEIGHT);
     lv_obj_set_auto_realign(obj_message_label, true);
-    lv_label_set_text(obj_message_label, AUTOCLEANING_MESSAGE_READY);
+    lv_label_set_text(obj_message_label, SEMIAUTOCLEANING_MESSAGE_READY);
     lv_obj_align(obj_message_label, NULL, LV_ALIGN_IN_TOP_MID, CLEAN_MESS_LABEL_X_OFFSET, CLEAN_MESS_LABEL_Y_OFFSET);
     lv_obj_set_click(obj_message_label, false);
 
@@ -159,14 +159,14 @@ void ui_auto_cleaning_init(void *data)
 
     lvgl_sem_give();
 
-    ui_auto_cleaning_state = ui_state_show;
+    ui_semiauto_cleaning_state = ui_state_show;
 }
 
-void ui_auto_cleaning_show(void *data)
+void ui_semiauto_cleaning_show(void *data)
 {
-    if(ui_state_dis == ui_auto_cleaning_state)
+    if(ui_state_dis == ui_semiauto_cleaning_state)
     {
-        ui_auto_cleaning_init(data);
+        ui_semiauto_cleaning_init(data);
     }
     else
     {
@@ -175,7 +175,7 @@ void ui_auto_cleaning_show(void *data)
             lv_obj_set_hidden(obj_container, false);
         }
 
-        ui_auto_cleaning_state = ui_state_show;
+        ui_semiauto_cleaning_state = ui_state_show;
     }
 
     progress = 0;
@@ -188,18 +188,18 @@ void ui_auto_cleaning_show(void *data)
     ESP_LOGI(LOG_TAG, "Show");
 }
 
-void ui_auto_cleaning_hide(void *data)
+void ui_semiauto_cleaning_hide(void *data)
 {
     (void)data;
 
-    if(ui_state_show == ui_auto_cleaning_state)
+    if(ui_state_show == ui_semiauto_cleaning_state)
     {
         if(NULL != obj_container)
         {
             lv_obj_set_hidden(obj_container, true);
         }
 
-        ui_auto_cleaning_state = ui_state_hide;
+        ui_semiauto_cleaning_state = ui_state_hide;
     }
 
     ui_warning_bar_show(true);

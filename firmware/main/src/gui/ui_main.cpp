@@ -179,6 +179,8 @@ void ui_main(void)
     ui_statistics_hide(NULL);
     ui_auto_cleaning_init(NULL);
     ui_auto_cleaning_hide(NULL);
+    ui_semiauto_cleaning_init(NULL);
+    ui_semiauto_cleaning_hide(NULL);
 
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);

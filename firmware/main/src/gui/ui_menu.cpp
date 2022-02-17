@@ -255,7 +255,7 @@ static void menu_btn_cb(lv_obj_t* obj, lv_event_t event)
                 case CLEANING_2_LIST_ITEM:
                 {
                     ESP_LOGI(LOG_TAG, "Open CLEANING 2 page");
-                    // ui_show(&ui_cleaning_semiauto_func, UI_SHOW_OVERRIDE);
+                    ui_show(&ui_semiauto_cleaning_func, UI_SHOW_OVERRIDE);
                     break;
                 }
                 case DESCALING_LIST_ITEM:
@@ -328,7 +328,7 @@ static void list_btn_cb(lv_obj_t* obj, lv_event_t event)
         if(obj == obj_list_cleaning_2)
         {
             ESP_LOGI(LOG_TAG, "Open CLEANING 2 page");
-            // ui_show(&ui_cleaning_semiauto_func, UI_SHOW_OVERRIDE);
+            ui_show(&ui_semiauto_cleaning_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_list_descaling)

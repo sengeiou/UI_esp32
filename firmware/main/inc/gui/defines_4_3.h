@@ -154,7 +154,7 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define CLEAN_BAR_HEIGHT               40
 #define CLEAN_BAR_BORDER               3
 #define CLEAN_BAR_X_OFFSET             0
-#define CLEAN_BAR_Y_OFFSET             350
+#define CLEAN_BAR_Y_OFFSET             400
 #define CLEAN_BUTTON_WIDTH             130
 #define CLEAN_BUTTON_HEIGHT            200
 #define CLEAN_BUTTON_RADIUS            15
