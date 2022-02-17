@@ -166,8 +166,6 @@ static void wifi_btn_cb(lv_obj_t* obj, lv_event_t event)
     {
         if(obj == obj_button_ok)
         {
-            printf("%d\n", __LINE__);
-            printf("RETE %s\n", lv_dropdown_get_text(obj_ddlist_ssid));
             strcpy(machineConnectivity.ssid, ssid);
             strcpy(machineConnectivity.password, lv_textarea_get_text(obj_password_area));
             machineConnectivity.wifiEnabled = true;
@@ -178,7 +176,6 @@ static void wifi_btn_cb(lv_obj_t* obj, lv_event_t event)
         
         if(obj == obj_button_cancel)
         {
-            printf("CANCEL Button\n");
             esp_wifi_scan_stop();
             ui_show(&ui_menu_func, UI_SHOW_OVERRIDE);
         }
@@ -186,7 +183,8 @@ static void wifi_btn_cb(lv_obj_t* obj, lv_event_t event)
         if(obj == obj_button_scan)
         {
             printf("SCAN Button\n");
-            
+            lv_dropdown_clear_options(obj_ddlist_ssid);
+
             xEventGroupSetBits(xWifiEvents, WIFI_RESET_BIT);
             std::this_thread::sleep_for(std::chrono::seconds(3));
 
@@ -200,7 +198,7 @@ static void wifi_btn_cb(lv_obj_t* obj, lv_event_t event)
                 esp_wifi_scan_get_ap_records(&number, ap_info);
                 esp_wifi_scan_get_ap_num(&ap_count);
                 ESP_LOGI(LOG_TAG, "Total APs scanned = %u", ap_count);
-                for (int i = 0; (i < DEFAULT_SCAN_LIST_SIZE) && (i < ap_count); i++)
+                for(int i = 0; (i < DEFAULT_SCAN_LIST_SIZE) && (i < ap_count); i++)
                 {
                     ESP_LOGI(LOG_TAG, "SSID \t\t%s (RSSI: %d)", ap_info[i].ssid, ap_info[i].rssi);
                     lv_dropdown_add_option(obj_ddlist_ssid, (const char*)ap_info[i].ssid, i);
@@ -224,7 +222,6 @@ static void wifi_ssid_cb(lv_obj_t* obj, lv_event_t event)
         }
         else
         {
-
             lv_dropdown_get_selected_str(obj, ssid, sizeof(ssid));
             ESP_LOGI(LOG_TAG, "Selected Wi-Fi network: %s", ssid);
         }
@@ -244,7 +241,7 @@ static void pass_textarea_cb(lv_obj_t* obj, lv_event_t event)
 
 static void keyboard_cb(lv_obj_t* keyboard, lv_event_t event)
 {
-    if(event == LV_EVENT_CANCEL)
+    if(event == LV_EVENT_CANCEL || event == LV_EVENT_APPLY)
     {
         lv_keyboard_set_textarea(obj_keyboard, NULL);
         lv_obj_del(obj_keyboard);
