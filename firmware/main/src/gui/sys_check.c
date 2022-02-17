@@ -25,7 +25,7 @@
 
 static const char *TAG = "sys_check";
 
-extern lv_font_t default_big_font;
+extern lv_font_t default_medium_font;
 
 #define LOG_TRACE(...)  ESP_LOGI(TAG, ##__VA_ARGS__)
 #define CHECK(a, str, ret_val) do { \
@@ -49,7 +49,7 @@ static void err_show(const char *text)
 {
     if (NULL == msg_box) {
         msg_box = lv_msgbox_create(lv_scr_act(), NULL);
-        lv_obj_set_style_local_text_font(msg_box, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_big_font);
+        lv_obj_set_style_local_text_font(msg_box, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
         lv_obj_set_style_local_border_width(msg_box, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, 0);
 
     }

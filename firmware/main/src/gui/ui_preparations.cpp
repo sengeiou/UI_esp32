@@ -149,7 +149,7 @@ static bool check_coffee_warnings()
         {
             static const char* btns[] = { "OK", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
             char buff[128];
             sprintf(buff, "%s ( %s %s %s %s)", "Can't erogate coffee\n", 
                 preparation.warnings.water_empty ? "WATER_EMPTY" : "", 
@@ -181,7 +181,7 @@ static bool check_milk_warnings()
         {
             static const char* btns[] = { "OK", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
             char buff[128];
             sprintf(buff, "%s ( %s %s %s)", "Can't erogate milk\n", 
                 preparation.warnings.water_empty ? "WATER_EMPTY" : "", 
@@ -212,7 +212,7 @@ static bool check_water_warnings()
         {
             static const char* btns[] = { "OK", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
             char buff[128];
             sprintf(buff, "%s ( %s %s)", "Can't erogate milk\n", 
                 preparation.warnings.pod_extracted ? "POD_REMOVED" : "", 

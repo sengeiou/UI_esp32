@@ -2,40 +2,14 @@
 #define _DEFINES_H_
 
 #include "lvgl.h"
-#include "board.h"
 #include "sdkconfig.h"
 
 #define LV_STATE_ALL    (LV_STATE_DEFAULT | LV_STATE_PRESSED)
 
 
-// extern lv_font_t font_clock_32;
-// extern lv_font_t font_clock_108;
-// extern lv_font_t font_en_18;
-extern lv_font_t font_en_20;
-extern lv_font_t font_en_24;
-extern lv_font_t font_en_28;
-// extern lv_font_t font_en_32;
-// extern lv_font_t font_en_36;
-// extern lv_font_t font_en_40;
-// extern lv_font_t font_en_48;
-// extern lv_font_t font_en_bold_16;
-// extern lv_font_t font_en_bold_20;
-// extern lv_font_t font_en_bold_24;
-// extern lv_font_t font_en_bold_28;
-// extern lv_font_t font_en_bold_32;
-// extern lv_font_t font_en_bold_36;
-// extern lv_font_t font_en_bold_48;
-extern lv_font_t font_en_bold_60;
-// extern lv_font_t font_en_bold_72;
-// extern lv_font_t font_en_20_compress;
-// extern lv_font_t font_kb_24;
-// extern lv_font_t font_symbol_28;
-// extern lv_font_t font_en_thin_20;
-// extern lv_font_t font_bar_symbol;
-
-
 inline lv_font_t default_small_font  = lv_font_montserrat_24;
-inline lv_font_t default_big_font    = lv_font_montserrat_40;
+inline lv_font_t default_medium_font = lv_font_montserrat_36;
+inline lv_font_t default_big_font    = lv_font_montserrat_48;
 
 
 // Standby Page
@@ -49,8 +23,6 @@ inline lv_font_t default_big_font    = lv_font_montserrat_40;
 #define STANDBY_LABEL_HEIGHT    50
 
 //Warning bar
-inline lv_font_t stsbar_button_font = lv_font_montserrat_40;
-inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define WARNBAR_WIDTH                   70
 #define WARNBAR_HEIGHT                  480
 #define WARNBAR_BUTTON_WIDTH            60
@@ -86,7 +58,6 @@ inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define PREP_POPUP_HEIGHT       300
 
 // Erogation Page
-inline lv_font_t erog_label_font  = font_en_24;
 #define EROG_CONT_WIDTH         800
 #define EROG_CONT_HEIGHT        480
 #define EROG_LABEL_WIDTH        600
@@ -163,9 +134,7 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define CLEAN_BUTTON_Y_OFFSET          120
 
 
-// Descaling Page
-inline lv_font_t desc_label_font  = font_en_bold_60;
-inline lv_font_t desc_button_font = font_en_28;
+// Descaling Page (TBD)
 #define DESC_LABEL_WIDTH        660
 #define DESC_LABEL_HEIGHT       150
 #define DESC_LABEL_X_OFFSET     0

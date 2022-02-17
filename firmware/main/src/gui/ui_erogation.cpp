@@ -333,7 +333,7 @@ void ui_erogation_init(void *data)
     lv_obj_set_click(obj_bar_milk, false);
 
     msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-    lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &erog_label_font);
+    lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
     lv_msgbox_set_text(msgbox, EROG_DRINK_READY);
     lv_msgbox_add_btns(msgbox, btns);
     lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, EROG_MSGBOX_X_OFFSET, EROG_MSGBOX_Y_OFFSET);

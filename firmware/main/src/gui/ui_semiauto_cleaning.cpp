@@ -136,7 +136,7 @@ void ui_semiauto_cleaning_init(void *data)
     obj_message_label = lv_label_create(obj_container, NULL);
     lv_label_set_recolor(obj_message_label, true);
     lv_label_set_align(obj_message_label, LV_LABEL_ALIGN_CENTER);
-    lv_obj_set_style_local_value_font(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &lv_font_montserrat_30);
+    lv_obj_set_style_local_value_font(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &default_medium_font);
     lv_obj_set_style_local_bg_color(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_message_label, CLEAN_MESS_LABEL_WIDTH, CLEAN_MESS_LABEL_HEIGHT);

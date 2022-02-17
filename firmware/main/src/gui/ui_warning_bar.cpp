@@ -258,7 +258,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "START", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_DESCALING_NEEDED_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -270,7 +270,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_WATER_EMPTY_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -282,7 +282,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_POD_GENERIC_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -294,7 +294,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &stsbar_msgbox_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_GENERIC_WARNING_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
