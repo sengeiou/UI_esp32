@@ -111,15 +111,13 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define MENU_LIST_X_OFFSET          100
 
 //Wifi Page
-// inline lv_font_t wifi_button_font      = font_en_28;
-// inline lv_font_t wifi_save_button_font = lv_font_montserrat_40;
-#define WIFI_PASS_AREA_WIDTH            400
+#define WIFI_PASS_AREA_WIDTH            600
 #define WIFI_PASS_AREA_HEIGHT           50
-#define WIFI_SCAN_LIST_WIDTH            400
+#define WIFI_SCAN_LIST_WIDTH            600
 #define WIFI_SCAN_LIST_HEIGHT           50
-#define WIFI_SCAN_BUTTON_WIDTH          250
+#define WIFI_SCAN_BUTTON_WIDTH          200
 #define WIFI_SCAN_BUTTON_HEIGHT         50
-#define WIFI_SCAN_BUTTON_X_OFFSET       0
+#define WIFI_SCAN_BUTTON_X_OFFSET       50
 #define WIFI_SCAN_BUTTON_Y_OFFSET       30
 #define WIFI_SCAN_LIST_Y_OFFSET         20
 #define WIFI_PASS_AREA_Y_OFFSET         20

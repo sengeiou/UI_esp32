@@ -23,4 +23,13 @@
 #define WARNBAR_DESCALING_INPROGRESS_MESSAGE    "Procedura di decalcifica in corso. Attendere il completamento..."
 #define WARNBAR_GENERIC_WARNING_MESSAGE         "Errore generico. Contattare l'assistenza"
 
+
+#define MENU_GENERAL_BUTTON                     "Configurazione generale"
+#define MENU_WIFI_BUTTON                        "Configurazione Wi-Fi"
+#define MENU_SETTINGS_BUTTON                    "Settaggi macchina"
+#define MENU_STATISTICS_BUTTON                  "Statistiche macchina"
+#define MENU_CLEANING1_BUTTON                   "Pulizia giornaliera (Automatica)"
+#define MENU_CLEANING2_BUTTON                   "Pulizia settimanale (Semi-Automatica)"
+#define MENU_DESCALING_BUTTON                   "Decalcifica"
+
 #endif /* _STRINGS_IT_H_ */

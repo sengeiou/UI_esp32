@@ -31,11 +31,13 @@ static lv_obj_t* obj_button_back  = NULL;
 
 static lv_obj_t* obj_list           = NULL;
 
+static lv_obj_t* obj_list_general       = NULL;
 static lv_obj_t* obj_list_wifi          = NULL;
 static lv_obj_t* obj_list_settings      = NULL;
 static lv_obj_t* obj_list_statistics    = NULL;
 static lv_obj_t* obj_list_cleaning_1    = NULL;
 static lv_obj_t* obj_list_cleaning_2    = NULL;
+static lv_obj_t* obj_list_descaling     = NULL;
 
 /* Static function forward declaration */
 static void menu_btn_cb(lv_obj_t *obj, lv_event_t event);
@@ -45,11 +47,13 @@ static void update_selected_item_list();
 
 typedef enum
 {
-    WIFI_LIST_ITEM = 0,
+    GENERAL_LIST_ITEM = 0,
+    WIFI_LIST_ITEM,
     SETTINGS_LIST_ITEM,
     STATISTICS_LIST_ITEM,
     CLEANING_1_LIST_ITEM,
     CLEANING_2_LIST_ITEM,
+    DESCALING_LIST_ITEM,
 
     MAX_LIST_ITEM
 } list_item_t;
@@ -61,13 +65,30 @@ static void configure_list_button(lv_obj_t* button)
     lv_obj_set_event_cb(button, list_btn_cb);
 }
 
-static void configure_button(lv_obj_t* button, const char* text)
+static void configure_main_button(lv_obj_t* button, const char* text)
 {
     lv_obj_set_size(button, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
     lv_obj_set_style_local_bg_color(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_radius(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 20);
+    lv_obj_set_style_local_radius(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 30);
     lv_obj_set_style_local_border_width(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_set_style_local_text_color(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_event_cb(button, menu_btn_cb);
+
+    lv_obj_t* label = lv_label_create(button, NULL);
+    lv_label_set_recolor(label, true);
+    lv_label_set_align(label, LV_ALIGN_CENTER);
+    lv_label_set_text(label, text);
+    lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
+}
+
+static void configure_arrow_button(lv_obj_t* button, const char* text)
+{
+    lv_obj_set_size(button, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+    lv_obj_set_style_local_bg_color(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_radius(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 35);
+    lv_obj_set_style_local_border_width(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 5);
+    lv_obj_set_style_local_border_color(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    lv_obj_set_style_local_text_color(button, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_event_cb(button, menu_btn_cb);
 
     lv_obj_t* label = lv_label_create(button, NULL);
@@ -93,19 +114,19 @@ void ui_menu_init(void *data)
     lv_obj_align(obj_container, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_button_ok = lv_btn_create(obj_container, NULL);
-    configure_button(obj_button_ok, LV_SYMBOL_OK);
+    configure_main_button(obj_button_ok, LV_SYMBOL_OK);
     lv_obj_align(obj_button_ok, NULL, LV_ALIGN_IN_LEFT_MID, MENU_BUTTON_X_OFFSET, -40);   
 
     obj_button_back = lv_btn_create(obj_container, NULL);
-    configure_button(obj_button_back, LV_SYMBOL_CLOSE);
+    configure_main_button(obj_button_back, LV_SYMBOL_CLOSE);
     lv_obj_align(obj_button_back, NULL, LV_ALIGN_IN_LEFT_MID, MENU_BUTTON_X_OFFSET, 40);   
 
     obj_button_up = lv_btn_create(obj_container, NULL);
-    configure_button(obj_button_up, LV_SYMBOL_UP);
+    configure_arrow_button(obj_button_up, LV_SYMBOL_UP);
     lv_obj_align(obj_button_up, NULL, LV_ALIGN_IN_LEFT_MID, MENU_BUTTON_X_OFFSET, -120);   
 
     obj_button_down = lv_btn_create(obj_container, NULL);
-    configure_button(obj_button_down, LV_SYMBOL_DOWN);
+    configure_arrow_button(obj_button_down, LV_SYMBOL_DOWN);
     lv_obj_align(obj_button_down, NULL, LV_ALIGN_IN_LEFT_MID, MENU_BUTTON_X_OFFSET, 120);   
 
     obj_list = lv_list_create(obj_container, NULL);
@@ -115,20 +136,26 @@ void ui_menu_init(void *data)
     lv_obj_set_style_local_border_width(obj_list, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_align(obj_list, NULL, LV_ALIGN_IN_LEFT_MID, MENU_LIST_X_OFFSET, 0);
 
-    obj_list_wifi = lv_list_add_btn(obj_list, LV_SYMBOL_WIFI, "Wi-Fi configuration");
+    obj_list_general = lv_list_add_btn(obj_list, LV_SYMBOL_HOME, "\t" MENU_GENERAL_BUTTON);
+    configure_list_button(obj_list_general);
+
+    obj_list_wifi = lv_list_add_btn(obj_list, LV_SYMBOL_WIFI, "\t" MENU_WIFI_BUTTON);
     configure_list_button(obj_list_wifi);
 
-    obj_list_settings = lv_list_add_btn(obj_list, LV_SYMBOL_SETTINGS, "Machine settings");
+    obj_list_settings = lv_list_add_btn(obj_list, LV_SYMBOL_SETTINGS, "\t" MENU_SETTINGS_BUTTON);
     configure_list_button(obj_list_settings);
 
-    obj_list_statistics = lv_list_add_btn(obj_list, LV_SYMBOL_LIST, "Machine statistics");
+    obj_list_statistics = lv_list_add_btn(obj_list, LV_SYMBOL_LIST, "\t" MENU_STATISTICS_BUTTON);
     configure_list_button(obj_list_statistics);
 
-    obj_list_cleaning_1 = lv_list_add_btn(obj_list, LV_SYMBOL_REFRESH, "Daily cleaning (Automatic)");
+    obj_list_cleaning_1 = lv_list_add_btn(obj_list, LV_SYMBOL_REFRESH, "\t" MENU_CLEANING1_BUTTON);
     configure_list_button(obj_list_cleaning_1);
 
-    obj_list_cleaning_2 = lv_list_add_btn(obj_list, LV_SYMBOL_REFRESH LV_SYMBOL_REFRESH, "Weekly Cleaning (Semi -Automatic)");
+    obj_list_cleaning_2 = lv_list_add_btn(obj_list, LV_SYMBOL_REFRESH LV_SYMBOL_REFRESH, "\t" MENU_CLEANING2_BUTTON);
     configure_list_button(obj_list_cleaning_2);
+
+    obj_list_descaling = lv_list_add_btn(obj_list, LV_SYMBOL_LOOP, "\t" MENU_DESCALING_BUTTON);
+    configure_list_button(obj_list_descaling);
 
     lvgl_sem_give();
 
@@ -137,7 +164,7 @@ void ui_menu_init(void *data)
 
 void ui_menu_show(void *data)
 {
-    list_index = WIFI_LIST_ITEM;
+    list_index = GENERAL_LIST_ITEM;
 
     if(ui_state_dis == ui_menu_state)
     {
@@ -188,6 +215,12 @@ static void menu_btn_cb(lv_obj_t* obj, lv_event_t event)
         {
             switch(list_index)
             {
+                case GENERAL_LIST_ITEM:
+                {
+                    ESP_LOGI(LOG_TAG, "Open GENERAL page");
+                    // ui_show(&ui_general_func, UI_SHOW_OVERRIDE);
+                    break;
+                }
                 case WIFI_LIST_ITEM:
                 {
                     ESP_LOGI(LOG_TAG, "Open WIFI page");
@@ -216,6 +249,12 @@ static void menu_btn_cb(lv_obj_t* obj, lv_event_t event)
                 {
                     ESP_LOGI(LOG_TAG, "Open CLEANING 2 page");
                     // ui_show(&ui_cleaning_semiauto_func, UI_SHOW_OVERRIDE);
+                    break;
+                }
+                case DESCALING_LIST_ITEM:
+                {
+                    ESP_LOGI(LOG_TAG, "Open DESCALING page");
+                    // ui_show(&ui_descaling_func, UI_SHOW_OVERRIDE);
                     break;
                 }
                 default:
@@ -252,6 +291,13 @@ static void list_btn_cb(lv_obj_t* obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
+
+        if(obj == obj_list_general)
+        {
+            ESP_LOGI(LOG_TAG, "Open GENERAL page");
+            // ui_show(&ui_general_func, UI_SHOW_OVERRIDE);
+        }
+
         if(obj == obj_list_wifi)
         {
             ESP_LOGI(LOG_TAG, "Open WIFI page");
@@ -260,22 +306,32 @@ static void list_btn_cb(lv_obj_t* obj, lv_event_t event)
         
         if(obj == obj_list_settings)
         {
-            printf("List SETTINGS Button\n");
+            ESP_LOGI(LOG_TAG, "Open SETTINGS page");
+            // ui_show(&ui_settings_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_list_statistics)
         {
-            printf("List STATISTICS Button\n");
+            ESP_LOGI(LOG_TAG, "Open STATISTICS page");
+            // ui_show(&ui_statistics_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_list_cleaning_1)
         {
-            printf("List CLEANING 1 Button\n");
+            ESP_LOGI(LOG_TAG, "Open CLEANING 1 page");
+            // ui_show(&ui_cleaning_auto_func, UI_SHOW_OVERRIDE);
         }
 
         if(obj == obj_list_cleaning_2)
         {
-            printf("List CLEANING 2 Button\n");
+            ESP_LOGI(LOG_TAG, "Open CLEANING 2 page");
+            // ui_show(&ui_cleaning_semiauto_func, UI_SHOW_OVERRIDE);
+        }
+
+        if(obj == obj_list_descaling)
+        {
+            ESP_LOGI(LOG_TAG, "Open DESCALING page");
+            // ui_show(&ui_descaling_func, UI_SHOW_OVERRIDE);
         }
     }
 }
