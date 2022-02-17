@@ -166,6 +166,8 @@ void ui_main(void)
     ui_menu_hide(NULL);
     ui_wifi_init(NULL);
     ui_wifi_hide(NULL);
+    ui_settings_init(NULL);
+    ui_settings_hide(NULL);
 
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);

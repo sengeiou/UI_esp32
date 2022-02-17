@@ -115,6 +115,8 @@ _UI_FUNC_DEF_(standby);
 _UI_FUNC_DEF_(fault);
 _UI_FUNC_DEF_(menu);
 _UI_FUNC_DEF_(wifi);
+_UI_FUNC_DEF_(settings);
+
 
 /**
  * @brief Init menu bar.
