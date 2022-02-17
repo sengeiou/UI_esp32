@@ -117,6 +117,7 @@ _UI_FUNC_DEF_(menu);
 _UI_FUNC_DEF_(wifi);
 _UI_FUNC_DEF_(settings);
 _UI_FUNC_DEF_(statistics);
+_UI_FUNC_DEF_(auto_cleaning);
 
 
 /**

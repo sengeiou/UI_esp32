@@ -133,6 +133,34 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define STAT_TAB_Y_OFFSET       0
 #define STAT_COL1_WIDTH         400
 #define STAT_COL2_WIDTH         100
+#define STAT_MANUAL_SCROLL      70
+
+// Cleaning Pages
+#define CLEAN_CONT_WIDTH               800
+#define CLEAN_CONT_HEIGHT              480
+#define CLEAN_TITLE_LABEL_WIDTH        660
+#define CLEAN_TITLE_LABEL_HEIGHT       80
+#define CLEAN_TITLE_LABEL_X_OFFSET     0
+#define CLEAN_TITLE_LABEL_Y_OFFSET     20
+#define CLEAN_IMAGE_WIDTH              200
+#define CLEAN_IMAGE_HEIGHT             200
+#define CLEAN_IMAGE_X_OFFSET           0
+#define CLEAN_IMAGE_Y_OFFSET           120
+#define CLEAN_MESS_LABEL_WIDTH         660
+#define CLEAN_MESS_LABEL_HEIGHT        60
+#define CLEAN_MESS_LABEL_X_OFFSET      0
+#define CLEAN_MESS_LABEL_Y_OFFSET      340
+#define CLEAN_BAR_WIDTH                600
+#define CLEAN_BAR_HEIGHT               40
+#define CLEAN_BAR_BORDER               3
+#define CLEAN_BAR_X_OFFSET             0
+#define CLEAN_BAR_Y_OFFSET             350
+#define CLEAN_BUTTON_WIDTH             130
+#define CLEAN_BUTTON_HEIGHT            200
+#define CLEAN_BUTTON_RADIUS            15
+#define CLEAN_BUTTON_BORDER            0
+#define CLEAN_BUTTON_X_OFFSET          260
+#define CLEAN_BUTTON_Y_OFFSET          120
 
 
 // Descaling Page
@@ -153,25 +181,5 @@ inline lv_font_t desc_button_font = font_en_28;
 #define DESC_BUTTON_BORDER      0
 #define DESC_BUTTON_X_OFFSET    0
 #define DESC_BUTTON_Y_OFFSET    75
-
-// Cleaning Pages
-inline lv_font_t clean_label_font  = font_en_bold_60;
-inline lv_font_t clean_button_font = font_en_28;
-#define CLEAN_LABEL_WIDTH        660
-#define CLEAN_LABEL_HEIGHT       150
-#define CLEAN_LABEL_X_OFFSET     0
-#define CLEAN_LABEL_Y_OFFSET     -120
-#define CLEAN_BAR_WIDTH          660
-#define CLEAN_BAR_HEIGHT         16
-#define CLEAN_BAR_BORDER         3
-#define CLEAN_BAR_X_OFFSET       0
-#define CLEAN_BAR_Y_OFFSET       45
-#define CLEAN_BUTTON_WIDTH       330
-#define CLEAN_BUTTON_HEIGHT      150
-#define CLEAN_BUTTON_RADIUS      15
-#define CLEAN_BUTTON_BORDER      0
-#define CLEAN_BUTTON_X_OFFSET    16
-#define CLEAN_BUTTON_Y_OFFSET    60
-
 
 #endif /* _DEFINES_H_ */

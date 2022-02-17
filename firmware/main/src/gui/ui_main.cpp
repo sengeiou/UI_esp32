@@ -33,6 +33,9 @@ void* data_generic_warning  = NULL;
 void* data_popup = NULL;
 void* data_fault = NULL;
 
+void* data_cleaning_page  = NULL;
+void* data_descaling_page = NULL;
+
 /* Resources loading list */
 static ui_data_fetch_t img_fetch_list[] = {
     /* Preparation Page */    
@@ -49,6 +52,10 @@ static ui_data_fetch_t img_fetch_list[] = {
     { "S:/icons/Logo.bin", &data_logo },
     /* Fault Page */
     { "S:/icons/Fault.bin", &data_fault },  //TODO get image
+    /* Cleaning Page */
+    { "S:/icons/CleaningPage.bin", &data_cleaning_page },
+    /* Descaling Page */
+    { "S:/icons/DescalingPage.bin", &data_descaling_page },
     /* General */
     { "S:/icons/Popup.bin", &data_popup },
     /* Menu Bar */
@@ -170,6 +177,8 @@ void ui_main(void)
     ui_settings_hide(NULL);
     ui_statistics_init(NULL);
     ui_statistics_hide(NULL);
+    ui_auto_cleaning_init(NULL);
+    ui_auto_cleaning_hide(NULL);
 
     ui_standby_show(NULL);
     ui_call_stack_push(&ui_standby_func);
