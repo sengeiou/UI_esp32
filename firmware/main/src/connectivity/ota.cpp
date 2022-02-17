@@ -259,7 +259,6 @@ void first_step_ota_authentication(void)
 
 void second_step_ota_download()
 {
-    setWifiLed(LED_BLINKING, WIFI_OTA_LED_PERIOD, 50);
     ESP_LOGI(TAG_OTA_SECOND, "Starting OTA step 2/2");
 
     esp_err_t err = ESP_OK;
@@ -501,8 +500,6 @@ void second_step_ota_download()
     machineInternalState.ota.dataWritten = 0;
     machineInternalState.ota.firmwareSize = 0;
     save_firmware_connectivity(false);
-
-    setWifiLed(LED_ON, ON_LED_PERIOD, 100);
 
     firmware_restart(3);
 }

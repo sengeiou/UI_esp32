@@ -85,7 +85,7 @@ void special_function(dbg_special_func_code_t cmd)
     // uint8_t data[] = {0xA5, 0x36, 0x01, 0x00, 0x96, 0xC7}
     // uint8_t data[] = {0xA5, 0x36, 0x01, 0x01, 0x86, 0xE6}
     
-    printf("Special function 0.%2X\n", cmd);
+    printf("Special function 0x%.2X\n", cmd);
     switch(cmd)
     {
         case DBG_ON_OFF:
@@ -149,13 +149,13 @@ void special_function(dbg_special_func_code_t cmd)
             add_to_queue(xQueueDbgUartTx, data);
             break;
         }
-        case DBG_FAST_CLEANING: //DESCALING_MODE
+        case DBG_AUTO_CLEANING:     //DESCALING MODE
         {
             uint8_t data[] = {0xA5, 0x36, 0x01, 0x19, 0x15, 0xDF};
             add_to_queue(xQueueDbgUartTx, data);
             break;
         }
-        case DBG_FULL_CLEANING: //PRESSURE_MODE
+        case DBG_SEMIAUTO_CLEANING: //PRESSURE_MODE
         {
             uint8_t data[] = {0xA5, 0x36, 0x01, 0x1D, 0x55, 0x5B};
             add_to_queue(xQueueDbgUartTx, data);

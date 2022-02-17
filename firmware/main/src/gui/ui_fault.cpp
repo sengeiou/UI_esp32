@@ -44,7 +44,7 @@ void ui_fault_init(void *data)
 
 void ui_fault_show(void *data)
 {
-    ui_status_bar_show(false);
+    ui_warning_bar_show(false);
     if(NULL == obj_label)
     {
         ui_fault_init(data);

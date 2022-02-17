@@ -224,10 +224,9 @@ namespace lavazza
             //printf("STS %d -> LOGIC VALUES %d (%d | %d | %d | %d | %d | %d)\n", fsmStatus, logicValues, milkPresence, podRemoved, podFull, podOverflow, waterWarning, descalingWarning, recipeId);
             if(fsmStatus == FSM_STATE_STANDBY)   //standby
             {
-                if((false != guiInternalState.powerOn) || (oldFsmStatus != fsmStatus))
+                if(oldFsmStatus != fsmStatus)
                 {
-                    guiInternalState.powerOn = (fsmStatus != FSM_STATE_STANDBY);
-                    xEventGroupSetBits(xGuiEvents, GUI_POWER_BIT);
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_OFF);
                 }
             }
             else if(fsmStatus == FSM_STATE_FAULT)  //fault
@@ -238,7 +237,6 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
                 }
             }
-            #if BUILD_FOR_NROCS
             else if(fsmStatus == FSM_STATE_CLEANING)  //cleaning
             {
                 if(2 == recipeId)
@@ -254,33 +252,45 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
                 }
             }
-            #endif
-            else
+            else if(fsmStatus == FSM_STATE_BREWING)  //erogation
             {
-                if(true != guiInternalState.powerOn)
+                guiInternalState.erogation.dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
+                guiInternalState.erogation.temperature = msg.payload[7];    //10 per il latte
+                xEventGroupSetBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
+            }
+            else if(fsmStatus == FSM_STATE_STEAMING)  //erogation
+            {
+                guiInternalState.steaming.percent = msg.payload[51];
+                xEventGroupSetBits(xGuiEvents, GUI_NEW_MILK_EROGATION_DATA_BIT);
+            }
+            else if(fsmStatus == FSM_STATE_READY_TO_BREW)  //Ready to brew
+            {
+                if(oldFsmStatus == FSM_STATE_BREWING)
                 {
-                    guiInternalState.powerOn = true;
-                    xEventGroupSetBits(xGuiEvents, GUI_POWER_BIT);
+                    xEventGroupSetBits(xGuiEvents, GUI_STOP_EROGATION_BIT);
                 }
-                
+
+                if(oldFsmStatus == FSM_STATE_STEAMING)
+                {
+                    xEventGroupSetBits(xGuiEvents, GUI_STOP_MILK_EROGATION_BIT);
+                }
+
+                if(oldFsmStatus == FSM_STATE_STANDBY)
+                {
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_ON);
+                }
+            }
+            else
+            {                
+                if(oldFsmStatus == FSM_STATE_STANDBY)
+                {
+                    xEventGroupSetBits(xGuiEvents, GUI_MACHINE_ON);
+                }
+
                 if(false != guiInternalState.isFault)
                 {
                     guiInternalState.isFault = false;
                     xEventGroupSetBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
-                }
-
-                if(fsmStatus == FSM_STATE_BREWING)   //Brewing
-                {
-                    guiInternalState.erogation.dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
-                    guiInternalState.erogation.temperature = msg.payload[7];    //10 per il latte
-                    xEventGroupSetBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
-                }
-                else if(fsmStatus == FSM_STATE_READY_TO_BREW)  //Ready to brew
-                {
-                    if(oldFsmStatus == FSM_STATE_BREWING || oldFsmStatus == FSM_STATE_STEAMING)    //from Steaming (0x08) or Brewing (0x07)
-                    {
-                        xEventGroupSetBits(xGuiEvents, GUI_STOP_EROGATION_BIT);
-                    }
                 }
             }
 
@@ -297,10 +307,14 @@ namespace lavazza
             if(guiInternalState.milkHeadPresence != milkPresence)
             {
                 guiInternalState.milkHeadPresence = milkPresence;
-                xEventGroupSetBits(xGuiEvents, GUI_ENABLE_CAPPUCCINO_BIT);
+                xEventGroupSetBits(xGuiEvents, GUI_ENABLE_MILK_BIT);
             }
 
-            oldFsmStatus = fsmStatus;
+            if(oldFsmStatus != fsmStatus)
+            {
+                printf("New Status %d | Old Status %d\n", fsmStatus, oldFsmStatus);
+                oldFsmStatus = fsmStatus;
+            }
         }
     }
 }

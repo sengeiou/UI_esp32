@@ -196,8 +196,7 @@ void start_tasks()
     #endif
     utils::system::start_thread_core(&gui_task, &xHandleGui, "gui_task", 1024*16, 4, 1);
 
-    if(true == machineConnectivity.wifiEnabled)
-        utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 0);
+    utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 0);
 }
 
 void main_task(void* p)
@@ -217,91 +216,16 @@ void main_task(void* p)
             switch(machineInternalState.azureRequest.command)
             {
                 case POWER_ON:
-                {
-                    if(false == guiInternalState.powerOn)
-                    {
-                        special_function(DBG_ON_OFF);
-                    }
-                    break;
-                }
                 case POWER_OFF:
                 {
-                    if(true == guiInternalState.powerOn)
-                    {
-                        special_function(DBG_ON_OFF);
-                    }
+                    //TODO fix
+                    special_function(DBG_ON_OFF);
                     break;
                 }
                 case MAKE_COFFEE:
                 {
-                    switch(machineInternalState.azureRequest.desiredPreparation)
-                    {
-                        case COFFEE_SHORT:
-                        {
-                            guiInternalState.cloudReq.coffeeType = COFFEE_SHORT;
-                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            break;
-                        }
-                        case COFFEE_MEDIUM:
-                        {
-                            guiInternalState.cloudReq.coffeeType = COFFEE_MEDIUM;
-                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            break;
-                        }
-                        case COFFEE_LONG:
-                        {
-                            guiInternalState.cloudReq.coffeeType = COFFEE_LONG;
-                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            break;
-                        }
-                        case CAPPUCCINO_SHORT:
-                        {
-                            if(true == guiInternalState.milkHeadPresence)
-                            {
-                                guiInternalState.cloudReq.coffeeType = CAPPUCCINO_SHORT;
-                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            }
-                            break;
-                        }
-                        case CAPPUCCINO_MEDIUM:
-                        {
-                            if(true == guiInternalState.milkHeadPresence)
-                            {
-                                guiInternalState.cloudReq.coffeeType = CAPPUCCINO_MEDIUM;
-                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            }
-                            break;
-                        }
-                        case CAPPUCCINO_DOUBLE:
-                        {
-                            if(true == guiInternalState.milkHeadPresence)
-                            {
-                                guiInternalState.cloudReq.coffeeType = CAPPUCCINO_DOUBLE;
-                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            }
-                            break;
-                        }
-                        case HOT_MILK:
-                        {
-                            if(true == guiInternalState.milkHeadPresence)
-                            {
-                                guiInternalState.cloudReq.coffeeType = HOT_MILK;
-                                xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            }
-                            break;
-                        }
-                        case HOT_WATER:
-                        {
-                            guiInternalState.cloudReq.coffeeType = HOT_WATER;
-                            xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);
-                            break;
-                        }
-                        default:
-                        {
-                            //Do nothing
-                            break;
-                        }
-                    }
+                    guiInternalState.cloudReq.coffeeType = machineInternalState.azureRequest.desiredPreparation;
+                    xEventGroupSetBits(xGuiEvents, GUI_CLOUD_REQUEST_BIT);                 
                     break;
                 }
                 case FIRMWARE_UPDATE:

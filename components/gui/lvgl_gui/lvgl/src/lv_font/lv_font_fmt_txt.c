@@ -16,10 +16,6 @@
 #include "../lv_misc/lv_utils.h"
 #include "../lv_misc/lv_mem.h"
 
-#if defined(LV_GC_INCLUDE)
-    #include LV_GC_INCLUDE
-#endif /* LV_ENABLE_GC */
-
 /*********************
  *      DEFINES
  *********************/
@@ -42,22 +38,26 @@ static int32_t unicode_list_compare(const void * ref, const void * element);
 static int32_t kern_pair_8_compare(const void * ref, const void * element);
 static int32_t kern_pair_16_compare(const void * ref, const void * element);
 
-static void decompress(const uint8_t * in, uint8_t * out, lv_coord_t w, lv_coord_t h, uint8_t bpp, bool prefilter);
-static inline void decompress_line(uint8_t * out, lv_coord_t w);
-static inline uint8_t get_bits(const uint8_t * in, uint32_t bit_pos, uint8_t len);
-static inline void bits_write(uint8_t * out, uint32_t bit_pos, uint8_t val, uint8_t len);
-static inline void rle_init(const uint8_t * in,  uint8_t bpp);
-static inline uint8_t rle_next(void);
+#if LV_USE_FONT_COMPRESSED
+    static void decompress(const uint8_t * in, uint8_t * out, lv_coord_t w, lv_coord_t h, uint8_t bpp, bool prefilter);
+    static inline void decompress_line(uint8_t * out, lv_coord_t w);
+    static inline uint8_t get_bits(const uint8_t * in, uint32_t bit_pos, uint8_t len);
+    static inline void bits_write(uint8_t * out, uint32_t bit_pos, uint8_t val, uint8_t len);
+    static inline void rle_init(const uint8_t * in,  uint8_t bpp);
+    static inline uint8_t rle_next(void);
+#endif /* LV_USE_FONT_COMPRESSED */
 
 /**********************
  *  STATIC VARIABLES
  **********************/
-static uint32_t rle_rdp;
-static const uint8_t * rle_in;
-static uint8_t rle_bpp;
-static uint8_t rle_prev_v;
-static uint8_t rle_cnt;
-static rle_state_t rle_state;
+#if LV_USE_FONT_COMPRESSED
+    static uint32_t rle_rdp;
+    static const uint8_t * rle_in;
+    static uint8_t rle_bpp;
+    static uint8_t rle_prev_v;
+    static uint8_t rle_cnt;
+    static rle_state_t rle_state;
+#endif /* LV_USE_FONT_COMPRESSED */
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -194,7 +194,6 @@ void _lv_font_clean_up_fmt_txt(void)
         LV_GC_ROOT(_lv_font_decompr_buf) = NULL;
     }
 }
-
 
 /**********************
  *   STATIC FUNCTIONS
@@ -338,6 +337,7 @@ static int32_t kern_pair_16_compare(const void * ref, const void * element)
     else return (int32_t) ref16_p[1] - element16_p[1];
 }
 
+#if LV_USE_FONT_COMPRESSED
 /**
  * The compress a glyph's bitmap
  * @param in the compressed bitmap
@@ -552,7 +552,6 @@ static inline uint8_t rle_next(void)
             rle_state = RLE_STATE_SINGLE;
         }
 
-
     }
     else if(rle_state == RLE_STATE_COUNTER) {
         ret = rle_prev_v;
@@ -567,6 +566,7 @@ static inline uint8_t rle_next(void)
 
     return ret;
 }
+#endif /* LV_USE_FONT_COMPRESSED */
 
 /** Code Comparator.
  *

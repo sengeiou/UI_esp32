@@ -210,24 +210,38 @@ void gui_task(void* data)
     ui_main();
 
     EventBits_t bits;
-    ui_preparations_enable_cappuccino(true);
+    ui_preparations_enable_milk_preparations(guiInternalState.milkHeadPresence);
     while(true)
     {
-        bits = xEventGroupWaitBits(xGuiEvents, GUI_POWER_BIT | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
-                                               GUI_NEW_EROGATION_DATA_BIT | GUI_STOP_EROGATION_BIT | GUI_ENABLE_CAPPUCCINO_BIT |
+        bits = xEventGroupWaitBits(xGuiEvents, GUI_MACHINE_ON | GUI_MACHINE_OFF | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
+                                               GUI_NEW_EROGATION_DATA_BIT | GUI_NEW_MILK_EROGATION_DATA_BIT | GUI_STOP_EROGATION_BIT | GUI_STOP_MILK_EROGATION_BIT | GUI_ENABLE_MILK_BIT |
                                                GUI_WARNINGS_BIT | GUI_MACHINE_FAULT_BIT | GUI_CLOUD_REQUEST_BIT | GUI_NEW_CLEANING_DATA_BIT, 
                                                pdFALSE, pdFALSE, 1000/portTICK_PERIOD_MS);
 
-        if(bits & GUI_POWER_BIT)
+        if(bits & GUI_MACHINE_ON)
         {
-            xEventGroupClearBits(xGuiEvents, GUI_POWER_BIT);
-            ui_preparations_set_power(guiInternalState.powerOn);
+            printf("Machine on\n");
+            xEventGroupClearBits(xGuiEvents, GUI_MACHINE_ON);
+            ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
+        }
+
+        if(bits & GUI_MACHINE_OFF)
+        {
+            printf("Machine off\n");
+            xEventGroupClearBits(xGuiEvents, GUI_MACHINE_OFF);
+            ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
         }
 
         if(bits & GUI_NEW_EROGATION_DATA_BIT)
         {
             xEventGroupClearBits(xGuiEvents, GUI_NEW_EROGATION_DATA_BIT);
-            ui_erogation_update(guiInternalState.erogation.dose, guiInternalState.erogation.temperature, 5.0f);
+            ui_erogation_update(guiInternalState.erogation.dose);
+        }
+
+        if(bits & GUI_NEW_MILK_EROGATION_DATA_BIT)
+        {
+            xEventGroupClearBits(xGuiEvents, GUI_NEW_MILK_EROGATION_DATA_BIT);
+            ui_milk_erogation_update(guiInternalState.steaming.percent);
         }
 
         if(bits & GUI_NEW_CLEANING_DATA_BIT)
@@ -235,11 +249,11 @@ void gui_task(void* data)
             xEventGroupClearBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
             if(guiInternalState.cleaning.recipeId == 0)
             {
-                ui_cleaning_fast_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
+                ui_cleaning_auto_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
             }
             else if(guiInternalState.cleaning.recipeId == 1)
             {
-                ui_cleaning_full_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
+                ui_cleaning_semiauto_update(guiInternalState.cleaning.currentSteps, guiInternalState.cleaning.totalSteps);
             }
             else
             {
@@ -254,24 +268,33 @@ void gui_task(void* data)
             ui_erogation_completed();
         }
 
-        if(bits & GUI_ENABLE_CAPPUCCINO_BIT)
+        if(bits & GUI_STOP_MILK_EROGATION_BIT)
         {
-            xEventGroupClearBits(xGuiEvents, GUI_ENABLE_CAPPUCCINO_BIT);
-            ui_preparations_enable_cappuccino(guiInternalState.milkHeadPresence);
+            xEventGroupClearBits(xGuiEvents, GUI_STOP_MILK_EROGATION_BIT);
+            ui_erogation_milk_completed();
+        }
+
+        
+
+        if(bits & GUI_ENABLE_MILK_BIT)
+        {
+            printf("Milk detection\n");
+            xEventGroupClearBits(xGuiEvents, GUI_ENABLE_MILK_BIT);
+            ui_preparations_enable_milk_preparations(guiInternalState.milkHeadPresence);
         }
 
         if(bits & GUI_WARNINGS_BIT)
         {
             xEventGroupClearBits(xGuiEvents, GUI_WARNINGS_BIT);
-            ui_status_bar_set_descaling_warning(guiInternalState.warnings.descaling);
-            ui_status_bar_set_water_empty_warning(guiInternalState.warnings.waterEmpty);
-            ui_status_bar_set_pod_warning(guiInternalState.warnings.podFull);
+            ui_warning_bar_set_descaling_warning(guiInternalState.warnings.descaling);
+            ui_warning_bar_set_water_empty_warning(guiInternalState.warnings.waterEmpty);
+            ui_warning_bar_set_pod_warning(guiInternalState.warnings.podFull);
         }
 
         if(bits & GUI_MACHINE_FAULT_BIT)
         {
             xEventGroupClearBits(xGuiEvents, GUI_MACHINE_FAULT_BIT);
-            ui_preparations_set_fault(guiInternalState.isFault);
+            ui_show(&ui_fault_func, UI_SHOW_OVERRIDE);
         }
 
         if(bits & GUI_CLOUD_REQUEST_BIT)
@@ -286,21 +309,19 @@ void gui_task(void* data)
         {
             case 0:
             {
-                ui_preparations_set_power(0);
                 counter++;
                 break;
             }
             case 1:
             {
-                ui_preparations_set_power(1);
                 counter++;
                 break;
             }
             case 4:
             {
-                ui_status_bar_set_descaling_warning(guiInternalState.warnings.descaling);
-                ui_status_bar_set_water_empty_warning(guiInternalState.warnings.waterEmpty);
-                ui_status_bar_set_pod_warning(guiInternalState.warnings.podFull);
+                ui_warning_bar_set_descaling_warning(guiInternalState.warnings.descaling);
+                ui_warning_bar_set_water_empty_warning(guiInternalState.warnings.waterEmpty);
+                ui_warning_bar_set_pod_warning(guiInternalState.warnings.podFull);
                 counter = 0;
                 break;
             }

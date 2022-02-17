@@ -4,6 +4,7 @@
 #include "esp_log.h"
 #include "types.h"
 #include "board.h"
+#include "lvgl_gui.h"
 
 #if (CONFIG_BOARD_LAVAZZA_4_3 == 1)
 #include "defines_4_3.h"
@@ -76,6 +77,7 @@ typedef struct {
     bool water_empty;
     bool pod_extracted;
     bool pod_full;
+    bool generic;
 } ui_warning_t;
 
 typedef struct {
@@ -107,32 +109,43 @@ void ui_laod_resource(const char *path, void **dst);
 void ui_show(ui_func_desc_t *ui, ui_show_mode_t mode);
 
 /* UI function defination */
-_UI_FUNC_DEF_(page);
-_UI_FUNC_DEF_(preferences);
 _UI_FUNC_DEF_(preparations);
-_UI_FUNC_DEF_(setting);
-_UI_FUNC_DEF_(statistics);
 _UI_FUNC_DEF_(erogation);
-_UI_FUNC_DEF_(descaling);
-_UI_FUNC_DEF_(wifi);
-_UI_FUNC_DEF_(full_cleaning);
-_UI_FUNC_DEF_(fast_cleaning);
 _UI_FUNC_DEF_(standby);
 _UI_FUNC_DEF_(fault);
-_UI_FUNC_DEF_(recognition);
+_UI_FUNC_DEF_(menu);
+_UI_FUNC_DEF_(wifi);
+_UI_FUNC_DEF_(settings);
+_UI_FUNC_DEF_(statistics);
+_UI_FUNC_DEF_(auto_cleaning);
+_UI_FUNC_DEF_(semiauto_cleaning);
+
 
 /**
- * @brief Init status bar. Objects to show time, qucik action buttons and Wi-Fi signal indicate.
+ * @brief Init menu bar.
  * 
  */
-void ui_status_bar_init(void);
+void ui_menu_bar_init(void);
 
 /**
- * @brief Show or hide status bar.
+ * @brief Init warning bar.
+ * 
+ */
+void ui_warning_bar_init(void);
+
+/**
+ * @brief Show or hide menu bar.
  * 
  * @param show True if show.
  */
-void ui_status_bar_show(bool show);
+void ui_menu_bar_show(bool show);
+
+/**
+ * @brief Show or hide warning bar.
+ * 
+ * @param show True if show.
+ */
+void ui_warning_bar_show(bool show);
 
 /**
  * @brief Get page object used as container.
@@ -151,44 +164,29 @@ void ui_erogation_set_target_dose(uint16_t dose);
  * @brief Update current cleaning information of cleaning page. Call it when preparation data is updated.
  * 
  */
-void ui_cleaning_fast_update(uint8_t current_step, uint8_t total_step);
-void ui_cleaning_full_update(uint8_t current_step, uint8_t total_step);
+void ui_cleaning_auto_update(uint8_t current_step, uint8_t total_step);
+void ui_cleaning_semiauto_update(uint8_t current_step, uint8_t total_step);
 
 /**
  * @brief Update current preparation information of preparations page. Call it when preparation data is updated.
  * 
  */
-void ui_erogation_update(uint16_t current_dose, uint8_t temperature, float pressure);
+void ui_erogation_update(uint16_t current_dose);
+void ui_milk_erogation_update(uint8_t steaming_percent);
+
 
 /**
  * @brief Complete current preparation information of preparations page. Call it when preparation is done.
  * 
  */
 void ui_erogation_completed(void);
+void ui_erogation_milk_completed(void);
 
 /**
- * @brief Update statistics table.
+ * @brief Update milk preparations information.
  * 
  */
-void ui_statistics_update_data(uint16_t parId, uint32_t value);
-
-/**
- * @brief Update cappuccino preparation information.
- * 
- */
-void ui_preparations_enable_cappuccino(bool enable);
-
-/**
- * @brief Update machine power status.
- * 
- */
-void ui_preparations_set_power(bool on);
-
-/**
- * @brief Update machine fault status.
- * 
- */
-void ui_preparations_set_fault(bool fault);
+void ui_preparations_enable_milk_preparations(bool enable);
 
 /**
  * @brief Set desired preparation.
@@ -198,25 +196,28 @@ void ui_preparations_set_desired(coffee_type_t prep);
 
 
 /**
- * @brief Update machine warning (descaling, pod full and water empty).
+ * @brief Update machine warning (descaling, pod full, water empty and generic).
  * 
  */
-void ui_status_bar_set_descaling_warning(bool warning);
-void ui_status_bar_set_pod_warning(bool warning);
-void ui_status_bar_set_water_empty_warning(bool warning);
+void ui_warning_bar_set_descaling_warning(bool warning);
+void ui_warning_bar_set_pod_warning(bool warning);
+void ui_warning_bar_set_water_empty_warning(bool warning);
+void ui_warning_bar_set_generic_warning(bool warning);
+
 
 /**
- * @brief Update the wifi status.
+ * @brief Update machine statistics.
  * 
  */
-void ui_status_bar_update_wifi_status(bool active);
+void ui_statistics_update_data(uint16_t parId, uint32_t value);
+
 
 #if ENABLE_CAPS_RECOGNITION_MODULE == 1
 /**
  * @brief Update the recognition status.
  * 
  */
-void ui_status_bar_update_recognition_status(void);
+void ui_warning_bar_update_recognition_status(void);
 #endif
 
 #ifdef __cplusplus

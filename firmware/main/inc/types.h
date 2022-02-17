@@ -56,17 +56,17 @@ static const char* cloud_command_string[] = {
     FOREACH_CLOUD_COMMAND(GENERATE_STRING)
 };
 
-#define FOREACH_COFFEE_TYPE(COFFEE_TYPE) \
-        COFFEE_TYPE(COFFEE_NONE)        \
-		COFFEE_TYPE(COFFEE_SHORT)       \
-        COFFEE_TYPE(COFFEE_MEDIUM)      \
-        COFFEE_TYPE(COFFEE_LONG)        \
-        COFFEE_TYPE(COFFEE_FREE)        \
-        COFFEE_TYPE(CAPPUCCINO_SHORT)   \
-        COFFEE_TYPE(CAPPUCCINO_MEDIUM)  \
-        COFFEE_TYPE(CAPPUCCINO_DOUBLE)  \
-        COFFEE_TYPE(HOT_MILK)           \
-        COFFEE_TYPE(HOT_WATER)
+#define FOREACH_COFFEE_TYPE(COFFEE_TYPE)    \
+        COFFEE_TYPE(PREP_NONE)              \
+        COFFEE_TYPE(PREP_ESPRESSO_CORTO)    \
+		COFFEE_TYPE(PREP_ESPRESSO)          \
+        COFFEE_TYPE(PREP_ESPRESSO_LUNGO)    \
+        COFFEE_TYPE(PREP_MACCHIATO)         \
+        COFFEE_TYPE(PREP_CAPPUCCINO)        \
+        COFFEE_TYPE(PREP_LATTE_MACCHIATO)   \
+        COFFEE_TYPE(PREP_DOSE_LIBERA)       \
+        COFFEE_TYPE(PREP_CAFFE_AMERICANO)   \
+        COFFEE_TYPE(PREP_ACQUA_CALDA)
 
 
 enum coffee_type_t {
@@ -162,19 +162,6 @@ typedef struct
     char password[64];
 } machine_connectivity_t;
 
-#define FOREACH_UI_LED_MODE(UI_LED_MODE) \
-		UI_LED_MODE(LED_OFF)   \
-        UI_LED_MODE(LED_ON)   \
-        UI_LED_MODE(LED_BLINKING)  
-
-enum ui_led_mode_t {
-    FOREACH_UI_LED_MODE(GENERATE_ENUM)
-};
-
-static const char* ui_led_mode_string[] = {
-    FOREACH_UI_LED_MODE(GENERATE_STRING)
-};
-
 typedef enum
 {
 	EROGATION_PROGRESS
@@ -209,8 +196,8 @@ typedef enum
     DBG_DOUBLE_CAPPUCCINO = 0x13,
     DBG_HOT_MILK = 0x14,
     DBG_HOT_WATER = 0x15,
-    DBG_FAST_CLEANING = 0x19,
-    DBG_FULL_CLEANING = 0x1D,
+    DBG_AUTO_CLEANING = 0x19,
+    DBG_SEMIAUTO_CLEANING = 0x1D,
     DBG_FACTORY_RESET = 0x1C
 } dbg_special_func_code_t;
 
@@ -225,7 +212,6 @@ typedef enum
 
 typedef struct
 {
-    bool powerOn;
     bool isFault;
     bool milkHeadPresence;
 
@@ -241,8 +227,12 @@ typedef struct
         uint8_t totalSteps;
         uint8_t currentSteps;
     } cleaning;
-    
 
+    struct
+    {
+        uint8_t percent;
+    } steaming;
+    
     struct
     {
         bool descaling;
