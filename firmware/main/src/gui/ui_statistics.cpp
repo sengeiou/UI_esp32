@@ -38,7 +38,7 @@ static void menu_btn_cb(lv_obj_t *obj, lv_event_t event);
 
 static void update_parameters_from_machine(void)
 {
-    static const uint16_t parNum[] = {300, 301, 302, 303, 304, 305, 306, 307, 308};
+    static const uint16_t parNum[] = {300, 301, 302, 303, 304, 305, 306, 307, 308, 309};
 
     for(uint8_t i = 0; i < sizeof(parNum)/sizeof(uint16_t); i++)
     {
@@ -143,7 +143,7 @@ void ui_statistics_init(void *data)
     lv_obj_align(obj_fullstats, NULL, LV_ALIGN_CENTER, 0, 0);
 
     lv_table_set_col_cnt(obj_fullstats, 2);
-    lv_table_set_row_cnt(obj_fullstats, 9);
+    lv_table_set_row_cnt(obj_fullstats, 10);
     lv_table_set_col_width(obj_fullstats, 0, STAT_COL1_WIDTH);
     lv_table_set_col_width(obj_fullstats, 1, STAT_COL2_WIDTH);
 
@@ -156,16 +156,18 @@ void ui_statistics_init(void *data)
     lv_table_set_cell_align(obj_fullstats, 6, 1, LV_LABEL_ALIGN_LEFT);
     lv_table_set_cell_align(obj_fullstats, 7, 1, LV_LABEL_ALIGN_LEFT);
     lv_table_set_cell_align(obj_fullstats, 8, 1, LV_LABEL_ALIGN_LEFT);
+    lv_table_set_cell_align(obj_fullstats, 9, 1, LV_LABEL_ALIGN_LEFT);
 
     lv_table_set_cell_value(obj_fullstats, 0, 0, "Total Deliveries");
-    lv_table_set_cell_value(obj_fullstats, 1, 0, "Short Coffee");
-    lv_table_set_cell_value(obj_fullstats, 2, 0, "Medium Coffee");
-    lv_table_set_cell_value(obj_fullstats, 3, 0, "Long Coffee");
-    lv_table_set_cell_value(obj_fullstats, 4, 0, "Free Coffee");
-    lv_table_set_cell_value(obj_fullstats, 5, 0, "Short Cappuccino");
-    lv_table_set_cell_value(obj_fullstats, 6, 0, "Medium Cappuccino");
-    lv_table_set_cell_value(obj_fullstats, 7, 0, "Double Cappuccino");
-    lv_table_set_cell_value(obj_fullstats, 8, 0, "Hot Milk");
+    lv_table_set_cell_value(obj_fullstats, 1, 0, "Espresso corto");
+    lv_table_set_cell_value(obj_fullstats, 2, 0, "Espresso");
+    lv_table_set_cell_value(obj_fullstats, 3, 0, "Espresso lungo");
+    lv_table_set_cell_value(obj_fullstats, 4, 0, "Dose libera");
+    lv_table_set_cell_value(obj_fullstats, 5, 0, "Macchiato");
+    lv_table_set_cell_value(obj_fullstats, 6, 0, "Cappuccino");
+    lv_table_set_cell_value(obj_fullstats, 7, 0, "Latte macchiato");
+    lv_table_set_cell_value(obj_fullstats, 8, 0, "Latte caldo");
+    lv_table_set_cell_value(obj_fullstats, 9, 0, "Acqua calda");
 
     lv_table_set_cell_value(obj_fullstats, 0, 1, "--");
     lv_table_set_cell_value(obj_fullstats, 1, 1, "--");
@@ -176,6 +178,7 @@ void ui_statistics_init(void *data)
     lv_table_set_cell_value(obj_fullstats, 6, 1, "--");
     lv_table_set_cell_value(obj_fullstats, 7, 1, "--");
     lv_table_set_cell_value(obj_fullstats, 8, 1, "--");
+    lv_table_set_cell_value(obj_fullstats, 9, 1, "--");
 
     lvgl_sem_give();
 
