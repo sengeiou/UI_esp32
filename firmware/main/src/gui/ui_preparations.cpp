@@ -189,7 +189,8 @@ static bool check_milk_warnings()
                 preparation.warnings.generic ? "GENERIC" : "");
             lv_msgbox_set_text(msgbox, buff);
             lv_msgbox_add_btns(msgbox, btns);
-            lv_obj_align(msgbox, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
+            lv_obj_set_size(msgbox, PREP_POPUP_WIDTH, PREP_POPUP_HEIGHT);
+            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
             lv_obj_set_event_cb(msgbox, basic_popup_cb);
             popup_open = true;
         }

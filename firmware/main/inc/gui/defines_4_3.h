@@ -82,6 +82,8 @@ inline lv_font_t stsbar_msgbox_font = font_en_28;
 #define PREP_LABEL_Y_OFFSET     -50
 #define PREP_IMAGES_X_OFFSET    0
 #define PREP_IMAGES_Y_OFFSET    0
+#define PREP_POPUP_WIDTH        600
+#define PREP_POPUP_HEIGHT       300
 
 // Erogation Page
 inline lv_font_t erog_label_font  = font_en_24;
@@ -106,6 +108,8 @@ inline lv_font_t erog_label_font  = font_en_24;
 #define MENU_BUTTON_HEIGHT          60
 #define MENU_BUTTON_X_OFFSET        20
 #define MENU_BUTTON_Y_OFFSET        60
+#define MENU_BUTTON_RADIUS          35
+#define MENU_BUTTON_BORDER          5
 #define MENU_LIST_WIDTH             680
 #define MENU_LIST_HEIGHT            440
 #define MENU_LIST_X_OFFSET          100
