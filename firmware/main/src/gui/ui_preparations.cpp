@@ -109,6 +109,11 @@ void ui_preparations_set_desired(coffee_type_t prep)
         case PREP_MACCHIATO:
         case PREP_CAPPUCCINO:
         case PREP_LATTE_MACCHIATO:
+        {
+            if(false == check_milk_warnings() && false == check_coffee_warnings())
+                ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
+                break;
+        }
         case PREP_CAFFE_AMERICANO:
         {
             if(false == check_milk_warnings())
