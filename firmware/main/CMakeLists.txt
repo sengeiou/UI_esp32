@@ -5,7 +5,6 @@ set(srcs_dirs 	"src"
 				"src/dbg"
 				"src/camera"
 				"src/connectivity"
-				"lv_fonts"
 				"lv_lib_qrcode")
 
 set(incdir 	"inc"
