@@ -196,8 +196,8 @@ typedef enum
     DBG_DOUBLE_CAPPUCCINO = 0x13,
     DBG_HOT_MILK = 0x14,
     DBG_HOT_WATER = 0x15,
-    DBG_FAST_CLEANING = 0x19,
-    DBG_FULL_CLEANING = 0x1D,
+    DBG_AUTO_CLEANING = 0x19,
+    DBG_SEMIAUTO_CLEANING = 0x1D,
     DBG_FACTORY_RESET = 0x1C
 } dbg_special_func_code_t;
 
