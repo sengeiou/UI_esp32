@@ -69,6 +69,7 @@ static void configure_main_button(lv_obj_t* button, const char* text)
     lv_obj_set_style_local_border_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_bg_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+    lv_obj_set_style_local_text_font(button, LV_OBJ_PART_MAIN, LV_STATE_ALL, &menubar_button_font);
     lv_obj_set_event_cb(button, menu_btn_cb);
 
     lv_obj_t* label = lv_label_create(button, NULL);
@@ -89,6 +90,7 @@ static void configure_arrow_button(lv_obj_t* button, const char* text)
     lv_obj_set_style_local_bg_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_border_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
+    lv_obj_set_style_local_text_font(button, LV_OBJ_PART_MAIN, LV_STATE_ALL, &menubar_button_font);
     lv_obj_set_event_cb(button, menu_btn_cb);
 
     lv_obj_t* label = lv_label_create(button, NULL);
@@ -136,10 +138,10 @@ void ui_statistics_init(void *data)
     lv_page_set_scrlbar_mode(obj_stat_container, LV_SCRLBAR_MODE_AUTO);
 
     obj_fullstats  = lv_table_create(obj_stat_container, NULL);
-    lv_obj_set_style_local_bg_color(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_obj_set_style_local_bg_color(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
-    lv_obj_set_style_local_radius(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-    lv_obj_set_style_local_border_width(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_bg_color(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_PRESSED | LV_STATE_FOCUSED, LV_COLOR_WHITE);
+    lv_obj_set_style_local_radius(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_PRESSED | LV_STATE_FOCUSED, 0);
+    lv_obj_set_style_local_border_width(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_PRESSED | LV_STATE_FOCUSED, 0);
+    lv_obj_set_style_local_text_font(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_PRESSED | LV_STATE_FOCUSED, &statistics_font);
     lv_obj_align(obj_fullstats, NULL, LV_ALIGN_CENTER, 0, 0);
 
     lv_table_set_col_cnt(obj_fullstats, 2);

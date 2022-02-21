@@ -126,7 +126,7 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_descaling, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_descaling, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -0*MENUBAR_BUTTON_OFFSET);
+    lv_obj_align(obj_btn_descaling, NULL, LV_ALIGN_CENTER, 0, -1.5*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_descaling, obj_btn_warning_cb);
 
     img_descaling_warn = lv_img_create(obj_btn_descaling, NULL);
@@ -141,7 +141,7 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_pod, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_pod, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -1*MENUBAR_BUTTON_OFFSET);
+    lv_obj_align(obj_btn_pod, NULL, LV_ALIGN_CENTER, 0, -0.5*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_pod, obj_btn_warning_cb);
     
     img_pod_warn = lv_img_create(obj_btn_pod, NULL);
@@ -156,7 +156,7 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_water, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_water, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -2*MENUBAR_BUTTON_OFFSET);
+    lv_obj_align(obj_btn_water, NULL, LV_ALIGN_CENTER, 0, 0.5*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_water, obj_btn_warning_cb);
 
     img_water_warn = lv_img_create(obj_btn_water, NULL);
@@ -171,7 +171,7 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_bg_color(obj_btn_generic, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_color(obj_btn_generic, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_btn_generic, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
-    lv_obj_align(obj_btn_generic, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -3*MENUBAR_BUTTON_OFFSET);
+    lv_obj_align(obj_btn_generic, NULL, LV_ALIGN_CENTER, 0, 1.5*MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_generic, obj_btn_warning_cb);
 
     img_generic_warn = lv_img_create(obj_btn_generic, NULL);
@@ -190,7 +190,7 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_value_font(obj_btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, &stsbar_button_font);
     lv_obj_set_style_local_value_color(obj_btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
     lv_obj_set_style_local_value_str(obj_btn_recognition, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_SYMBOL_EYE_OPEN);
-    lv_obj_align(obj_btn_recognition, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -4*MENUBAR_BUTTON_OFFSET);
+    lv_obj_align(obj_btn_recognition, obj_warning_bar, LV_ALIGN_IN_BOTTOM_MID, 0, -MENUBAR_BUTTON_OFFSET);
     lv_obj_set_event_cb(obj_btn_recognition, obj_btn_cb);
     #endif
 
@@ -258,7 +258,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "START", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &warning_popup_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_DESCALING_NEEDED_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -270,7 +270,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &warning_popup_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_WATER_EMPTY_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -282,7 +282,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &warning_popup_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_POD_GENERIC_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -294,7 +294,7 @@ static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
             {
                 static const char* btns[] = { "OK", "" };
                 lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+                lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &warning_popup_font);
                 lv_msgbox_set_text(msgbox, WARNBAR_GENERIC_WARNING_MESSAGE);
                 lv_msgbox_add_btns(msgbox, btns);
                 lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);

@@ -6,13 +6,16 @@
 
 #define LV_STATE_ALL    (LV_STATE_DEFAULT | LV_STATE_PRESSED)
 
-
-inline lv_font_t default_small_font  = lv_font_montserrat_24;
-inline lv_font_t default_medium_font = lv_font_montserrat_36;
+inline lv_font_t default_tiny_font   = lv_font_montserrat_16;
+inline lv_font_t default_small_font  = lv_font_montserrat_26;
+inline lv_font_t default_medium_font = lv_font_montserrat_34;
 inline lv_font_t default_big_font    = lv_font_montserrat_48;
 
 
+inline lv_font_t fault_message_font   = lv_font_montserrat_26;
+
 // Standby Page
+inline lv_font_t standby_message_font   = lv_font_montserrat_26;
 #define QR_CODE_SIZE            250
 #define STANDBY_CONT_WIDTH      800
 #define STANDBY_CONT_HEIGHT     480
@@ -23,6 +26,7 @@ inline lv_font_t default_big_font    = lv_font_montserrat_48;
 #define STANDBY_LABEL_HEIGHT    50
 
 //Warning bar
+inline lv_font_t warning_popup_font     = lv_font_montserrat_26;
 #define WARNBAR_WIDTH                   70
 #define WARNBAR_HEIGHT                  480
 #define WARNBAR_BUTTON_WIDTH            60
@@ -31,6 +35,7 @@ inline lv_font_t default_big_font    = lv_font_montserrat_48;
 #define WARNBAR_BUTTON_BORDER           0
 
 //Menu bar
+inline lv_font_t menubar_button_font    = lv_font_montserrat_34;
 #define MENUBAR_WIDTH                   70
 #define MENUBAR_HEIGHT                  480
 #define MENUBAR_BUTTON_WIDTH            68
@@ -40,6 +45,8 @@ inline lv_font_t default_big_font    = lv_font_montserrat_48;
 #define MENUBAR_BUTTON_BORDER           0
 
 // Preparation Page
+inline lv_font_t preparation_font       = lv_font_montserrat_16;
+inline lv_font_t preparation_popup_font = lv_font_montserrat_26;
 #define PREP_CONT_WIDTH         660
 #define PREP_CONT_HEIGHT        480
 #define PREP_CONT_X_OFFSET      0
@@ -73,6 +80,7 @@ inline lv_font_t default_big_font    = lv_font_montserrat_48;
 #define EROG_MSGBOX_Y_OFFSET    0
 
 // Menu Page
+inline lv_font_t menu_list_font     = lv_font_montserrat_26;
 #define MENU_CONT_WIDTH             800
 #define MENU_CONT_HEIGHT            480
 #define MENU_BUTTON_WIDTH           60
@@ -86,6 +94,8 @@ inline lv_font_t default_big_font    = lv_font_montserrat_48;
 #define MENU_LIST_X_OFFSET          100
 
 //Wifi Page
+inline lv_font_t wifi_button_font       = lv_font_montserrat_34;
+inline lv_font_t wifi_text_font         = lv_font_montserrat_26;
 #define WIFI_PASS_AREA_WIDTH            600
 #define WIFI_PASS_AREA_HEIGHT           50
 #define WIFI_SCAN_LIST_WIDTH            600
@@ -98,6 +108,7 @@ inline lv_font_t default_big_font    = lv_font_montserrat_48;
 #define WIFI_PASS_AREA_Y_OFFSET         20
 
 // Statistics Page
+inline lv_font_t statistics_font        = lv_font_montserrat_26;
 #define STAT_TAB_WIDTH          650
 #define STAT_TAB_HEIGHT         450
 #define STAT_TAB_X_OFFSET       130
@@ -107,6 +118,9 @@ inline lv_font_t default_big_font    = lv_font_montserrat_48;
 #define STAT_MANUAL_SCROLL      70
 
 // Cleaning Pages
+inline lv_font_t clean_title_font      = lv_font_montserrat_48;
+inline lv_font_t clean_button_font     = lv_font_montserrat_34;
+inline lv_font_t clean_message_font    = lv_font_montserrat_26;
 #define CLEAN_CONT_WIDTH               800
 #define CLEAN_CONT_HEIGHT              480
 #define CLEAN_TITLE_LABEL_WIDTH        660

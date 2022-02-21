@@ -102,6 +102,7 @@ void ui_semiauto_cleaning_init(void *data)
     lv_obj_set_size(obj_title_label, CLEAN_TITLE_LABEL_WIDTH, CLEAN_TITLE_LABEL_HEIGHT);
     lv_obj_set_auto_realign(obj_title_label, true);
     lv_obj_align(obj_title_label, NULL, LV_ALIGN_IN_TOP_MID, CLEAN_TITLE_LABEL_X_OFFSET, CLEAN_TITLE_LABEL_Y_OFFSET);
+    lv_obj_set_style_local_text_font(obj_title_label, LV_OBJ_PART_MAIN, LV_STATE_ALL, &clean_title_font);
     lv_label_set_text(obj_title_label, SEMIAUTOCLEANING_TITLE);
     lv_obj_set_click(obj_title_label, false);
 
@@ -114,6 +115,7 @@ void ui_semiauto_cleaning_init(void *data)
     lv_obj_set_style_local_text_color(obj_btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_str(obj_btn_stop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, SEMIAUTOCLEANING_STOP_BUTTON);
     lv_obj_align(obj_btn_stop, NULL, LV_ALIGN_IN_TOP_MID, -CLEAN_BUTTON_X_OFFSET, CLEAN_BUTTON_Y_OFFSET);
+    lv_obj_set_style_local_text_font(obj_btn_stop, LV_OBJ_PART_MAIN, LV_STATE_ALL, &clean_button_font);
     lv_obj_set_event_cb(obj_btn_stop, btn_cb);
 
     img_icon = lv_img_create(obj_container, NULL);
@@ -131,18 +133,20 @@ void ui_semiauto_cleaning_init(void *data)
     lv_obj_set_style_local_text_color(obj_btn_start, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_value_str(obj_btn_start, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, SEMIAUTOCLEANING_START_BUTTON);
     lv_obj_align(obj_btn_start, NULL, LV_ALIGN_IN_TOP_MID, CLEAN_BUTTON_X_OFFSET, CLEAN_BUTTON_Y_OFFSET);
+    lv_obj_set_style_local_text_font(obj_btn_start, LV_OBJ_PART_MAIN, LV_STATE_ALL, &clean_button_font);
     lv_obj_set_event_cb(obj_btn_start, btn_cb);
 
     obj_message_label = lv_label_create(obj_container, NULL);
     lv_label_set_recolor(obj_message_label, true);
     lv_label_set_align(obj_message_label, LV_LABEL_ALIGN_CENTER);
-    lv_obj_set_style_local_value_font(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &default_medium_font);
+    lv_obj_set_style_local_value_font(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &clean_message_font);
     lv_obj_set_style_local_bg_color(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(obj_message_label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_message_label, CLEAN_MESS_LABEL_WIDTH, CLEAN_MESS_LABEL_HEIGHT);
     lv_obj_set_auto_realign(obj_message_label, true);
     lv_label_set_text(obj_message_label, SEMIAUTOCLEANING_MESSAGE_READY);
     lv_obj_align(obj_message_label, NULL, LV_ALIGN_IN_TOP_MID, CLEAN_MESS_LABEL_X_OFFSET, CLEAN_MESS_LABEL_Y_OFFSET);
+    lv_obj_set_style_local_text_font(obj_btn_start, LV_OBJ_PART_MAIN, LV_STATE_ALL, &clean_message_font);
     lv_obj_set_click(obj_message_label, false);
 
     obj_bar = lv_bar_create(obj_container, NULL);
@@ -181,6 +185,7 @@ void ui_semiauto_cleaning_show(void *data)
     progress = 0;
     oldProgress = 0;
     lv_bar_set_value(obj_bar, progress, LV_ANIM_OFF);
+    lv_label_set_text(obj_message_label, SEMIAUTOCLEANING_MESSAGE_READY);
     
     ui_warning_bar_show(false);
     ui_menu_bar_show(false);

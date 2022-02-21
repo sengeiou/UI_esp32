@@ -56,6 +56,7 @@ static void configure_button(lv_obj_t* button, const char* text)
     lv_obj_set_style_local_border_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_bg_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+    lv_obj_set_style_local_text_font(button, LV_OBJ_PART_MAIN, LV_STATE_ALL, &menubar_button_font);
     lv_obj_set_event_cb(button, wifi_btn_cb);
 
     lv_obj_t* label = lv_label_create(button, NULL);
@@ -94,12 +95,14 @@ void ui_wifi_init(void *data)
     lv_obj_set_style_local_radius(obj_button_scan, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 20);
     lv_obj_set_style_local_border_width(obj_button_scan, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_set_style_local_text_color(obj_button_scan, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_text_font(obj_button_scan, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_button_font);
     lv_obj_set_event_cb(obj_button_scan, wifi_btn_cb);
     lv_obj_align(obj_button_scan, NULL, LV_ALIGN_IN_TOP_MID, WIFI_SCAN_BUTTON_X_OFFSET, WIFI_SCAN_BUTTON_Y_OFFSET);   
 
     lv_obj_t* label = lv_label_create(obj_button_scan, NULL);
     lv_label_set_recolor(label, true);
     lv_label_set_align(label, LV_ALIGN_CENTER);
+    lv_obj_set_style_local_text_font(label, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_button_font);
     lv_label_set_text(label, LV_SYMBOL_REFRESH "  " "SCAN");
     lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
 
@@ -107,6 +110,7 @@ void ui_wifi_init(void *data)
     lv_obj_set_size(obj_ddlist_ssid, WIFI_SCAN_LIST_WIDTH, WIFI_SCAN_LIST_HEIGHT);
     lv_dropdown_set_options(obj_ddlist_ssid, "Scan Wi-Fi network...");
     lv_obj_align(obj_ddlist_ssid, obj_button_scan, LV_ALIGN_OUT_BOTTOM_MID, 0, WIFI_SCAN_LIST_Y_OFFSET);
+    lv_obj_set_style_local_text_font(obj_ddlist_ssid, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_text_font);
     lv_obj_set_event_cb(obj_ddlist_ssid, wifi_ssid_cb);
 
     obj_password_area = lv_textarea_create(obj_container, NULL);
@@ -115,6 +119,7 @@ void ui_wifi_init(void *data)
     lv_obj_set_style_local_bg_color(obj_password_area, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_radius(obj_password_area, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_align(obj_password_area, obj_ddlist_ssid, LV_ALIGN_OUT_BOTTOM_MID, 0, WIFI_PASS_AREA_Y_OFFSET);
+    lv_obj_set_style_local_text_font(obj_password_area, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_text_font);
     lv_textarea_set_text(obj_password_area, "password");
     lv_obj_set_event_cb(obj_password_area, pass_textarea_cb);
 

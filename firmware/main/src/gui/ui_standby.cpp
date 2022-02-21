@@ -84,6 +84,7 @@ void ui_standby_init(void *data)
     lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_label_set_text(obj_label, STANDBY_MESSAGE);
     lv_obj_set_size(obj_label, STANDBY_LABEL_WIDTH, STANDBY_LABEL_HEIGHT);
+    lv_obj_set_style_local_text_font(obj_label, LV_OBJ_PART_MAIN, LV_STATE_ALL, &standby_message_font);
     lv_obj_align(obj_label, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -20);
 
     lvgl_sem_give();
@@ -136,7 +137,6 @@ static void standby_btn_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
-        printf("Power on\n");
         special_function(DBG_ON_OFF);
     }
 }

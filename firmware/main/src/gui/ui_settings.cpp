@@ -137,6 +137,7 @@ static void configure_main_button(lv_obj_t* button, const char* text)
     lv_obj_set_style_local_border_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_bg_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
+    lv_obj_set_style_local_text_font(button, LV_OBJ_PART_MAIN, LV_STATE_ALL, &menubar_button_font);
     lv_obj_set_event_cb(button, menu_btn_cb);
 
     lv_obj_t* label = lv_label_create(button, NULL);
@@ -157,6 +158,7 @@ static void configure_arrow_button(lv_obj_t* button, const char* text)
     lv_obj_set_style_local_bg_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
     lv_obj_set_style_local_border_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_color(button, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_BLACK);
+    lv_obj_set_style_local_text_font(button, LV_OBJ_PART_MAIN, LV_STATE_ALL, &menubar_button_font);
     lv_obj_set_event_cb(button, menu_btn_cb);
 
     lv_obj_t* label = lv_label_create(button, NULL);
