@@ -149,7 +149,7 @@ static bool check_coffee_warnings()
         {
             static const char* btns[] = { "OK", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &preparation_popup_font);
             char buff[128];
             sprintf(buff, "%s ( %s %s %s %s)", "Can't erogate coffee\n", 
                 preparation.warnings.water_empty ? "WATER_EMPTY" : "", 
@@ -158,7 +158,7 @@ static bool check_coffee_warnings()
                 preparation.warnings.generic ? "GENERIC" : "");
             lv_msgbox_set_text(msgbox, buff);
             lv_msgbox_add_btns(msgbox, btns);
-            lv_obj_align(msgbox, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
+            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
             lv_obj_set_event_cb(msgbox, basic_popup_cb);
             popup_open = true;
         }
@@ -181,7 +181,7 @@ static bool check_milk_warnings()
         {
             static const char* btns[] = { "OK", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &preparation_popup_font);
             char buff[128];
             sprintf(buff, "%s ( %s %s %s)", "Can't erogate milk\n", 
                 preparation.warnings.water_empty ? "WATER_EMPTY" : "", 
@@ -212,14 +212,14 @@ static bool check_water_warnings()
         {
             static const char* btns[] = { "OK", "" };
             lv_obj_t* msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+            lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &preparation_popup_font);
             char buff[128];
             sprintf(buff, "%s ( %s %s)", "Can't erogate milk\n", 
                 preparation.warnings.pod_extracted ? "POD_REMOVED" : "", 
                 preparation.warnings.generic ? "GENERIC" : "");
             lv_msgbox_set_text(msgbox, buff);
             lv_msgbox_add_btns(msgbox, btns);
-            lv_obj_align(msgbox, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
+            lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, 0, 0);
             lv_obj_set_event_cb(msgbox, basic_popup_cb);
             popup_open = true;
         }
@@ -257,6 +257,7 @@ static void configure_label_style(lv_obj_t* obj, const char* text)
     lv_label_set_recolor(obj, true);
     lv_label_set_align(obj, LV_LABEL_ALIGN_CENTER);
     lv_obj_set_style_local_text_color(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    lv_obj_set_style_local_text_font(obj, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, &preparation_font);
     lv_label_set_text(obj, text);
     lv_obj_set_size(obj, PREP_LABEL_WIDTH, PREP_LABEL_HEIGHT);
     lv_obj_align(obj, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, PREP_LABEL_Y_OFFSET);
@@ -274,7 +275,7 @@ static void enable_disable_preparation(bool available, lv_obj_t* obj_btn, lv_obj
     {
         lv_obj_set_click(obj_btn, false);
         lv_obj_set_style_local_image_recolor_opa(obj_img, LV_IMG_PART_MAIN, LV_STATE_ALL, LV_OPA_10);
-        lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+        lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_MAKE(0x20, 0x20, 0x20));
     }
 }
 
@@ -451,6 +452,7 @@ void ui_preparations_show(void *data)
     if(ui_state_dis == ui_preparations_state)
     {
         ui_preparations_init(data);
+        ui_preparations_enable_milk_preparations(milkEnable);
     }
     else
     {
