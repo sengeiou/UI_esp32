@@ -220,14 +220,12 @@ void gui_task(void* data)
 
         if(bits & GUI_MACHINE_ON)
         {
-            printf("Machine on\n");
             xEventGroupClearBits(xGuiEvents, GUI_MACHINE_ON);
             ui_show(&ui_preparations_func, UI_SHOW_OVERRIDE);
         }
 
         if(bits & GUI_MACHINE_OFF)
         {
-            printf("Machine off\n");
             xEventGroupClearBits(xGuiEvents, GUI_MACHINE_OFF);
             ui_show(&ui_standby_func, UI_SHOW_OVERRIDE);
         }

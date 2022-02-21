@@ -183,7 +183,7 @@ namespace lavazza
         {
             // DbgLivedata_t livedata = parseNrOcsLivedata(msg.payload);       
             static uint8_t fsmStatus;
-            static uint8_t oldFsmStatus = -1;
+            static uint8_t oldFsmStatus = FSM_STATE_STANDBY;
             static bool podFull, podOverflow, podRemoved;
             static bool podWarning, waterWarning, descalingWarning, milkPresence;
             static uint8_t recipeId;
@@ -312,7 +312,6 @@ namespace lavazza
 
             if(oldFsmStatus != fsmStatus)
             {
-                printf("New Status %d | Old Status %d\n", fsmStatus, oldFsmStatus);
                 oldFsmStatus = fsmStatus;
             }
         }
