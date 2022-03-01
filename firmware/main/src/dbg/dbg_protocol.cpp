@@ -252,7 +252,7 @@ namespace lavazza
                     xEventGroupSetBits(xGuiEvents, GUI_NEW_CLEANING_DATA_BIT);
                 }
             }
-            else if(fsmStatus == FSM_STATE_BREWING)  //erogation
+            else if(fsmStatus == FSM_STATE_PRE_BREWING || fsmStatus == FSM_STATE_BREWING || fsmStatus == FSM_STATE_PRE_INFUSION)  //erogation
             {
                 guiInternalState.erogation.dose = BUILD_UINT16(msg.payload[1], msg.payload[2]);
                 guiInternalState.erogation.temperature = msg.payload[7];    //10 per il latte
@@ -265,7 +265,7 @@ namespace lavazza
             }
             else if(fsmStatus == FSM_STATE_READY_TO_BREW)  //Ready to brew
             {
-                if(oldFsmStatus == FSM_STATE_BREWING)
+                if(oldFsmStatus == FSM_STATE_PRE_BREWING || oldFsmStatus == FSM_STATE_BREWING || oldFsmStatus == FSM_STATE_PRE_INFUSION)
                 {
                     xEventGroupSetBits(xGuiEvents, GUI_STOP_EROGATION_BIT);
                 }
