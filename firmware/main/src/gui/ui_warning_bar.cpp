@@ -133,6 +133,7 @@ void ui_warning_bar_init(void)
     lv_img_set_src(img_descaling_warn, data_descaling_warning);
     lv_img_set_zoom(img_descaling_warn, 140);
     lv_obj_set_style_local_image_recolor_opa(img_descaling_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    lv_obj_set_style_local_image_recolor(img_descaling_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningDescaling ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
     lv_obj_align(img_descaling_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_btn_pod = lv_obj_create(obj_warning_bar, NULL);
@@ -148,6 +149,7 @@ void ui_warning_bar_init(void)
     lv_img_set_src(img_pod_warn, data_pod_warning);
     lv_img_set_zoom(img_pod_warn, 400);
     lv_obj_set_style_local_image_recolor_opa(img_pod_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    lv_obj_set_style_local_image_recolor(img_pod_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningPod ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
     lv_obj_align(img_pod_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_btn_water = lv_obj_create(obj_warning_bar, NULL);
@@ -163,6 +165,7 @@ void ui_warning_bar_init(void)
     lv_img_set_src(img_water_warn, data_water_warning);
     lv_img_set_zoom(img_water_warn, 140);
     lv_obj_set_style_local_image_recolor_opa(img_water_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    lv_obj_set_style_local_image_recolor(img_water_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningWater ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
     lv_obj_align(img_water_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_btn_generic = lv_obj_create(obj_warning_bar, NULL);
@@ -178,6 +181,7 @@ void ui_warning_bar_init(void)
     lv_img_set_src(img_generic_warn, data_generic_warning);
     lv_img_set_zoom(img_generic_warn, 110);
     lv_obj_set_style_local_image_recolor_opa(img_generic_warn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_100);
+    lv_obj_set_style_local_image_recolor(img_generic_warn, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, isWarningGeneric ? LV_COLOR_ORANGE : LV_COLOR_GRAY);
     lv_obj_align(img_generic_warn, NULL, LV_ALIGN_CENTER, 0, 0);
 
     #if CONFIG_ENABLE_CAPS_RECOGNITION_MODULE == 1

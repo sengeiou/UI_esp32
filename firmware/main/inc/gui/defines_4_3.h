@@ -53,7 +53,7 @@ inline lv_font_t preparation_popup_font = lv_font_montserrat_26;
 #define PREP_CONT_Y_OFFSET      0
 #define PREP_BUTTON_WIDTH       220
 #define PREP_BUTTON_HEIGHT      160
-#define PREP_BUTTON_RADIUS      0
+#define PREP_BUTTON_RADIUS      15
 #define PREP_BUTTON_BORDER      2
 #define PREP_BUTTON_Y_OFFSET    -20
 #define PREP_LABEL_WIDTH        220
@@ -76,6 +76,7 @@ inline lv_font_t preparation_popup_font = lv_font_montserrat_26;
 #define EROG_MILK_BAR_Y_OFFSET  -80
 #define EROG_BUTTON_WIDTH       300
 #define EROG_BUTTON_HEIGHT      300
+#define EROG_LABEL_Y_OFFSET     (EROG_BUTTON_HEIGHT + 50)
 #define EROG_MSGBOX_X_OFFSET    0
 #define EROG_MSGBOX_Y_OFFSET    0
 

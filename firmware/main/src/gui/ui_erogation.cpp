@@ -305,7 +305,7 @@ void ui_erogation_init(void *data)
     lv_obj_set_style_local_text_color(obj_label, LV_BAR_PART_BG, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_set_size(obj_label, EROG_LABEL_WIDTH, EROG_LABEL_HEIGHT);
     lv_obj_set_auto_realign(obj_label, true);
-    lv_obj_align(obj_label, NULL, LV_ALIGN_IN_TOP_MID, 0, EROG_BUTTON_HEIGHT);
+    lv_obj_align(obj_label, NULL, LV_ALIGN_IN_TOP_MID, 0, EROG_LABEL_Y_OFFSET);
     lv_obj_set_click(obj_label, false);
 
     obj_bar_coffee = lv_bar_create(obj_container, NULL);
@@ -333,7 +333,11 @@ void ui_erogation_init(void *data)
     lv_obj_set_click(obj_bar_milk, false);
 
     msgbox = lv_msgbox_create(lv_scr_act(), NULL);
-    lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_DEFAULT, &default_medium_font);
+    lv_obj_set_style_local_bg_color(msgbox, LV_OBJ_PART_MAIN, LV_STATE_ALL , LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(msgbox, LV_OBJ_PART_MAIN, LV_STATE_ALL , LV_COLOR_WHITE);
+    lv_obj_set_style_local_border_width(msgbox, LV_OBJ_PART_MAIN, LV_STATE_ALL, 2);
+    lv_obj_set_style_local_radius(msgbox, LV_OBJ_PART_MAIN, LV_STATE_ALL, 10);
+    lv_obj_set_style_local_text_font(msgbox, LV_MSGBOX_PART_BG, LV_STATE_ALL, &preparation_popup_font);
     lv_msgbox_set_text(msgbox, EROG_DRINK_READY);
     lv_msgbox_add_btns(msgbox, btns);
     lv_obj_align(msgbox, NULL, LV_ALIGN_CENTER, EROG_MSGBOX_X_OFFSET, EROG_MSGBOX_Y_OFFSET);

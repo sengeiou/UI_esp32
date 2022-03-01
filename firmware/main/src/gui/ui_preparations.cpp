@@ -242,8 +242,7 @@ static void configure_button_style(lv_obj_t* obj)
     lv_obj_set_style_local_border_width(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, PREP_BUTTON_BORDER);
     lv_obj_set_style_local_border_color(obj, LV_OBJ_PART_MAIN, LV_STATE_PRESSED, LV_COLOR_WHITE);
 
-    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_CHECKED, LV_COLOR_BLACK);
-    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_FOCUSED, LV_COLOR_BLACK);
+    lv_obj_set_style_local_bg_color(obj, LV_OBJ_PART_MAIN, LV_STATE_CHECKED | LV_STATE_FOCUSED, LV_COLOR_BLACK);
 }
 
 static void configure_image_style(lv_obj_t* obj, const void* src)
@@ -265,17 +264,20 @@ static void configure_label_style(lv_obj_t* obj, const char* text)
 
 static void enable_disable_preparation(bool available, lv_obj_t* obj_btn, lv_obj_t* obj_img, lv_obj_t* obj_label)
 {
-    if(true == available)
+    if(ui_state_show == ui_preparations_state)
     {
-        lv_obj_set_click(obj_btn, true);
-        lv_obj_set_style_local_image_recolor_opa(obj_img, LV_IMG_PART_MAIN, LV_STATE_ALL, LV_OPA_100);
-        lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    }
-    else
-    {
-        lv_obj_set_click(obj_btn, false);
-        lv_obj_set_style_local_image_recolor_opa(obj_img, LV_IMG_PART_MAIN, LV_STATE_ALL, LV_OPA_10);
-        lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_MAKE(0x20, 0x20, 0x20));
+        if(true == available)
+        {
+            lv_obj_set_click(obj_btn, true);
+            lv_obj_set_style_local_image_recolor_opa(obj_btn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_0);
+            lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+        }
+        else
+        {
+            lv_obj_set_click(obj_btn, false);
+            lv_obj_set_style_local_image_recolor_opa(obj_btn, LV_IMG_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_80);
+            lv_obj_set_style_local_text_color(obj_label, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_MAKE(0x40, 0x40, 0x40));
+        }
     }
 }
 
@@ -452,18 +454,18 @@ void ui_preparations_show(void *data)
     if(ui_state_dis == ui_preparations_state)
     {
         ui_preparations_init(data);
-        ui_preparations_enable_milk_preparations(milkEnable);
     }
     else
     {
         if(NULL != obj_container)
         {
             lv_obj_set_hidden(obj_container, false);
-            ui_preparations_enable_milk_preparations(milkEnable);
         }
 
         ui_preparations_state = ui_state_show;
     }
+
+    ui_preparations_enable_milk_preparations(milkEnable);
 
     ui_warning_bar_show(true);
     ui_menu_bar_show(true);
