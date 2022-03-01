@@ -210,7 +210,6 @@ void gui_task(void* data)
     ui_main();
 
     EventBits_t bits;
-    ui_preparations_enable_milk_preparations(guiInternalState.milkHeadPresence);
     while(true)
     {
         bits = xEventGroupWaitBits(xGuiEvents, GUI_MACHINE_ON | GUI_MACHINE_OFF | GUI_STATISTICS_DATA_BIT | GUI_SETTINGS_DATA_BIT | 
