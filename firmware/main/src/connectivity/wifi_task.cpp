@@ -59,6 +59,7 @@ static void wifi_station_event_handler(void* arg, esp_event_base_t event_base, i
 
         if(WIFI_NOT_CONFIGURED != machineConnectivity.status && true == machineConnectivity.wifiEnabled)
         {
+            azure_deinit();
             esp_wifi_connect();
             ESP_LOGI(TAG_WIFI, "WIFI is enabled and configured. Retry to connect to the network %s...", machineConnectivity.ssid);
         }
@@ -192,6 +193,7 @@ void wifi_sta_init(void)
     wifi_sta_config.sta.pmf_cfg.required = false;
     
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    // ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_sta_config));
     ESP_ERROR_CHECK(esp_wifi_start());
 

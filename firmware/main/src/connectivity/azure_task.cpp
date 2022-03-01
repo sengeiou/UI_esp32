@@ -244,32 +244,39 @@ void azure_task(void *pvParameter)
 
 void azure_deinit()
 {
-    ESP_LOGI(AZURE_MAIN_TAG, "Stopping azure tasks...");
-    azure_running = false;
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-    ESP_LOGI(AZURE_MAIN_TAG, "Stopping azure tasks...DONE");
-    
-    if(nullptr != iotHubClientHandle)
+    if(true == azure_running)
     {
-        if(iothubSemaphore != nullptr)
-            xSemaphoreGive(iothubSemaphore);
+        ESP_LOGI(AZURE_MAIN_TAG, "Stopping azure tasks...");
+        azure_running = false;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-        IoTHubDeviceClient_LL_Destroy(iotHubClientHandle);
-        IoTHub_Deinit();
+        ESP_LOGI(AZURE_MAIN_TAG, "Stopping azure tasks...DONE");
+        
+        if(nullptr != iotHubClientHandle)
+        {
+            if(iothubSemaphore != nullptr)
+                xSemaphoreGive(iothubSemaphore);
 
-        vSemaphoreDelete(iothubSemaphore);
+            IoTHubDeviceClient_LL_Destroy(iotHubClientHandle);
+            IoTHub_Deinit();
+
+            vSemaphoreDelete(iothubSemaphore);
+        }
+
+        prov_dev_security_deinit();
+
+        if(nullptr != xHandleAzure)
+            xHandleAzure = nullptr;
+
+        if(nullptr != xHandleAzureTx)
+            xHandleAzureTx = nullptr;
+
+        ESP_LOGI(AZURE_MAIN_TAG, "Azure de-init done");
     }
-
-    prov_dev_security_deinit();
-
-    if(nullptr != xHandleAzure)
-        xHandleAzure = nullptr;
-
-    if(nullptr != xHandleAzureTx)
-        xHandleAzureTx = nullptr;
-
-    ESP_LOGI(AZURE_MAIN_TAG, "Azure de-init done");
+    else
+    {
+        ESP_LOGI(AZURE_MAIN_TAG, "Azure already de-initialized");
+    }
 }
 
 void azure_tx_task(void *pvParameter)
