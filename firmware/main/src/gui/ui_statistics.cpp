@@ -135,7 +135,7 @@ void ui_statistics_init(void *data)
     lv_obj_align(obj_stat_container, NULL, LV_ALIGN_IN_LEFT_MID, STAT_TAB_X_OFFSET, STAT_TAB_Y_OFFSET);
     lv_page_set_scrl_layout(obj_stat_container, LV_LAYOUT_PRETTY_TOP);
     lv_page_set_scrl_height(obj_stat_container, STAT_TAB_HEIGHT);
-    lv_page_set_scrlbar_mode(obj_stat_container, LV_SCRLBAR_MODE_AUTO);
+    lv_page_set_scrlbar_mode(obj_stat_container, LV_SCRLBAR_MODE_DRAG);
 
     obj_fullstats  = lv_table_create(obj_stat_container, NULL);
     lv_obj_set_style_local_bg_color(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_PRESSED | LV_STATE_FOCUSED, LV_COLOR_WHITE);
@@ -143,6 +143,7 @@ void ui_statistics_init(void *data)
     lv_obj_set_style_local_border_width(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_PRESSED | LV_STATE_FOCUSED, 0);
     lv_obj_set_style_local_text_font(obj_fullstats, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT | LV_STATE_PRESSED | LV_STATE_FOCUSED, &statistics_font);
     lv_obj_align(obj_fullstats, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_page_glue_obj(obj_fullstats, true);
 
     lv_table_set_col_cnt(obj_fullstats, 2);
     lv_table_set_row_cnt(obj_fullstats, 10);
