@@ -195,8 +195,6 @@ void start_tasks()
     utils::system::start_thread_core(&cam_task, &xHandleCam, "cam_task", 1024*2, 4, 0);
     #endif
     utils::system::start_thread_core(&gui_task, &xHandleGui, "gui_task", 1024*16, 4, 1);
-
-    utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 0);
 }
 
 void main_task(void* p)

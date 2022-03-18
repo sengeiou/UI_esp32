@@ -37,10 +37,12 @@ typedef enum {
 } ui_state_t;
 
 typedef enum {
-    status_bar_item_wifi = 0,
-    status_bar_item_settings,
-    status_bar_item_max,
-} status_bar_item_t;
+    wifi_status_item_off = 0,
+    wifi_status_item_configured,
+    wifi_status_item_connecting,
+    wifi_status_item_connecting_cloud,
+    wifi_status_item_connected,
+} wifi_status_item_t;
 
 typedef enum {
     UI_SHOW_OVERRIDE = 0,   /* Show new page and replace its position in call queue */
@@ -211,6 +213,11 @@ void ui_warning_bar_set_generic_warning(bool warning);
  */
 void ui_statistics_update_data(uint16_t parId, uint32_t value);
 
+/**
+ * @brief Update wifi status.
+ * 
+ */
+void ui_wifi_update_status(wifi_status_item_t status);
 
 #if ENABLE_CAPS_RECOGNITION_MODULE == 1
 /**

@@ -101,11 +101,15 @@ inline lv_font_t wifi_text_font         = lv_font_montserrat_26;
 #define WIFI_PASS_AREA_HEIGHT           50
 #define WIFI_SCAN_LIST_WIDTH            600
 #define WIFI_SCAN_LIST_HEIGHT           50
+#define WIFI_SWITCH_WIDTH               300
+#define WIFI_SWITCH_HEIGHT              50
 #define WIFI_SCAN_BUTTON_WIDTH          200
 #define WIFI_SCAN_BUTTON_HEIGHT         50
-#define WIFI_SCAN_BUTTON_X_OFFSET       50
-#define WIFI_SCAN_BUTTON_Y_OFFSET       30
-#define WIFI_SCAN_LIST_Y_OFFSET         20
+#define WIFI_SWITCH_X_OFFSET            130
+#define WIFI_SCAN_BUTTON_X_OFFSET       -40
+#define WIFI_FIRST_LINE_Y_OFFSET        30
+#define WIFI_SCAN_LIST_X_OFFSET         40
+#define WIFI_SCAN_LIST_Y_OFFSET         110
 #define WIFI_PASS_AREA_Y_OFFSET         20
 
 // Statistics Page

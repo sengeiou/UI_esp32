@@ -28,18 +28,21 @@ static ui_state_t ui_wifi_state = ui_state_dis;
 /* LVGL objects defination */
 static lv_obj_t* obj_container = NULL;
 
+static lv_obj_t* obj_switch_enable  = NULL;
 static lv_obj_t* obj_button_ok      = NULL;
 static lv_obj_t* obj_button_cancel  = NULL;
 static lv_obj_t* obj_button_scan    = NULL;
 static lv_obj_t* obj_ddlist_ssid    = NULL;
 static lv_obj_t* obj_password_area  = NULL;
 static lv_obj_t* obj_keyboard       = NULL;
+static lv_obj_t* switch_label       = NULL;
 
 /* Static function forward declaration */
 static void wifi_btn_cb(lv_obj_t *obj, lv_event_t event);
 static void wifi_ssid_cb(lv_obj_t* obj, lv_event_t event);
 static void keyboard_cb(lv_obj_t* keyboard, lv_event_t event);
 static void pass_textarea_cb(lv_obj_t* obj, lv_event_t event);
+static void wifi_switch_cb(lv_obj_t* obj, lv_event_t event);
 
 #define DEFAULT_SCAN_LIST_SIZE 32
 static char ssid[128];
@@ -89,6 +92,18 @@ void ui_wifi_init(void *data)
     configure_button(obj_button_cancel, LV_SYMBOL_CLOSE);
     lv_obj_align(obj_button_cancel, NULL, LV_ALIGN_IN_LEFT_MID, MENU_BUTTON_X_OFFSET, 40);   
 
+    obj_switch_enable = lv_switch_create(obj_container, NULL);
+    lv_obj_set_size(obj_switch_enable, WIFI_SWITCH_WIDTH, WIFI_SWITCH_HEIGHT);
+    lv_obj_align(obj_switch_enable, NULL, LV_ALIGN_IN_TOP_LEFT, WIFI_SWITCH_X_OFFSET, WIFI_FIRST_LINE_Y_OFFSET);
+    lv_obj_set_event_cb(obj_switch_enable, wifi_switch_cb);
+
+    switch_label = lv_label_create(obj_switch_enable, NULL);
+    lv_label_set_recolor(switch_label, true);
+    lv_label_set_align(switch_label, LV_ALIGN_CENTER);
+    lv_obj_set_style_local_text_font(switch_label, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_button_font);
+    lv_label_set_text(switch_label, LV_SYMBOL_WIFI "  " "DISABLED");
+    lv_obj_align(switch_label, NULL, LV_ALIGN_CENTER, 0, 0);
+
     obj_button_scan = lv_btn_create(obj_container, NULL);
     lv_obj_set_size(obj_button_scan, WIFI_SCAN_BUTTON_WIDTH, WIFI_SCAN_BUTTON_HEIGHT);
     lv_obj_set_style_local_bg_color(obj_button_scan, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
@@ -97,19 +112,19 @@ void ui_wifi_init(void *data)
     lv_obj_set_style_local_text_color(obj_button_scan, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_text_font(obj_button_scan, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_button_font);
     lv_obj_set_event_cb(obj_button_scan, wifi_btn_cb);
-    lv_obj_align(obj_button_scan, NULL, LV_ALIGN_IN_TOP_MID, WIFI_SCAN_BUTTON_X_OFFSET, WIFI_SCAN_BUTTON_Y_OFFSET);   
+    lv_obj_align(obj_button_scan, NULL, LV_ALIGN_IN_TOP_RIGHT, WIFI_SCAN_BUTTON_X_OFFSET, WIFI_FIRST_LINE_Y_OFFSET);   
 
-    lv_obj_t* label = lv_label_create(obj_button_scan, NULL);
-    lv_label_set_recolor(label, true);
-    lv_label_set_align(label, LV_ALIGN_CENTER);
-    lv_obj_set_style_local_text_font(label, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_button_font);
-    lv_label_set_text(label, LV_SYMBOL_REFRESH "  " "SCAN");
-    lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_t* btn_label = lv_label_create(obj_button_scan, NULL);
+    lv_label_set_recolor(btn_label, true);
+    lv_label_set_align(btn_label, LV_ALIGN_CENTER);
+    lv_obj_set_style_local_text_font(btn_label, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_button_font);
+    lv_label_set_text(btn_label, LV_SYMBOL_REFRESH "  " "SCAN");
+    lv_obj_align(btn_label, NULL, LV_ALIGN_CENTER, 0, 0);
 
     obj_ddlist_ssid = lv_dropdown_create(obj_container, NULL);
     lv_obj_set_size(obj_ddlist_ssid, WIFI_SCAN_LIST_WIDTH, WIFI_SCAN_LIST_HEIGHT);
     lv_dropdown_set_options(obj_ddlist_ssid, "Scan Wi-Fi network...");
-    lv_obj_align(obj_ddlist_ssid, obj_button_scan, LV_ALIGN_OUT_BOTTOM_MID, 0, WIFI_SCAN_LIST_Y_OFFSET);
+    lv_obj_align(obj_ddlist_ssid, obj_container, LV_ALIGN_IN_TOP_MID, WIFI_SCAN_LIST_X_OFFSET, WIFI_SCAN_LIST_Y_OFFSET);
     lv_obj_set_style_local_text_font(obj_ddlist_ssid, LV_OBJ_PART_MAIN, LV_STATE_ALL, &wifi_text_font);
     lv_obj_set_event_cb(obj_ddlist_ssid, wifi_ssid_cb);
 
@@ -177,7 +192,6 @@ static void wifi_btn_cb(lv_obj_t* obj, lv_event_t event)
         {
             strcpy(machineConnectivity.ssid, ssid);
             strcpy(machineConnectivity.password, lv_textarea_get_text(obj_password_area));
-            machineConnectivity.wifiEnabled = true;
             xEventGroupSetBits(xWifiEvents, WIFI_CONFIGURATION_BIT);
 
             ui_show(&ui_menu_func, UI_SHOW_OVERRIDE);
@@ -191,7 +205,6 @@ static void wifi_btn_cb(lv_obj_t* obj, lv_event_t event)
         
         if(obj == obj_button_scan)
         {
-            printf("SCAN Button\n");
             lv_dropdown_clear_options(obj_ddlist_ssid);
 
             xEventGroupSetBits(xWifiEvents, WIFI_RESET_BIT);
@@ -215,8 +228,29 @@ static void wifi_btn_cb(lv_obj_t* obj, lv_event_t event)
             }
             else
             {
-                printf("Failed to scan networks\n");
+                ESP_LOGE(LOG_TAG, "Failed to scan networks");
             }
+        }
+    }
+}
+
+static void wifi_switch_cb(lv_obj_t* obj, lv_event_t event)
+{
+    if(event == LV_EVENT_VALUE_CHANGED)
+    {
+        bool newStatus = lv_switch_get_state(obj);
+        machineConnectivity.wifiEnabled = newStatus;
+        printf("Wifi %s\n", machineConnectivity.wifiEnabled ? "ENABLED" : "DISABLED");
+        save_firmware_connectivity(false);
+
+        if(true == machineConnectivity.wifiEnabled)
+        {
+            lv_label_set_text(switch_label, "ENABLED" "  " LV_SYMBOL_WIFI);
+            utils::system::start_thread_core(&wifi_task, &xHandleWiFi, "wifi_task", 1024*8, 4, 0);
+        }
+        else
+        {
+            lv_label_set_text(switch_label, LV_SYMBOL_WIFI "  " "DISABLED");
         }
     }
 }

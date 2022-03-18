@@ -16,17 +16,21 @@ static lv_obj_t* obj_btn_pod = NULL;
 static lv_obj_t* obj_btn_descaling = NULL;
 static lv_obj_t* obj_btn_water = NULL;
 static lv_obj_t* obj_btn_generic = NULL;
+static lv_obj_t* obj_btn_wifi = NULL;
 
 static lv_obj_t* img_descaling_warn = NULL;
 static lv_obj_t* img_pod_warn = NULL;
 static lv_obj_t* img_water_warn = NULL;
 static lv_obj_t* img_generic_warn = NULL;
+static lv_obj_t* obj_label_wifi = NULL;
 
 static bool isWarningDescaling = false;
 static bool isWarningPod = false;
 static bool isWarningWater = false;
 static bool isWarningGeneric = false;
 static bool isPopupOpened = false;
+
+static wifi_status_item_t wifiStatus = wifi_status_item_off;
 
 /* Extern image variable(s) */
 extern void* data_descaling_warning;
@@ -46,6 +50,11 @@ static void obj_btn_cb(lv_obj_t *obj, lv_event_t event);
 static void obj_btn_warning_cb(lv_obj_t *obj, lv_event_t event);
 static void descaling_popup_cb(lv_obj_t *obj, lv_event_t event);
 static void basic_popup_cb(lv_obj_t* obj, lv_event_t event);
+
+/* Blink led variables and functions */
+esp_timer_handle_t blink_led_timer;
+static void blink_led_cb(void* arg);
+
 
 extern ui_preparation_t preparation;
 
@@ -119,6 +128,21 @@ void ui_warning_bar_init(void)
     lv_obj_set_style_local_radius(obj_warning_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_set_style_local_border_width(obj_warning_bar, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_align(obj_warning_bar, NULL, LV_ALIGN_IN_RIGHT_MID, 0, 0);
+
+    obj_btn_wifi = lv_obj_create(obj_warning_bar, NULL);
+    lv_obj_set_size(obj_btn_wifi, MENUBAR_BUTTON_WIDTH, MENUBAR_BUTTON_HEIGHT);
+    lv_obj_set_style_local_radius(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_RADIUS);
+    lv_obj_set_style_local_bg_color(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_color(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_set_style_local_border_width(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, WARNBAR_BUTTON_BORDER);
+    lv_obj_set_style_local_text_color(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+    lv_obj_align(obj_btn_wifi, obj_warning_bar, LV_ALIGN_IN_TOP_MID, 0, 0);
+    lv_obj_set_click(obj_btn_wifi, false);
+
+    obj_label_wifi = lv_label_create(obj_btn_wifi, NULL);
+    lv_label_set_text(obj_label_wifi, LV_SYMBOL_WIFI);
+    lv_label_set_align(obj_label_wifi, LV_LABEL_ALIGN_CENTER);
+    lv_obj_align(obj_label_wifi, obj_btn_wifi, LV_ALIGN_CENTER, 0, 0);
 
     obj_btn_descaling = lv_obj_create(obj_warning_bar, NULL);
     lv_obj_set_size(obj_btn_descaling, WARNBAR_BUTTON_WIDTH, WARNBAR_BUTTON_HEIGHT);
@@ -204,6 +228,14 @@ void ui_warning_bar_init(void)
     lv_obj_set_click(obj_btn_generic, isWarningGeneric);
 
     lvgl_sem_give();
+
+    const esp_timer_create_args_t blink_led_timer_args = {
+            .callback = &blink_led_cb,
+            /* name is optional, but may help identify the timer when debugging */
+            .name = "blink_led"
+    };
+
+    esp_timer_create(&blink_led_timer_args, &blink_led_timer);
 }
 
 void ui_warning_bar_show(bool show)
@@ -212,16 +244,65 @@ void ui_warning_bar_show(bool show)
     {
         lv_obj_set_hidden(obj_warning_bar, !show);
 
+        ui_wifi_update_status(wifiStatus);
+
         ui_warning_bar_set_descaling_warning(isWarningDescaling);
         ui_warning_bar_set_pod_warning(isWarningPod);
         ui_warning_bar_set_water_empty_warning(isWarningWater);
         ui_warning_bar_set_generic_warning(isWarningGeneric);
-        
+
         ESP_LOGI(LOG_TAG, "%s", show ? "Show" : "Hide");
     }
 }
 
+void ui_wifi_update_status(wifi_status_item_t status)
+{
+    wifiStatus = status;
+    if(NULL != obj_btn_wifi)
+    {
+        switch(status)
+        {
+            case wifi_status_item_off:
+            {
+                lv_obj_set_style_local_text_color(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_GRAY);
+                ESP_LOGI(LOG_TAG, "WiFi Status OFF.");
+                break;
+            }
+            case wifi_status_item_connecting:
+            {
+                esp_timer_start_periodic(blink_led_timer, 500*1000);
+                ESP_LOGI(LOG_TAG, "WiFi Status ON. Connecting...");
+                break;
+            }
+            case wifi_status_item_connecting_cloud:
+            {
+                esp_timer_start_periodic(blink_led_timer, 100*1000);
+                ESP_LOGI(LOG_TAG, "WiFi Status ON. Connecting...");
+                break;
+            }
+            case wifi_status_item_connected:
+            {
+                esp_timer_stop(blink_led_timer);
+                lv_obj_set_style_local_text_color(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+                ESP_LOGI(LOG_TAG, "WiFi Status ON. Connection established");
+                break;
+            }
+            default:
+            {
+                //Do nothing
+            }
+        }
+    }
+}
 /* ******************************** Event Handler ******************************** */
+static void blink_led_cb(void* arg)
+{
+    static bool on = false;
+
+    lv_obj_set_style_local_text_color(obj_btn_wifi, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, on ? LV_COLOR_BLUE : LV_COLOR_GRAY);
+    on = !on;
+}
+
 static void obj_btn_cb(lv_obj_t *obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
@@ -250,7 +331,6 @@ static void obj_btn_cb(lv_obj_t *obj, lv_event_t event)
         #endif
     }
 }
-
 
 static void obj_btn_warning_cb(lv_obj_t* obj, lv_event_t event)
 {

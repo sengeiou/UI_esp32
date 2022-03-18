@@ -29,6 +29,7 @@
 #include "ca_certificates.h"
 #include "spiffs_utils.h"
 #include "gui_task.h"
+#include "ui_main.h"
 
 
 
@@ -218,7 +219,7 @@ void azure_task(void *pvParameter)
         utils::system::start_thread_core(&azure_tx_task, &xHandleAzureTx, "azure_tx_task", 1024*6, 4, 1);
 
         azure_running = true;
-
+        
         while(true == azure_running)
         {
             if(pdTRUE == xSemaphoreTake(iothubSemaphore, 50/portTICK_PERIOD_MS))
@@ -251,7 +252,7 @@ void azure_deinit()
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         ESP_LOGI(AZURE_MAIN_TAG, "Stopping azure tasks...DONE");
-        
+
         if(nullptr != iotHubClientHandle)
         {
             if(iothubSemaphore != nullptr)

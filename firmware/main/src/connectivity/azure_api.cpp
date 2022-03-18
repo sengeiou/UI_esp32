@@ -25,6 +25,7 @@
 #include "system_utils.h"
 #include "spiffs_utils.h"
 #include "gui_task.h"
+#include "ui_main.h"
 
 #include "lavazza_cloud_protocol.h"
 
@@ -231,6 +232,8 @@ void azure_iothub_connection_status(IOTHUB_CLIENT_CONNECTION_STATUS result, IOTH
 
         if(NULL != xHandleAzureTx)
             vTaskResume(xHandleAzureTx);
+
+        ui_wifi_update_status(wifi_status_item_connected);
     }
     else
     {

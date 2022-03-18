@@ -22,7 +22,7 @@
 #include "azure_task.h"
 #include "ota.h"
 #include "gui_task.h"
-
+#include "ui_main.h"
 
 #ifdef ADVANCED_DEBUG
     #define TAG_WIFI LINE_STRING "|" "WiFi Task"
@@ -245,8 +245,6 @@ void wifi_task(void *pvParameter)
         esp_netif_destroy(netifCfg);
         netifCfg = nullptr;
     }
-
-    machineConnectivity.wifiEnabled = true; //TODO remove??
     
     if(true == machineConnectivity.wifiEnabled)
     {
@@ -263,6 +261,8 @@ void wifi_task(void *pvParameter)
         ESP_ERROR_CHECK(esp_netif_init());
         ESP_ERROR_CHECK(esp_event_loop_create_default());
 
+        ui_wifi_update_status(wifi_status_item_connecting);
+
         wifi_init();
     
         while(true == machineConnectivity.wifiEnabled)
@@ -274,6 +274,8 @@ void wifi_task(void *pvParameter)
                 xEventGroupClearBits(xWifiEvents, WIFI_CONNECTED_BIT);
                 machineConnectivity.status = WIFI_CONNECTED;
                 ESP_LOGI(TAG_WIFI, "Connected to ap SSID:%s password:%s", machineConnectivity.ssid, machineConnectivity.password);
+                
+                ui_wifi_update_status(wifi_status_item_connecting_cloud);
 
                 get_time_from_sntp(syncTime);
 
@@ -287,6 +289,7 @@ void wifi_task(void *pvParameter)
             if(bits & WIFI_DISCONNECTED_BIT)
             {
                 xEventGroupClearBits(xWifiEvents, WIFI_DISCONNECTED_BIT);
+                ui_wifi_update_status(wifi_status_item_off);
                 ESP_LOGI(TAG_WIFI, "Disconnected from ap SSID:%s password:%s", machineConnectivity.ssid, machineConnectivity.password);
                 
                 azure_deinit();
@@ -316,7 +319,6 @@ void wifi_task(void *pvParameter)
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 wifi_init();
             }
-            
         }
 
         azure_deinit();
@@ -326,6 +328,8 @@ void wifi_task(void *pvParameter)
 
         esp_wifi_disconnect();
         wifi_deinit();
+
+        ui_wifi_update_status(wifi_status_item_off);
 
         ESP_ERROR_CHECK(esp_event_loop_delete_default());
 
