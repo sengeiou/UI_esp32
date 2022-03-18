@@ -31,7 +31,6 @@ static lv_obj_t* obj_button_back  = NULL;
 
 static lv_obj_t* obj_list           = NULL;
 
-static lv_obj_t* obj_list_general       = NULL;
 static lv_obj_t* obj_list_wifi          = NULL;
 static lv_obj_t* obj_list_settings      = NULL;
 static lv_obj_t* obj_list_statistics    = NULL;
@@ -47,8 +46,7 @@ static void update_selected_item_list();
 
 typedef enum
 {
-    GENERAL_LIST_ITEM = 0,
-    WIFI_LIST_ITEM,
+    WIFI_LIST_ITEM = 0,
     SETTINGS_LIST_ITEM,
     STATISTICS_LIST_ITEM,
     CLEANING_1_LIST_ITEM,
@@ -145,9 +143,7 @@ void ui_menu_init(void *data)
     lv_obj_set_style_local_border_color(obj_list, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_obj_set_style_local_border_width(obj_list, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
     lv_obj_align(obj_list, NULL, LV_ALIGN_IN_LEFT_MID, MENU_LIST_X_OFFSET, 0);
-
-    obj_list_general = lv_list_add_btn(obj_list, LV_SYMBOL_HOME, "\t" MENU_GENERAL_BUTTON);
-    configure_list_button(obj_list_general);
+    lv_obj_set_event_cb(obj_list, menu_btn_cb);
 
     obj_list_wifi = lv_list_add_btn(obj_list, LV_SYMBOL_WIFI, "\t" MENU_WIFI_BUTTON);
     configure_list_button(obj_list_wifi);
@@ -174,7 +170,7 @@ void ui_menu_init(void *data)
 
 void ui_menu_show(void *data)
 {
-    list_index = GENERAL_LIST_ITEM;
+    list_index = WIFI_LIST_ITEM;
 
     if(ui_state_dis == ui_menu_state)
     {
@@ -225,12 +221,6 @@ static void menu_btn_cb(lv_obj_t* obj, lv_event_t event)
         {
             switch(list_index)
             {
-                case GENERAL_LIST_ITEM:
-                {
-                    ESP_LOGI(LOG_TAG, "Open GENERAL page");
-                    // ui_show(&ui_general_func, UI_SHOW_OVERRIDE);
-                    break;
-                }
                 case WIFI_LIST_ITEM:
                 {
                     ESP_LOGI(LOG_TAG, "Open WIFI page");
@@ -291,19 +281,22 @@ static void menu_btn_cb(lv_obj_t* obj, lv_event_t event)
             update_selected_item_list();
         }
     }
+
+    // if(LV_EVENT_DRAG_BEGIN == event)
+    // {
+    //     if(obj == obj_list)
+    //     {
+    //         list_index = (list_item_t) lv_list_get_btn_index(obj_list, lv_list_get_btn_selected(obj_list));
+    //         printf("Event %d. Item %d\n", event, list_index);
+    //         update_selected_item_list();
+    //     }
+    // }
 }
 
 static void list_btn_cb(lv_obj_t* obj, lv_event_t event)
 {
     if(LV_EVENT_CLICKED == event)
     {
-
-        if(obj == obj_list_general)
-        {
-            ESP_LOGI(LOG_TAG, "Open GENERAL page");
-            // ui_show(&ui_general_func, UI_SHOW_OVERRIDE);
-        }
-
         if(obj == obj_list_wifi)
         {
             ESP_LOGI(LOG_TAG, "Open WIFI page");
@@ -346,11 +339,6 @@ static void update_selected_item_list()
 {
     switch(list_index)
     {
-        case GENERAL_LIST_ITEM:
-        {
-            lv_list_focus_btn(obj_list, obj_list_general);
-            break;
-        }
         case WIFI_LIST_ITEM:
         {
             lv_list_focus_btn(obj_list, obj_list_wifi);
