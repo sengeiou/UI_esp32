@@ -112,7 +112,7 @@ void ui_preparations_set_desired(coffee_type_t prep)
         {
             if(false == check_milk_warnings() && false == check_coffee_warnings())
                 ui_show(&ui_erogation_func, UI_SHOW_OVERRIDE);
-                break;
+            break;
         }
         case PREP_CAFFE_AMERICANO:
         {
@@ -442,7 +442,7 @@ void ui_preparations_init(void *data)
     lv_obj_set_event_cb(obj_acqua_calda, preparation_btn_cb);
 
     /* Add UI gestures */
-    lv_obj_set_event_cb(lv_scr_act(), scr_event_cb);
+    lv_obj_set_event_cb(obj_container, scr_event_cb);
 
     lvgl_sem_give();
 
